@@ -1,20 +1,23 @@
 import 'dart:core';
-import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class VoiceCallManager {
   MediaStream _localStream;
-  final _localRenderer = RTCVideoRenderer();
+  RTCVideoRenderer _localRenderer;
   bool _inCalling = false;
   bool _isTorchOn = false;
   MediaRecorder _mediaRecorder;
   bool get _isRec => _mediaRecorder != null;
-
   List<MediaDeviceInfo> _mediaDevicesList;
   MediaStream _stream;
-  void makeCall() async {
+  Future<RTCVideoRenderer> init() async {
+    _localRenderer = RTCVideoRenderer();
+    await _localRenderer.initialize();
+    return _localRenderer;
+  }
+
+  Future<void> makeCall() async {
     final mediaConstraints = <String, dynamic>{
       'audio': false,
       'video': {
@@ -36,11 +39,11 @@ class VoiceCallManager {
       _localStream = _stream;
       _localRenderer.srcObject = _localStream;
     } catch (e) {
-      print(e.toString());
     }
   }
 
-  dipose() async {
-    await _stream.dispose();
+  dispose() async {
+    await _localRenderer?.dispose();
+    await _stream?.dispose();
   }
 }

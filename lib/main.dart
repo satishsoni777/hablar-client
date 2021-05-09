@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/theme/app_theme.dart';
 import 'modules/authentication/auth.dart';
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: AppTheme.getTheme,
       home: Authentication(),
+      routes: Routes.getRoutes(),
     );
   }
 }
