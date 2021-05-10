@@ -20,7 +20,7 @@ class Authentication extends StatelessWidget {
               SignInButton(
                 Buttons.FacebookNew,
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.voiceCall);
+                  Navigator.pushNamed(context, Routes.home);
                 },
                 mini: false,
               ),
