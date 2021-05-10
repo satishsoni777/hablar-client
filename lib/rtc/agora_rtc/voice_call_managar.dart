@@ -1,6 +1,6 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:take_it_easy/config/config.dart';
+import 'package:take_it_easy/config/agora_config.dart';
 
 class AgoraVoiceManager {
   int _uid;
@@ -9,7 +9,7 @@ class AgoraVoiceManager {
     await Permission.microphone.request();
 
     
-    RtcEngineConfig config = RtcEngineConfig(ConfigAgora.appId);
+    RtcEngineConfig config = RtcEngineConfig(AgoraConfig.appId);
     _engine = await RtcEngine.createWithConfig(config);
     await _enableAudio();
     _engine.setEventHandler(RtcEngineEventHandler(
@@ -22,7 +22,7 @@ class AgoraVoiceManager {
       _uid = uid;
     }));
     await _engine.joinChannelWithUserAccount(
-        ConfigAgora.token, ConfigAgora.channelName, 'satish754ss@gmail.com');
+        AgoraConfig.token, AgoraConfig.channelName, 'satish754ss@gmail.com');
   }
 
   _enableAudio() async {

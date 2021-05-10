@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
-import 'package:take_it_easy/rtc/web_rtc/voice_call/voice_call_manager.dart';
+import 'package:take_it_easy/rtc/webrtc/voice_call/voice_call_manager.dart';
 
 class VoiceCall extends StatefulWidget {
   const VoiceCall();
