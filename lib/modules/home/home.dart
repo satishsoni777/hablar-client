@@ -1,6 +1,6 @@
-import 'package:agora_rtm/agora_rtm.dart';
 import 'package:flutter/material.dart';
-import 'package:take_it_easy/navigation/routes.dart';
+import 'package:take_it_easy/components/app_button.dart';
+import 'package:take_it_easy/components/app_textfield.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
 
 // ignore: must_be_immutable
@@ -11,10 +11,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AgoraVoiceManager agoraVoiceManager;
+  final TextEditingController _userName = new TextEditingController();
+  final TextEditingController _channelName = new TextEditingController();
   @override
   initState() {
     agoraVoiceManager = AgoraVoiceManager();
-    agoraVoiceManager.initPlatformState();
     super.initState();
   }
 
@@ -36,6 +37,25 @@ class _HomePageState extends State<HomePage> {
         child: Text("Agora Calls"));
   }
 
+  Widget _join() {
+    return Column(
+      children: [
+        AppTxtFld(
+          controller: _userName,
+        ),
+        AppTxtFld(
+          controller: _channelName,
+        ),
+        AppButton(
+          onPressed: () {
+            agoraVoiceManager.initPlatformState();
+          },
+          text: "Connect",
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +63,11 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_body(), _agora()],
+          children: [
+            _body(),
+            _agora(),
+            _join(),
+          ],
         ),
       ),
     );

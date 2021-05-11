@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "286393078002",
+    "project_id": "makeiteasy-fc51f",
+    "storage_bucket": "makeiteasy-fc51f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286393078002:android:0ddb72a38b700128d1806b",
+        "android_client_info": {
+          "package_name": "com.example.take_it_easy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286393078002-4g4d58s31ir3eultj4beq1f31bss0f5k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.take_it_easy",
+            "certificate_hash": "59fd1833f8304cdb9892772cf788ca12d48fd5d9"
+          }
+        },
+        {
+          "client_id": "286393078002-c7rbm535672e9vmcoe0nmnoc937imghd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm-vnfMSkjbNymGTGUSYGQzc47PEpdeng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286393078002-c7rbm535672e9vmcoe0nmnoc937imghd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
