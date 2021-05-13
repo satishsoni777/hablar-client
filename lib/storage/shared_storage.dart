@@ -78,6 +78,7 @@ class SharedStorageImpl extends SharedStorage {
   }
 }
 
+// Define All storage keys here.
 class StorageKey {
   static final gmailUserDataKey = 'gmail_auth_user_data';
   static final route = 'route';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:take_it_easy/auth_handler/gmail_auth.dart';
 import 'package:take_it_easy/components/app_alert.dart';
 import 'package:take_it_easy/components/app_padding.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/images/images.dart';
+import 'package:take_it_easy/modules/authentication/webservice/gmail_auth.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
 class Authentication extends StatelessWidget {

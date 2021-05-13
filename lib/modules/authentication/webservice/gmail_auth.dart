@@ -6,14 +6,13 @@ import 'package:take_it_easy/storage/shared_storage.dart';
 
 class GmailAuth {
   bool _isUserSignedIn = false;
-  FirebaseAuth _auth;
+  FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   Future<bool> handleSignIn() async {
-    _auth = FirebaseAuth.instance;
     // hold the instance of the authenticated user
     User user; // flag to check whether we're signed in already
     bool isSignedIn = await _googleSignIn.isSignedIn();
-    if (isSignedIn) {
+    if (isSignedIn && _auth.currentUser != null) {
       // if so, return the current user
       user = _auth.currentUser;
       _isUserSignedIn = isSignedIn;
@@ -25,10 +24,21 @@ class GmailAuth {
       final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       user = (await _auth.signInWithCredential(credential)).user;
-      _isUserSignedIn = true;
+      if (user == null)
+        _isUserSignedIn = false;
+      else
+        _isUserSignedIn = true;
     }
-    await DI.inject<SharedStorage>().setUserData(user);
-    await DI.inject<SharedStorage>().setInitialRoute(route: Routes.home);
+    if (_isUserSignedIn) {
+      await DI.inject<SharedStorage>().setUserData(user);
+      await DI.inject<SharedStorage>().setInitialRoute(route: Routes.home);
+    } else {
+      await DI.inject<SharedStorage>().setInitialRoute(route: '');
+    }
     return _isUserSignedIn;
+  }
+
+  signOut() async {
+    await _auth.signOut();
   }
 }

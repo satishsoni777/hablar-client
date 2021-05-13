@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   @override
   initState() {
     agoraVoiceManager = AgoraVoiceManager();
+    // agoraVoiceManager.initPlatformState();
     super.initState();
   }
 
@@ -47,11 +48,18 @@ class _HomePageState extends State<HomePage> {
           controller: _channelName,
         ),
         AppButton(
-          onPressed: () {
-            agoraVoiceManager.initPlatformState();
+          onPressed: () async {
+           await  agoraVoiceManager.initPlatformState();
           },
           text: "Connect",
-        )
+        ),
+        AppButton(
+            onPressed: () async {
+              agoraVoiceManager.dispose();
+            },
+            shapeBorder: CircleBorder(),
+            text: "Disconect",
+            height: 100.0)
       ],
     );
   }

@@ -1,6 +1,9 @@
+
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:take_it_easy/config/agora_config.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/storage/shared_storage.dart';
 
 //Working
 class AgoraVoiceManager {
@@ -8,8 +11,7 @@ class AgoraVoiceManager {
   RtcEngine _engine;
   initPlatformState() async {
     await Permission.microphone.request();
-
-    RtcEngineConfig config = RtcEngineConfig(AgoraConfig.appId);
+    RtcEngineConfig config = RtcEngineConfig(AgoraConfig.apIdTeasy);
     _engine = await RtcEngine.createWithConfig(config);
     await _enableAudio();
     _engine.setEventHandler(RtcEngineEventHandler(
@@ -29,8 +31,9 @@ class AgoraVoiceManager {
       },
       userInfoUpdated: (value, userInfo) {},
     ));
+    var uid=(await DI.inject<SharedStorage>().getUserData()).uid;
     await _engine.joinChannelWithUserAccount(
-        AgoraConfig.token, AgoraConfig.channelName, 'satish754ss@gmail.com');
+        AgoraConfig.tokenTeasy, AgoraConfig.chennelTeasy, uid);
   }
   _enableAudio() async {
     await _engine.enableAudio();
@@ -42,6 +45,7 @@ class AgoraVoiceManager {
 
   getAudio() {
     _engine.getAudioMixingPlayoutVolume();
+    // _engine.getAudioMixingDuration();
     // _engine.audtiotr
   }
 
@@ -50,6 +54,7 @@ class AgoraVoiceManager {
   }
 
   sendMessage() async {
+    // _engine..sendStreamMessage(streamId, message);
     _engine..sendStreamMessage(23, 'Hi how are y9ou');
   }
 }

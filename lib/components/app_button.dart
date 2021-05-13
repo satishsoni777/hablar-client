@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum Shape { Cicle, Rect }
+
 class AppButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
@@ -9,6 +11,8 @@ class AppButton extends StatelessWidget {
   final double elevation;
   final String text;
   final TextStyle textStyle;
+  final ShapeBorder shapeBorder;
+  final double height;
   const AppButton(
       {Key key,
       @required this.onPressed,
@@ -17,6 +21,8 @@ class AppButton extends StatelessWidget {
       this.isDisabled = false,
       this.loader,
       this.text,
+      this.height=50.0,
+      this.shapeBorder,
       this.textStyle,
       this.isLoading = false})
       : super(key: key);
@@ -24,7 +30,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
+      height: height,
       child: MaterialButton(
         disabledElevation: 0.0,
         elevation: 4.0,
@@ -35,16 +41,17 @@ class AppButton extends StatelessWidget {
                 children: [CircularProgressIndicator()],
               )
             : Center(
-              child: (child ??
-                  Text(
-                    text,
-                    style: const TextStyle(fontSize: 16),
-                  )),
-            ),
+                child: (child ??
+                    Text(
+                      text,
+                      style: const TextStyle(fontSize: 16),
+                    )),
+              ),
         disabledColor: Theme.of(context).disabledColor,
         onPressed: !isDisabled ? () => !isLoading ? onPressed() : () {} : null,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusDirectional.circular(12.0)),
+        shape: shapeBorder ??
+            RoundedRectangleBorder(
+                borderRadius: BorderRadiusDirectional.circular(12.0)),
       ),
     );
   }

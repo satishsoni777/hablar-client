@@ -1,14 +1,19 @@
 import 'package:agora_rtm/agora_rtm.dart';
 import 'package:take_it_easy/config/agora_config.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/storage/shared_storage.dart';
 
 class AgoraChannel {
-  AgoraRtmClient agoraRtmClient;
+  AgoraRtmClient _agoraRtmClient;
+  String _uid;
   init() async {
-    agoraRtmClient = await AgoraRtmClient.createInstance(AgoraConfig.appId);
-    agoraRtmClient.login(AgoraConfig.token, 'ConfigAgora.');
+    _agoraRtmClient = await AgoraRtmClient.createInstance(AgoraConfig.appId);
+    _uid = (await DI.inject<SharedStorage>().getUserData()).uid;
+    _agoraRtmClient.login(AgoraConfig.token, _uid);
   }
 
   sendMessage() {
-    // agoraRtmClient.send
+    // _agoraRtmClient.sendMessageToPeer(peerId, message);
+
   }
 }
