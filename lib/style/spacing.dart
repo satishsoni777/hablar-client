@@ -7,6 +7,7 @@ class Spacing {
   static const double mediumMargin = 12;
   static const double smallMargin = 8;
   static const double halfSmallMargin = 4;
+  static const double marginLarge=24;
 
   //Height
   static const sizeBoxHt2 = const SizedBox(height: 2.0);

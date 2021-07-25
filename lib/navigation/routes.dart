@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/authentication/auth.dart';
+import 'package:take_it_easy/modules/authentication/view/auth.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/video_call/video_call.dart';
 import 'package:take_it_easy/modules/voice_call/voice_call.dart';

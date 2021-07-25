@@ -13,6 +13,7 @@ class AppButton extends StatelessWidget {
   final TextStyle textStyle;
   final ShapeBorder shapeBorder;
   final double height;
+  final Widget icon;
   const AppButton(
       {Key key,
       @required this.onPressed,
@@ -20,8 +21,9 @@ class AppButton extends StatelessWidget {
       this.elevation = 4.0,
       this.isDisabled = false,
       this.loader,
+      this.icon,
       this.text,
-      this.height=50.0,
+      this.height = 50.0,
       this.shapeBorder,
       this.textStyle,
       this.isLoading = false})
@@ -41,11 +43,18 @@ class AppButton extends StatelessWidget {
                 children: [CircularProgressIndicator()],
               )
             : Center(
-                child: (child ??
-                    Text(
-                      text,
-                      style: const TextStyle(fontSize: 16),
-                    )),
+                child: child ??
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        icon ?? Container(),
+                        Text(
+                          text,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
               ),
         disabledColor: Theme.of(context).disabledColor,
         onPressed: !isDisabled ? () => !isLoading ? onPressed() : () {} : null,

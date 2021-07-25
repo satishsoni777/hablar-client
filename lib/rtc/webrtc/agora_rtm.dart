@@ -9,7 +9,7 @@ class AgoraRtm {
   }
 
   logIn() {
-    _client.login(AgoraConfig.token, '1234');
+    _client.login(AgoraConfig.tokenTeasy, '1234');
   }
 
   join() async {

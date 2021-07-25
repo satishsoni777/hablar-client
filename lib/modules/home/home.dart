@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:take_it_easy/components/app_button.dart';
-import 'package:take_it_easy/components/app_textfield.dart';
+import 'package:take_it_easy/modules/history_page/call_history.dart';
+import 'package:take_it_easy/modules/home/initiate_call_page.dart';
+import 'package:take_it_easy/modules/profile/profile.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
 
 // ignore: must_be_immutable
@@ -13,6 +14,7 @@ class _HomePageState extends State<HomePage> {
   AgoraVoiceManager agoraVoiceManager;
   final TextEditingController _userName = new TextEditingController();
   final TextEditingController _channelName = new TextEditingController();
+  HomeTabs homeTabs = HomeTabs.Call;
   @override
   initState() {
     agoraVoiceManager = AgoraVoiceManager();
@@ -26,58 +28,30 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Widget _body() {
-    return TextButton(onPressed: () {}, child: Text("Voice Calls"));
-  }
-
-  Widget _agora() {
-    return TextButton(
-        onPressed: () {
-          agoraVoiceManager.dispose();
-        },
-        child: Text("Agora Calls"));
-  }
-
-  Widget _join() {
-    return Column(
-      children: [
-        AppTxtFld(
-          controller: _userName,
-        ),
-        AppTxtFld(
-          controller: _channelName,
-        ),
-        AppButton(
-          onPressed: () async {
-           await  agoraVoiceManager.initPlatformState();
-          },
-          text: "Connect",
-        ),
-        AppButton(
-            onPressed: () async {
-              agoraVoiceManager.dispose();
-            },
-            shapeBorder: CircleBorder(),
-            text: "Disconect",
-            height: 100.0)
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final tabs = <HomeTabs, Widget>{
+      HomeTabs.Call: InitateCall(),
+      HomeTabs.History: CallHistory(),
+      HomeTabs.Profile: UserProfile()
+    };
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _body(),
-            _agora(),
-            _join(),
+      appBar: AppBar(),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: homeTabs.index,
+          onTap: (value) {
+            homeTabs = HomeTabs.values[value];
+            setState(() {});
+          },
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history), label: 'History'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
         ),
-      ),
-    );
+        body: tabs[homeTabs]);
   }
 }
+
+enum HomeTabs { Call, History, Profile }
