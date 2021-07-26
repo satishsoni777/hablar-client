@@ -14,6 +14,7 @@ class AgoraConfig {
 
 
   static const apIdTeasy = '9d8272590d614b45b23f0acaf03a73d0';
+  
 
 // static const chnnelId='https://console.agora.io/invite?sign=959ff60cd2af228fdf9a174a8855ed58%253A5908fa2614af65c6cf49f8d6f9ce7bb8cec0fa5399e1a443ae835cbac73f93ef';
 }
