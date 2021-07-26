@@ -39,8 +39,19 @@ abstract class SharedStorage {
 
   setUserData(User customerData);
   Future<GmailUserData> getUserData();
+
   setInitialRoute({String route});
+  
   Future<String> getInitialRoute();
+
+  // Remove aall store key from shared preferences
+  Future<bool> resetFlow() async {
+    bool isClear = false;
+    for (final key in sharedPreferences.getKeys()) {
+      isClear = await sharedPreferences?.remove(key);
+    }
+    return isClear;
+  }
 }
 
 class SharedStorageImpl extends SharedStorage {

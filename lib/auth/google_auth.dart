@@ -41,4 +41,8 @@ class GmailAuth {
   signOut() async {
     await _auth.signOut();
   }
+
+  Future<bool> isSignInGoogle() async {
+    return await _googleSignIn.isSignedIn();
+  }
 }
