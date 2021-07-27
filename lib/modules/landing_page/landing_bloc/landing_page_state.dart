@@ -1,14 +1,14 @@
 part of 'landing_page_bloc.dart';
 
 @immutable
-class LandingPageDateState extends Equatable {
-  LandingPageDateState({this.isValidate=false,this.isLoading=false});
+class LandingPageDateState {
+  LandingPageDateState({this.isValidate = false, this.isLoading = false});
   final bool isValidate;
   final bool isLoading;
-  LandingPageDateState copyWith({bool isLoading,bool isValidate}) {
-    return LandingPageDateState(isValidate: isValidate ?? isValidate,
-    isLoading: isLoading??this.isLoading
-    );
+  LandingPageDateState copyWith({bool isLoading, bool isValidate}) {
+    return LandingPageDateState(
+        isValidate: isValidate ?? isValidate,
+        isLoading: isLoading ?? this.isLoading);
   }
 
   @override

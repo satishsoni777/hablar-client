@@ -24,6 +24,7 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       body: BlocConsumer<LandingPageBloc, LandingPageDateState>(
         listener: (curr, prev) {},
+        buildWhen: (prev, curr) => curr is LandingPageDateState,
         builder: (context, state) {
           if (state.isLoading) return ProgressLoader();
           if (state.isValidate)

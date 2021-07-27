@@ -4,7 +4,7 @@ import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
-class GmailAuth {
+class GoogleAuthService {
   bool _isUserSignedIn = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -39,6 +39,8 @@ class GmailAuth {
   }
 
   signOut() async {
+    final result = await _googleSignIn.signOut();
+    await result?.clearAuthCache();
     await _auth.signOut();
   }
 

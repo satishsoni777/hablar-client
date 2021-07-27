@@ -5,7 +5,7 @@ abstract class LandingRepo {
 }
 
 class LandingRepoImpl extends LandingRepo {
-  LandingReq landingRepo = LandingReq();
+  final LandingReq landingRepo = LandingReq();
   @override
   Future<bool> isSignIn() async {
     return await landingRepo.isSignIn();

@@ -23,7 +23,7 @@ class Authentication extends StatelessWidget {
                 Buttons.FacebookNew,
                 onPressed: () async {
                   // Navigator.pushNamed(context, Routes.home);
-                  // await GmailAuth().handleSignIn();
+                  // await GoogleAuthService().handleSignIn();
                 },
                 mini: false,
               ),
@@ -32,7 +32,7 @@ class Authentication extends StatelessWidget {
                 Buttons.GoogleDark,
                 onPressed: () async {
                   AppAlert.of(context).dialog();
-                  await GmailAuth().handleSignIn();
+                  await GoogleAuthService().handleSignIn();
                    AppAlert.popDialog();
                   Navigator.pushReplacementNamed(context, Routes.home);
                 },
