@@ -8,6 +8,7 @@ import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/style/font.dart';
+import 'package:take_it_easy/style/spacing.dart';
 
 import '../../flutter_auth.dart';
 
@@ -66,7 +67,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
 
   Widget _logOutCta() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(Spacing.marginLarge),
       child: AppButton(
         onPressed: () {
           logOut();

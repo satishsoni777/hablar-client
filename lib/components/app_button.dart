@@ -13,11 +13,13 @@ class AppButton extends StatelessWidget {
       this.loader,
       this.icon,
       this.text,
-      this.height = 50.0,
+      this.height = 40.0,
       this.shapeBorder,
       this.textStyle,
-      this.borderRadius = 12,
+      this.borderRadius = 8,
       this.buttonType = ButtonType.Fill,
+      this.width,
+      this.color,
       this.isLoading = false})
       : super(key: key);
   final VoidCallback onPressed;
@@ -33,6 +35,8 @@ class AppButton extends StatelessWidget {
   final Widget icon;
   final ButtonType buttonType;
   final double borderRadius;
+  final double width;
+  final Color color;
   ShapeBorder get getBorder {
     if (buttonType == ButtonType.Border) {
       return RoundedRectangleBorder(
@@ -46,11 +50,13 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
+      width: width,
       child: MaterialButton(
         disabledElevation: 0.0,
+        
         elevation: 4.0,
         color: buttonType == ButtonType.Fill
-            ? Theme.of(context).buttonColor
+            ? color??Theme.of(context).buttonColor
             : null,
         child: isLoading
             ? Column(

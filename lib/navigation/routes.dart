@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/authentication/view/auth.dart';
+import 'package:take_it_easy/modules/dialer/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
 import 'package:take_it_easy/modules/landing_page/landing_page.dart';
@@ -17,6 +18,7 @@ class Routes {
   static const home = '/home';
   static const auth = '/auth';
   static const landingPage = '/landing_page';
+  static const dialer = '/dialer';
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case auth:
@@ -27,6 +29,8 @@ class Routes {
         return MaterialPageRoute(builder: (c) {
           return HomePage();
         });
+      case dialer:
+        return MaterialPageRoute(builder: (c) => Dialer());
     }
   }
 

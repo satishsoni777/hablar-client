@@ -9,12 +9,10 @@ class AgoraChannel {
   init() async {
     _agoraRtmClient = await AgoraRtmClient.createInstance(AgoraConfig.appId);
     _uid = (await DI.inject<SharedStorage>().getUserData()).uid;
-    _agoraRtmClient.login(AgoraConfig.tokenTeasy, _uid);
     _agoraRtmClient.onConnectionStateChanged = (a, v) {
 
     };
     _agoraRtmClient.onMessageReceived=(a,b){
-      print("ass");
     };
   }
 

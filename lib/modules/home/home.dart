@@ -31,12 +31,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final tabs = <HomeTabs, Widget>{
-      HomeTabs.Call: InitateCall(),
+      HomeTabs.Call: InitiateCall(),
       HomeTabs.History: CallHistory(),
       HomeTabs.Profile: UserProfile()
     };
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (value) {

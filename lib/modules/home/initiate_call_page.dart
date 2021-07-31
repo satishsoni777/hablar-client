@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/app_button.dart';
+import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
-class InitateCall extends StatefulWidget {
-  const InitateCall({Key key}) : super(key: key);
+class InitiateCall extends StatefulWidget {
+  const InitiateCall({Key key}) : super(key: key);
 
   @override
-  _InitateCallState createState() => _InitateCallState();
+  _InitiateCallState createState() => _InitiateCallState();
 }
 
-class _InitateCallState extends State<InitateCall> {
+class _InitiateCallState extends State<InitiateCall> {
   AgoraVoiceManager agoraVoiceManager;
 
   final TextEditingController _userName = new TextEditingController();
@@ -43,7 +44,8 @@ class _InitateCallState extends State<InitateCall> {
       width: MediaQuery.of(context).size.width * .7,
       child: AppButton(
         onPressed: () {
-          _callNow();
+          Navigator.pushNamed(context, Routes.dialer);
+          // _callNow();
         },
         icon: Icon(Icons.call),
         text: "Talk now",

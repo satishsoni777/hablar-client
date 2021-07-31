@@ -23,6 +23,8 @@ class AgoraVoiceManager {
         print("############# User joined ############# $uid");
         _uid = uid;
       },
+      requestToken: (){},
+
       leaveChannel: (RtcStats rtcStats) async {
         print("############# User leaved ############# ${rtcStats.users}");
         await _engine.sendStreamMessage(_uid, 'message');
