@@ -26,8 +26,8 @@ class AgoraVoiceManager {
       requestToken: (){},
 
       leaveChannel: (RtcStats rtcStats) async {
-        print("############# User leaved ############# ${rtcStats.users}");
-        await _engine.sendStreamMessage(_uid, 'message');
+        print("############# User leaved ############# ${rtcStats}");
+        // await _engine.sendStreamMessage(_uid, 'message');
       },
       userOffline: (int uid, UserOfflineReason reason) {
         _uid = uid;
@@ -75,7 +75,7 @@ class AgoraVoiceManager {
 
   sendMessage() async {
     // _engine..sendStreamMessage(streamId, message);
-    _engine..sendStreamMessage(23, 'Hi how are you');
+    // _engine..sendStreamMessage(23,);
   }
 
   getUser() {}

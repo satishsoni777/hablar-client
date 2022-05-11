@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "286393078002",
+    "firebase_url": "https://makeiteasy-fc51f-default-rtdb.firebaseio.com",
     "project_id": "makeiteasy-fc51f",
     "storage_bucket": "makeiteasy-fc51f.appspot.com"
   },
@@ -14,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "286393078002-4g4d58s31ir3eultj4beq1f31bss0f5k.apps.googleusercontent.com",
+          "client_id": "286393078002-ujkcl3t093k769608hpqqroi37heoamf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.take_it_easy",
-            "certificate_hash": "59fd1833f8304cdb9892772cf788ca12d48fd5d9"
+            "certificate_hash": "64d17c4819e9039079573c65f2766194b44e1a53"
           }
         },
         {

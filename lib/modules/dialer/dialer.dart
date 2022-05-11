@@ -34,6 +34,7 @@ class Dialer extends StatelessWidget {
                 borderRadius: 35,
                 color: AppColors.lightRed,
                 height: 70.0,
+                onPressed: (){},
                 width: 70),
             Spacing.sizeBoxHt40,
           ],
