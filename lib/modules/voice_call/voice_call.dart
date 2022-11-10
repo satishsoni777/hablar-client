@@ -13,11 +13,11 @@ class VoiceCall extends StatefulWidget {
 class _VoiceCallState extends State<VoiceCall> {
   VoiceCallManager _voiceCallManager;
   RTCVideoRenderer _rtcVideoRenderer;
-  AgoraVoiceManager agoraVoiceManager;
+  // AgoraVoiceManager agoraVoiceManager;
   @override
   void initState() {
-    agoraVoiceManager = AgoraVoiceManager();
-    // _voiceCallManager = VoiceCallManager();
+    // agoraVoiceManager = AgoraVoiceManager();
+    // // _voiceCallManager = VoiceCallManager();
     _init();
     super.initState();
   }

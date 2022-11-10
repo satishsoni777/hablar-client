@@ -15,7 +15,7 @@ class InitiateCall extends StatefulWidget {
 }
 
 class _InitiateCallState extends State<InitiateCall> {
-  AgoraVoiceManager agoraVoiceManager;
+  // AgoraVoiceManager agoraVoiceManager;
 
   final TextEditingController _userName = new TextEditingController();
 
@@ -24,19 +24,19 @@ class _InitiateCallState extends State<InitiateCall> {
 
   @override
   initState() {
-    agoraVoiceManager = AgoraVoiceManager();
+    // agoraVoiceManager = AgoraVoiceManager();
     // agoraVoiceManager.initPlatformState();
     super.initState();
   }
 
   @override
   dispose() {
-    agoraVoiceManager?.dispose();
+    // agoraVoiceManager?.dispose();
     super.dispose();
   }
 
   void _callNow() async {
-    await agoraVoiceManager.initPlatformState();
+    // await agoraVoiceManager.initPlatformState();
   }
 
   Widget _body() {

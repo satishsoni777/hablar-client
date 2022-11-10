@@ -11,20 +11,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AgoraVoiceManager agoraVoiceManager;
+  // AgoraVoiceManager agoraVoiceManager;
   final TextEditingController _userName = new TextEditingController();
   final TextEditingController _channelName = new TextEditingController();
   HomeTabs homeTabs = HomeTabs.Call;
   @override
   initState() {
-    agoraVoiceManager = AgoraVoiceManager();
+    // agoraVoiceManager = AgoraVoiceManager();
     // agoraVoiceManager.initPlatformState();
     super.initState();
   }
 
   @override
   dispose() {
-    agoraVoiceManager?.dispose();
+    // agoraVoiceManager?.dispose();
     super.dispose();
   }
 
