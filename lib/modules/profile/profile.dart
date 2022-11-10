@@ -18,6 +18,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: FutureBuilder<GmailUserData>(
           future: DI.inject<SharedStorage>().getUserData(),
           builder: (context, snapshot) {
@@ -36,10 +37,12 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-        
+          SizedBox(
+            height: 10.0,
+          ),
           _profileFace(gmailUserData.photoURL),
           SizedBox(
-            height: 30.0,
+            height: 20.0,
           ),
           Text(
             gmailUserData.displayName,

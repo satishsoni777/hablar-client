@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
-import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
@@ -39,16 +38,18 @@ class _InitiateCallState extends State<InitiateCall> {
     // await agoraVoiceManager.initPlatformState();
   }
 
-  Widget _body() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * .7,
-      child: AppButton(
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.dialer);
-          // _callNow();
-        },
-        icon: Icon(Icons.call),
-        text: "Talk now",
+  Widget _button() {
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * .7,
+        child: AppButton(
+          onPressed: () {
+            Navigator.pushNamed(context, Routes.dialer);
+            // _callNow();
+          },
+          icon: Icon(Icons.call),
+          text: "Talk now",
+        ),
       ),
     );
   }
@@ -60,7 +61,7 @@ class _InitiateCallState extends State<InitiateCall> {
 
   Widget _selectGender() {
     return Container(
-      height: 120.0,
+      // height: 120.0,
       padding: const EdgeInsets.only(
         top: Spacing.defaultMargin,
         bottom: Spacing.defaultMargin,
@@ -128,23 +129,23 @@ class _InitiateCallState extends State<InitiateCall> {
           padding: const EdgeInsets.symmetric(horizontal: Spacing.marginLarge),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
               Text(
                 AppStrings.of(context).startTalkingBuddy,
                 style: const TextStyle(fontSize: FontSize.title),
               ),
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
               _selectGender(),
               const Spacer(),
-              _body(),
+              _button(),
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
             ],
           ),
