@@ -36,10 +36,6 @@ class _HomePageState extends State<HomePage> {
       HomeTabs.Profile: UserProfile()
     };
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (value) {

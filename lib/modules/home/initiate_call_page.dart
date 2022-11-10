@@ -120,6 +120,9 @@ class _InitiateCallState extends State<InitiateCall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation:1.0
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.marginLarge),

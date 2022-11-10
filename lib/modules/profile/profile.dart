@@ -36,9 +36,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 60.0,
-          ),
+        
           _profileFace(gmailUserData.photoURL),
           SizedBox(
             height: 30.0,
