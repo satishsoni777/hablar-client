@@ -29,11 +29,13 @@ dependencies:
   # agora_rtc_engine: 
   permission_handler: ^5.0.1+1
   # agora_rtm: 
+  agora_rtc_engine: ^6.0.0
   firebase_core: ^0.5.0
   firebase_auth: ^0.18.0+1
   google_sign_in: ^4.5.3
   shared_preferences: ^2.0.3
   flutter_simple_dependency_injection: ^1.0.4
+  sound_stream: ^0.3.0
 
 
   # The following adds the Cupertino Icons font to your application.

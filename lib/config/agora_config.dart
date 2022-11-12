@@ -1,13 +1,13 @@
 class AgoraConfig {
   /// Get your own App ID at https://dashboard.agora.io/
-  static const appId = 'a147bdc47c1843b285e4269c60a719c3';
+  static const appId = '79e511b7bd03496ea13674e4409ca220';
 
   /// Please refer to https://docs.agora.io/en/Agora%20Platform/token
 
   static const tokenTeasy =
       '0069d8272590d614b45b23f0acaf03a73d0IABfI1AU0zm1cPQ+D2sP17NxTZ5BCQtBRKjzkxElKLjniJn0VqIAAAAAEAAZP2Q5BKX9YAEAAQACpf1g';
 
-  static const channelName = 'teasy';
+  static const channelName = 'karuna';
 
   /// Your string user ID
   static const stringUid = '1dcabaa9d40448d9ad754e99fa430192';

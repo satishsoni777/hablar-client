@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:take_it_easy/app.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 
-void main() async {
+void runKaruna() async {
   WidgetsFlutterBinding.ensureInitialized();
   runZonedGuarded(() async {
     try {
@@ -16,5 +16,3 @@ void main() async {
     runApp(MyApp());
   }, (o, e) {});
 }
-
-// ignore: must_be_immutable

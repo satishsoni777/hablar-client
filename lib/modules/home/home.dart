@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:take_it_easy/modules/history_page/call_history.dart';
 import 'package:take_it_easy/modules/home/initiate_call_page.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
@@ -15,8 +16,10 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _userName = new TextEditingController();
   final TextEditingController _channelName = new TextEditingController();
   HomeTabs homeTabs = HomeTabs.Call;
+   PlayerStream _player = PlayerStream();
   @override
   initState() {
+    _player.start();
     // agoraVoiceManager = AgoraVoiceManager();
     // agoraVoiceManager.initPlatformState();
     super.initState();
