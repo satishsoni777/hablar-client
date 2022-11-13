@@ -11,8 +11,8 @@ class VoiceCall extends StatefulWidget {
 }
 
 class _VoiceCallState extends State<VoiceCall> {
-  VoiceCallManager _voiceCallManager;
-  RTCVideoRenderer _rtcVideoRenderer;
+  VoiceCallManager? _voiceCallManager;
+  RTCVideoRenderer? _rtcVideoRenderer;
   // AgoraVoiceManager agoraVoiceManager;
   @override
   void initState() {
@@ -24,14 +24,14 @@ class _VoiceCallState extends State<VoiceCall> {
 
   _init() async {
     if (_voiceCallManager == null) return;
-    _rtcVideoRenderer = await _voiceCallManager.init();
-    await _voiceCallManager.makeCall();
+    _rtcVideoRenderer = await _voiceCallManager?.init();
+    await _voiceCallManager?.makeCall();
     setState(() {});
   }
 
   @override
   dispose() {
-    _voiceCallManager.dispose();
+    _voiceCallManager?.dispose();
     super.dispose();
   }
 
@@ -42,7 +42,7 @@ class _VoiceCallState extends State<VoiceCall> {
         body: _rtcVideoRenderer == null
             ? CircularProgressIndicator()
             : RTCVideoView(
-                _rtcVideoRenderer,
+                _rtcVideoRenderer!,
                 mirror: true,
               ));
   }

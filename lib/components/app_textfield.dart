@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class AppTxtFld extends StatelessWidget {
   const AppTxtFld({this.key,this.controller, this.hintText});
-  final TextEditingController controller;
-  final String hintText;
-  final Key key;
+  final TextEditingController?controller;
+  final String ?hintText;
+  final Key? key;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -23,7 +23,7 @@ class AppTxtFld extends StatelessWidget {
           hintText: hintText ?? 'Channel Name',
         ),
         validator: (value) {
-          if (value.isEmpty) {
+          if (value!.isEmpty) {
             return 'required field';
           } else {
             return null;

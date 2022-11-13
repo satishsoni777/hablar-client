@@ -4,7 +4,7 @@ import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
 class Dialer extends StatelessWidget {
-  const Dialer({Key key}) : super(key: key);
+  const Dialer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,9 @@ class Dialer extends StatelessWidget {
                 borderRadius: 35,
                 color: AppColors.lightRed,
                 height: 70.0,
-                width: 70),
+                width: 70,
+                onPressed: (){},
+                ),
             Spacing.sizeBoxHt40,
           ],
         ),

@@ -5,9 +5,9 @@ class LandingPageDateState {
   LandingPageDateState({this.isValidate = false, this.isLoading = false});
   final bool isValidate;
   final bool isLoading;
-  LandingPageDateState copyWith({bool isLoading, bool isValidate}) {
+  LandingPageDateState copyWith({bool? isLoading, bool? isValidate}) {
     return LandingPageDateState(
-        isValidate: isValidate ?? isValidate,
+        isValidate: isValidate!,
         isLoading: isLoading ?? this.isLoading);
   }
 

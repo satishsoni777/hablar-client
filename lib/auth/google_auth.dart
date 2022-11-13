@@ -40,7 +40,7 @@ class GoogleAuthService {
 
   signOut() async {
     final result = await _googleSignIn.signOut();
-    await result?.clearAuthCache();
+    await result.clearAuthCache();
     await _auth.signOut();
   }
 

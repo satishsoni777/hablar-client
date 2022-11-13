@@ -8,7 +8,7 @@ import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class WrtcManage {
-  AudioElement _recorderAudioChannel;
+  AudioElement? _recorderAudioChannel;
   WrtcManage.init() {
     if (WebRTC.platformIsDesktop) {
       debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;

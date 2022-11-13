@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CallHistory extends StatelessWidget {
-  const CallHistory({Key key}) : super(key: key);
+  const CallHistory({Key ?key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CallHistory extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           border:
-              Border(bottom: BorderSide(width: 1.0, color: Colors.grey[100]))),
+              Border(bottom: BorderSide(width: 1.0, color: Colors.grey[100]!))),
       padding: const EdgeInsets.all(10),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Column(

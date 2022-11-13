@@ -5,9 +5,9 @@ enum ButtonType { Border, Fill }
 
 class AppButton extends StatelessWidget {
   const AppButton(
-      {Key key,
-      @required this.onPressed,
-      this.child,
+      {Key? key,
+      required this.onPressed,
+       this.child,
       this.elevation = 4.0,
       this.isDisabled = false,
       this.loader,
@@ -23,24 +23,24 @@ class AppButton extends StatelessWidget {
       this.isLoading = false})
       : super(key: key);
   final VoidCallback onPressed;
-  final Widget child;
+  final Widget?child;
   final bool isLoading;
-  final Widget loader;
+  final Widget ?loader;
   final bool isDisabled;
   final double elevation;
-  final String text;
-  final TextStyle textStyle;
-  final ShapeBorder shapeBorder;
+  final String? text;
+  final TextStyle? textStyle;
+  final ShapeBorder? shapeBorder;
   final double height;
-  final Widget icon;
+  final Widget ?icon;
   final ButtonType buttonType;
-  final double borderRadius;
-  final double width;
-  final Color color;
-  ShapeBorder get getBorder {
+  final double? borderRadius;
+  final double? width;
+  final Color? color;
+  ShapeBorder? get getBorder {
     if (buttonType == ButtonType.Border) {
       return RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(borderRadius!),
           side: BorderSide(color: AppColors.white));
     } else
       return null;
@@ -84,7 +84,7 @@ class AppButton extends StatelessWidget {
         shape: getBorder ??
             RoundedRectangleBorder(
                 borderRadius: BorderRadiusDirectional.circular(
-              borderRadius,
+              borderRadius!,
             )),
       ),
     );

@@ -7,7 +7,7 @@ import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
 class InitiateCall extends StatefulWidget {
-  const InitiateCall({Key key}) : super(key: key);
+  const InitiateCall({Key? key}) : super(key: key);
 
   @override
   _InitiateCallState createState() => _InitiateCallState();
@@ -47,6 +47,7 @@ class _InitiateCallState extends State<InitiateCall> {
             Navigator.pushNamed(context, Routes.dialer);
             // _callNow();
           },
+          
           icon: Icon(Icons.call),
           text: "Talk now",
         ),

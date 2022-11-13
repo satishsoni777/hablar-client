@@ -4,16 +4,16 @@ class AppAlert {
   AppAlert._();
   bool _hasLoader = false;
   static AppAlert _instance = AppAlert._();
-  static BuildContext _context;
+  static BuildContext? _context;
   factory AppAlert.of(BuildContext context) {
     _context = context;
     return _instance;
   }
-  Future<void> dialog({Widget child}) async {
+  Future<void> dialog({Widget? child}) async {
     if (_hasLoader) return;
     _hasLoader = true;
     await showDialog(
-        context: _context,
+        context: _context!,
         builder: (c) {
           return child ??
               Column(
@@ -32,7 +32,7 @@ class AppAlert {
   static popDialog() async {
     if (_instance._hasLoader) {
       _instance._hasLoader = false;
-      Navigator.pop(_context);
+      Navigator.pop(_context!);
     }
   }
 }

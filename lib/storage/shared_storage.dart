@@ -5,19 +5,19 @@ import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
 abstract class SharedStorage {
-  static SharedPreferences sharedPreferences;
+  static SharedPreferences? sharedPreferences;
 
   Future<SharedPreferences> get _getPreferences async {
     if (sharedPreferences == null)
       return sharedPreferences = await SharedPreferences.getInstance();
     else
-      return sharedPreferences;
+      return sharedPreferences!;
   }
 
   getObjectPreference(String key) async {
     final preferences = await _getPreferences;
     final jsonString = preferences.getString(key);
-    if (isNullOrEmpty(jsonString)) {
+    if (isNullOrEmpty(jsonString!)) {
       return null;
     }
     return jsonDecode(jsonString);
@@ -33,22 +33,22 @@ abstract class SharedStorage {
     await preferences.setString(key, value);
   }
 
-  getStringPreference({String key}) async {
-    return (await _getPreferences).getString(key);
+  getStringPreference({String? key}) async {
+    return (await _getPreferences).getString(key!);
   }
 
   setUserData(User customerData);
   Future<GmailUserData> getUserData();
 
   setInitialRoute({String route});
-  
+
   Future<String> getInitialRoute();
 
   // Remove aall store key from shared preferences
   Future<bool> resetFlow() async {
     bool isClear = false;
-    for (final key in sharedPreferences.getKeys()) {
-      isClear = await sharedPreferences?.remove(key);
+    for (final key in sharedPreferences!.getKeys()) {
+      isClear = await sharedPreferences!.remove(key);
     }
     return isClear;
   }
@@ -74,13 +74,13 @@ class SharedStorageImpl extends SharedStorage {
   Future<GmailUserData> getUserData() async {
     final json =
         (await getObjectPreference(StorageKey.gmailUserDataKey)) as Map;
-    final data = GmailUserData.fromJson(json);
+    final data = GmailUserData.fromJson((json as Map<String,dynamic>));
     return data;
   }
 
   @override
-  setInitialRoute({String route}) async {
-    await setStringPreference(StorageKey.route, route);
+  setInitialRoute({String? route}) async {
+    await setStringPreference(StorageKey.route, route!);
   }
 
   @override

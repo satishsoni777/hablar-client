@@ -9,7 +9,7 @@ import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
 class UserProfile extends StatelessWidget with FlutterAtuh {
-  const UserProfile({Key key}) : super(key: key);
+  const UserProfile({Key ?key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +22,13 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
               return ProgressLoader();
             } else {
               final data = snapshot.data;
-              return _body(context, gmailUserData: data);
+              return _body(context, gmailUserData: data!);
             }
           }),
     );
   }
 
-  Widget _body(BuildContext context, {GmailUserData gmailUserData}) {
+  Widget _body(BuildContext context, {GmailUserData ?gmailUserData}) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -36,12 +36,12 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
           SizedBox(
             height: 10.0,
           ),
-          _profileFace(gmailUserData.photoURL),
+          _profileFace(gmailUserData!.photoURL!),
           SizedBox(
             height: 20.0,
           ),
           Text(
-            gmailUserData.displayName,
+            gmailUserData.displayName!,
             style: const TextStyle(fontSize: FontSize.title),
           ),
           Text(gmailUserData.email ?? ''),
@@ -80,7 +80,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
         Row(
           children: [
             Text("Level"),
-            
+
           ],
         )
       ],

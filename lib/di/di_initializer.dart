@@ -1,8 +1,8 @@
 import 'package:flutter_simple_dependency_injection/injector.dart';
+import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
-/// Created by Ajesh Nag on 31/10/20.
 
 class DI {
   DI();
@@ -10,6 +10,7 @@ class DI {
   factory DI.initializeDependencies() {
     _addDependency<SharedStorage>(SharedStorageImpl(), true);
        _addDependency<LandingRepo>(LandingRepoImpl(), true);
+         _addDependency<RtcBuilder>(RtcBuilderRequest(), true);
     return DI();
   }
 

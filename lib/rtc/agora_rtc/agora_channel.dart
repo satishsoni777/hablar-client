@@ -5,7 +5,7 @@ import 'package:take_it_easy/storage/shared_storage.dart';
 
 class AgoraChannel {
   // AgoraRtmClient _agoraRtmClient;
-  String _uid;
+  String? _uid;
   init() async {
     // _agoraRtmClient = await AgoraRtmClient.createInstance(AgoraConfig.appId);
     _uid = (await DI.inject<SharedStorage>().getUserData()).uid;

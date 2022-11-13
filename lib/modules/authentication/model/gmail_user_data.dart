@@ -1,12 +1,12 @@
 class GmailUserData {
-  String displayName;
-  String email;
-  String photoURL;
-  String uid;
-  String phoneNumber;
-  bool emailVerified;
-  String tenantId;
-  bool isAnonymous;
+  String? displayName;
+  String? email;
+  String? photoURL;
+  String? uid;
+  String? phoneNumber;
+  bool? emailVerified;
+  String? tenantId;
+  bool? isAnonymous;
 
   GmailUserData(
       {this.displayName,

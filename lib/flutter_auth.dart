@@ -11,7 +11,7 @@ mixin FlutterAtuh {
     final GoogleAuthService googleAuthService = GoogleAuthService();
     await DI.inject<SharedStorage>().resetFlow();
     await googleAuthService.signOut();
-    Navigator.popUntil(navigatorKey.currentContext, (route) => false);
-    Navigator.pushNamed(navigatorKey.currentContext, Routes.auth);
+    Navigator.popUntil(navigatorKey.currentContext!, (route) => false);
+    Navigator.pushNamed(navigatorKey.currentContext!, Routes.auth);
   }
 }

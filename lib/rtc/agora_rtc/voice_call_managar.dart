@@ -6,11 +6,11 @@ import 'package:take_it_easy/rtc/rtc_interface.dart';
 
 //Working
 class AgoraVoiceManager extends RtcInterface {
-  RtcEngine _engine;
+  RtcEngine? _engine;
 
   _enableAudio() async {
-    await _engine.enableAudio();
-    await _engine.setEnableSpeakerphone(true);
+    await _engine?.enableAudio();
+    await _engine?.setEnableSpeakerphone(true);
   }
 
   @override
@@ -19,10 +19,9 @@ class AgoraVoiceManager extends RtcInterface {
       clientRoleType: ClientRoleType.clientRoleBroadcaster,
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
-
     try {
-      _engine.joinChannel(
-          token: AgoraConfig.tokenTeasy,
+      _engine?.joinChannel(
+          token: 'AgoraConfig.tokenTeasy,',
           channelId: AgoraConfig.channelName,
           uid: 0,
           options: options);
@@ -39,10 +38,10 @@ class AgoraVoiceManager extends RtcInterface {
 
   @override
   Future initialize() async {
-    _engine.initialize(RtcEngineContext(appId: AgoraConfig.appId));
+    _engine?.initialize(RtcEngineContext(appId: AgoraConfig.appId));
     final permistin = await Permission.microphone.request();
     if (!permistin.isGranted) return;
-    _engine.registerEventHandler(
+    _engine?.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           debugPrint("local user ${connection.localUid} joined");
@@ -65,6 +64,6 @@ class AgoraVoiceManager extends RtcInterface {
 
   @override
   void dispose() async{
-  await _engine.leaveChannel();
+  await _engine?.leaveChannel();
   }
 }
