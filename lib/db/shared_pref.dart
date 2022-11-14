@@ -6,26 +6,24 @@ abstract class SharedPref {
   static SharedPreferences? sharedPreferences;
   Future<SharedPreferences> get getPref async {
     sharedPreferences =
-        (await SharedPreferences.getInstance()) ?? sharedPreferences;
+        sharedPreferences ?? (await SharedPreferences.getInstance());
     return sharedPreferences!;
   }
 
   Future<bool> setString(String key, String value) async {
-    return await sharedPreferences!.setString(key, value);
+    return (await getPref).setString(key, value);
   }
 
   Future<dynamic> getString(String key) async {
-    return sharedPreferences!.getString(key);
+    return (await getPref).getString(key);
   }
 }
 
 class SharedPrefImpl extends SharedPref {
-  factory SharedPrefImpl._() {
-    return SharedPrefImpl._();
-  }
+  SharedPrefImpl._();
 
   static SharedPrefImpl instance = SharedPrefImpl._();
-  static SharedPreferences ?sharedPreferences;
+  static SharedPreferences? sharedPreferences;
 
   Future<SharedPreferences> get getPref async {
     return super.getPref;

@@ -36,7 +36,7 @@ dependencies:
   flutter_simple_dependency_injection: ^1.0.4
   sound_stream: ^0.3.0
   shared_preferences: ^2.0.15
-  http: ^0.12.2
+  dio: ^3.0.10
 
 
   # The following adds the Cupertino Icons font to your application.

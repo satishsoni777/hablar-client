@@ -3,14 +3,13 @@ import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
-
 class DI {
   DI();
 
   factory DI.initializeDependencies() {
     _addDependency<SharedStorage>(SharedStorageImpl(), true);
-       _addDependency<LandingRepo>(LandingRepoImpl(), true);
-         _addDependency<RtcBuilder>(RtcBuilderRequest(), true);
+    _addDependency<LandingRepo>(LandingRepoImpl(), true);
+    _addDependency<RtcBuilder>(RtcBuilderRequest(), true);
     return DI();
   }
 

@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runZonedGuarded(() async {
     try {
-      Flavor().setFlavor(Enviroment.LOCALHOST);
+      Flavor.internal().setFlavor(Enviroment.LOCALHOST);
       await Firebase.initializeApp();
       DI.initializeDependencies();
     } catch (e) {

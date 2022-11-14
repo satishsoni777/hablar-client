@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Endpoints {
- static const  rtcToke='rtcBuilder/rtcToke';
+ static const  rtcToken='/rtcBuilder/rtcToken';
 }
 
 class AppStrings {

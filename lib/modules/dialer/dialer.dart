@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/app_button.dart';
+import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
+import 'package:take_it_easy/rtc/rtc_interface.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
-class Dialer extends StatelessWidget {
+class Dialer extends StatefulWidget {
   const Dialer({Key? key}) : super(key: key);
+
+  @override
+  State<Dialer> createState() => _DialerState();
+}
+
+class _DialerState extends State<Dialer> {
+  late RtcInterface rtcInterface;
+  @override
+  void initState() {
+    rtcInterface = AgoraManager();
+    _init();
+    super.initState();
+  }
+  @override
+  void dispose(){
+    rtcInterface.dispose();
+    super.dispose();
+  }
+  void _init() async {
+    await rtcInterface.initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +52,14 @@ class Dialer extends StatelessWidget {
             Text("Timer"),
             const Spacer(),
             AppButton(
-                shapeBorder: CircleBorder(),
-                child: Icon(Icons.call),
-                borderRadius: 35,
-                color: AppColors.lightRed,
-                height: 70.0,
-                width: 70,
-                onPressed: (){},
-                ),
+              shapeBorder: CircleBorder(),
+              child: Icon(Icons.call),
+              borderRadius: 35,
+              color: AppColors.lightRed,
+              height: 70.0,
+              width: 70,
+              onPressed: () {},
+            ),
             Spacing.sizeBoxHt40,
           ],
         ),

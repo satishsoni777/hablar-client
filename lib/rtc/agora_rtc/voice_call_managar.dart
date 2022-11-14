@@ -2,15 +2,17 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:take_it_easy/config/agora_config.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
 
 //Working
-class AgoraVoiceManager extends RtcInterface {
+class AgoraManager extends RtcInterface {
   RtcEngine? _engine;
 
   _enableAudio() async {
     await _engine?.enableAudio();
-    await _engine?.setEnableSpeakerphone(true);
+    // await _engine?.setEnableSpeakerphone(true);
   }
 
   @override
@@ -20,8 +22,9 @@ class AgoraVoiceManager extends RtcInterface {
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
     try {
+      final token = await DI.inject<RtcBuilder>().getRtcToken();
       _engine?.joinChannel(
-          token: 'AgoraConfig.tokenTeasy,',
+          token: token,
           channelId: AgoraConfig.channelName,
           uid: 0,
           options: options);
@@ -38,9 +41,10 @@ class AgoraVoiceManager extends RtcInterface {
 
   @override
   Future initialize() async {
-    _engine?.initialize(RtcEngineContext(appId: AgoraConfig.appId));
     final permistin = await Permission.microphone.request();
     if (!permistin.isGranted) return;
+    _engine = createAgoraRtcEngine();
+    await _engine?.initialize(RtcEngineContext(appId: AgoraConfig.appId));
     _engine?.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
@@ -57,13 +61,35 @@ class AgoraVoiceManager extends RtcInterface {
           debugPrint(
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
+        onAudioMixingStateChanged: (a, c) {
+          print("### ### # # # ##");
+        },
       ),
     );
+
+    await _engine?.setClientRole(
+        role: ClientRoleType.clientRoleAudience,
+        options: ClientRoleOptions(
+            audienceLatencyLevel:
+                AudienceLatencyLevelType.audienceLatencyLevelLowLatency));
     await _enableAudio();
+    await makeVoiceCall();
+    _engine!.getAudioMixingCurrentPosition();
   }
 
   @override
-  void dispose() async{
-  await _engine?.leaveChannel();
+  void dispose() {
+    _engine?.leaveChannel();
+    _engine?.disableAudio();
+  }
+
+  @override
+  void enableAudio() {
+    // TODO: implement enableAudio
+  }
+
+  @override
+  void disconnect() {
+    // TODO: implement disconnect
   }
 }

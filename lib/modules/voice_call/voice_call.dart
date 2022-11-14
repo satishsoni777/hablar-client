@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
+import 'package:take_it_easy/rtc/rtc_interface.dart';
 import 'package:take_it_easy/rtc/webrtc/voice_call/voice_call_manager.dart';
 
 class VoiceCall extends StatefulWidget {
@@ -14,11 +15,14 @@ class _VoiceCallState extends State<VoiceCall> {
   VoiceCallManager? _voiceCallManager;
   RTCVideoRenderer? _rtcVideoRenderer;
   // AgoraVoiceManager agoraVoiceManager;
+  late RtcInterface rtcInterface;
   @override
   void initState() {
+    rtcInterface=AgoraManager();
     // agoraVoiceManager = AgoraVoiceManager();
     // // _voiceCallManager = VoiceCallManager();
     _init();
+    rtcInterface.initialize();
     super.initState();
   }
 
