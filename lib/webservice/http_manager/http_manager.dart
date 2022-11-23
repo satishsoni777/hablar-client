@@ -26,17 +26,18 @@ abstract class HttpManager extends BaseHttp {
     switch (httpMethod) {
       case HttpMethod.GET:
         return http.get(
-          Flavor.internal().baseUrl + endPoint,
+          (baseUrl ?? Flavor.internal().baseUrl) + endPoint,
         );
       case HttpMethod.POST:
-        return http.post(Flavor.internal().baseUrl + endPoint, data: request);
+        return http.post((baseUrl ?? Flavor.internal().baseUrl) + endPoint,
+            data: request);
       case HttpMethod.DELETE:
         return http.delete(
-          Flavor.internal().baseUrl + endPoint,
+          (baseUrl ?? Flavor.internal().baseUrl) + endPoint,
         );
       case HttpMethod.PUT:
         return http.put(
-          Flavor.internal().baseUrl + endPoint,
+          (baseUrl ?? Flavor.internal().baseUrl) + endPoint,
         );
     }
   }
