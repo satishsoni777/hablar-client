@@ -8,3 +8,7 @@ class AppTheme {
         );
   }
 }
+class AppColors{
+  AppColors._();
+  static const  Color border=Colors.white24;
+}

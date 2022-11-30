@@ -1,6 +1,6 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:take_it_easy/config/agora_config.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
@@ -41,9 +41,10 @@ class AgoraManager extends RtcInterface {
 
   @override
   Future initialize() async {
-    final permistin = await Permission.microphone.request();
-    if (!permistin.isGranted) return;
+    // final permistin = await Permission.microphone.request();
+    // if (!permistin.isGranted) return;
     _engine = createAgoraRtcEngine();
+    
     await _engine?.initialize(RtcEngineContext(appId: AgoraConfig.appId));
     _engine?.registerEventHandler(
       RtcEngineEventHandler(
@@ -56,6 +57,7 @@ class AgoraManager extends RtcInterface {
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
+          debugPrint("User joined channel ${connection.channelId}");
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
           debugPrint(
@@ -63,6 +65,12 @@ class AgoraManager extends RtcInterface {
         },
         onAudioMixingStateChanged: (a, c) {
           print("### ### # # # ##");
+        },
+        onError: (e,s){
+          print("#### Errror ### $s");
+        },
+        onRequestToken: (e){
+
         },
       ),
     );
@@ -80,7 +88,6 @@ class AgoraManager extends RtcInterface {
   @override
   void dispose() {
     _engine?.leaveChannel();
-    _engine?.disableAudio();
   }
 
   @override

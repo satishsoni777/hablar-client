@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.history), label: 'History'),
+                icon: Icon(Icons.history), label: 'Recent Calls'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
         ),
