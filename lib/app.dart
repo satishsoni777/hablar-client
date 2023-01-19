@@ -1,8 +1,12 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/app_keys.dart';
 import 'package:take_it_easy/theme/app_theme.dart';
+
+import 'modules/landing_page/landing_bloc/landing_page_bloc.dart';
+import 'modules/landing_page/landing_page.dart';
+
 class MyApp extends StatefulWidget {
   const MyApp();
 

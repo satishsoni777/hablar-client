@@ -12,6 +12,7 @@ import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
 class Routes {
+  static const root = '/';
   static const videoCall = '/video_call';
   static const voiceCall = '/voice_call';
   static const createStreamData = '/CreateStreamData';

@@ -1,10 +1,13 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:take_it_easy/config/agora_config.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
+import 'package:take_it_easy/storage/shared_storage.dart';
 
 //Working
 class AgoraManager extends RtcInterface {
@@ -23,20 +26,27 @@ class AgoraManager extends RtcInterface {
     );
     try {
       final token = await DI.inject<RtcBuilder>().getRtcToken();
-      _engine?.joinChannel(
+      final email = (await DI.inject<SharedStorage>().getUserData()).email;
+      await _engine?.joinChannelWithUserAccount(
           token: token,
           channelId: AgoraConfig.channelName,
-          uid: 0,
-          options: options);
+          options: ChannelMediaOptions(
+            clientRoleType: ClientRoleType.clientRoleBroadcaster,
+          ),
+          userAccount: email ?? '');
+      // await _engine?.joinChannel(
+      //     token: token,
+      //     channelId: AgoraConfig.channelName,
+      //     uid: 0,
+      //     options: options);
     } catch (e) {
       print("Failed to connect::: ## $e");
     }
   }
 
   @override
-  Future getCallDuration() {
-    // TODO: implement getCallDuration
-    throw UnimplementedError();
+  Future getCallDuration() async {
+    await _engine?.getAudioMixingDuration();
   }
 
   @override
@@ -44,7 +54,7 @@ class AgoraManager extends RtcInterface {
     // final permistin = await Permission.microphone.request();
     // if (!permistin.isGranted) return;
     _engine = createAgoraRtcEngine();
-    
+
     await _engine?.initialize(RtcEngineContext(appId: AgoraConfig.appId));
     _engine?.registerEventHandler(
       RtcEngineEventHandler(
@@ -54,24 +64,28 @@ class AgoraManager extends RtcInterface {
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
         },
+        onUserInfoUpdated: (a, v) {},
+        onRtcStats: (r, a) {},
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
           debugPrint("User joined channel ${connection.channelId}");
         },
-        onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
+        onTokenPrivilegeWillExpire:
+            (RtcConnection connection, String token) async {
+          await DI.inject<RtcBuilder>().reGenerateRtcToken();
           debugPrint(
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
         onAudioMixingStateChanged: (a, c) {
           print("### ### # # # ##");
         },
-        onError: (e,s){
+        onError: (e, s) {
           print("#### Errror ### $s");
         },
-        onRequestToken: (e){
-
-        },
+        onLeaveChannel: (a, s) {},
+        onAudioDeviceStateChanged: (s, a, v) {},
+        onRequestToken: (e) {},
       ),
     );
 

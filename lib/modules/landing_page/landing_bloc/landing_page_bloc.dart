@@ -21,7 +21,6 @@ class LandingPageBloc extends Bloc<LandingPageEvent, LandingPageDateState> {
       try {
         yield state.copyWith(isValidate: false, isLoading: true);
         final result = await repo.isSignIn();
-        print(result);
         yield state.copyWith(isLoading: false, isValidate: result);
       } catch (e) {
         yield state.copyWith(isLoading: false, isValidate: false);

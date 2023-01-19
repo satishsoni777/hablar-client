@@ -3,6 +3,6 @@ bool isNullOrEmpty(String str) {
 }
 
 class BaseUrl{
-  static const local="http://127.0.0.1:8080";
+  static const local="http://localhost:8082";
   static const prod="";
 }

@@ -66,7 +66,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
                         gmailUserData.displayName!,
                         style: const TextStyle(fontSize: FontSize.title),
                       ),
-                      Text(gmailUserData.email ?? ''),
+                      // Text(gmailUserData.email ?? ''),
                       Text(gmailUserData.phoneNumber ?? ''),
                       FollowFollowers()
                     ],
@@ -76,6 +76,11 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
             ),
           ),
           _summary(),
+           ProfileTile(
+            title: Text("Address"),
+            onPressed: () {},
+            leading: Icon(Icons.card_membership),
+          ),
           ProfileTile(
             title: Text("Become Plus Memeber"),
             onPressed: () {},

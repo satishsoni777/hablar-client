@@ -24,8 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_signin_button: ^2.0.0  
-  flutter_webrtc: ^0.6.3
+  flutter_webrtc: ^0.9.19
   flutter_background: ^1.0.0
+  web_socket_channel: ^2.3.0
   # agora_rtc_engine: 
   permission_handler: ^5.0.1+1
   # agora_rtm: 
@@ -34,9 +35,10 @@ dependencies:
   firebase_auth: ^0.18.0+1
   google_sign_in: ^4.5.3
   flutter_simple_dependency_injection: ^1.0.4
-  sound_stream: ^0.3.0
+  # sound_stream: ^0.3.0
   shared_preferences: ^2.0.15
   dio: ^3.0.10
+  socket_io_client: ^2.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
