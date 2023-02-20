@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
 // import 'package:sound_stream/sound_stream.dart';
 import 'package:take_it_easy/modules/history_page/call_history.dart';
 import 'package:take_it_easy/modules/home/initiate_call_page.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
+import 'package:take_it_easy/rtc/rtc_interface.dart';
+import 'package:take_it_easy/rtc/webrtc/voice_call/webrtc.impl.dart';
+import 'package:take_it_easy/rtc/webrtc/webrtc_wrapper/rtc_manager.dart';
+import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
+import 'package:take_it_easy/utils/call_streaming/flutter_sound.impl.dart';
+import 'package:take_it_easy/utils/call_streaming/mic_stream.dart';
 import 'package:take_it_easy/websocket/socket-io.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
@@ -19,9 +26,15 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _channelName = new TextEditingController();
   HomeTabs homeTabs = HomeTabs.Call;
   AppWebSocket? appWebSocket;
+  RtcUtil? callStreaming;
+  RtcInterface? _rtcInterface;
+
   @override
   initState() {
-    appWebSocket = SocketIO();
+    _rtcInterface = WebRtcManager();
+    callStreaming = DI.inject<RtcUtil>();
+    appWebSocket = DI.inject<AppWebSocket>();
+    // appWebSocket?.connect("ws://localhost:8082");
     // agoraVoiceManager = AgoraVoiceManager();
     // agoraVoiceManager.initPlatformState();
     super.initState();
@@ -29,7 +42,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   dispose() {
-   appWebSocket?.close();
+    appWebSocket?.close();
+    callStreaming?.disconnect();
+    _rtcInterface?.dispose();
     super.dispose();
   }
 
@@ -47,10 +62,18 @@ class _HomePageState extends State<HomePage> {
             FloatingActionButton(
                 backgroundColor: Colors.red,
                 onPressed: () {
-                  appWebSocket?.sendMessage({"message": "test"});
+                  // _voiceCallManager?.makeCall();
+                  // appWebSocket?.sendMessage({"voice-message":"asdf"});
+                  callStreaming?.call();
+                }),
+            FloatingActionButton(
+                backgroundColor: Colors.yellow,
+                onPressed: () {
+                  // appWebSocket?.sendMessage({"voice-message":"asdf"});
+                  (callStreaming)?.stop();
                 }),
             FloatingActionButton(onPressed: () {
-              appWebSocket?.connect("ws://localhost:8082");
+              callStreaming?.disconnect();
             }),
           ],
         ),
@@ -62,8 +85,7 @@ class _HomePageState extends State<HomePage> {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.history), label: 'Recent Calls'),
+            BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Recent Calls'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
         ),
@@ -71,4 +93,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-enum HomeTabs { Call, History, Profile }
+enum HomeTabs {
+  Call,
+  History,
+  Profile
+}

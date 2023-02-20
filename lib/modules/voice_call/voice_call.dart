@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
-import 'package:take_it_easy/rtc/webrtc/voice_call/voice_call_manager.dart';
+import 'package:take_it_easy/rtc/webrtc/voice_call/webrtc.impl.dart';
 
 class VoiceCall extends StatefulWidget {
   const VoiceCall();
@@ -12,13 +13,12 @@ class VoiceCall extends StatefulWidget {
 }
 
 class _VoiceCallState extends State<VoiceCall> {
-  VoiceCallManager? _voiceCallManager;
+  WebRtcManagerImpl? _voiceCallManager;
   RTCVideoRenderer? _rtcVideoRenderer;
-  // AgoraVoiceManager agoraVoiceManager;
   late RtcInterface rtcInterface;
   @override
   void initState() {
-    rtcInterface=AgoraManager();
+    rtcInterface = AgoraManager();
     // agoraVoiceManager = AgoraVoiceManager();
     // // _voiceCallManager = VoiceCallManager();
     _init();
@@ -29,7 +29,7 @@ class _VoiceCallState extends State<VoiceCall> {
   _init() async {
     if (_voiceCallManager == null) return;
     _rtcVideoRenderer = await _voiceCallManager?.init();
-    await _voiceCallManager?.makeCall();
+    await _voiceCallManager?.makeVoiceCall(UserConnectionData());
     setState(() {});
   }
 

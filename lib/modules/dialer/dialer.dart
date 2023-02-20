@@ -1,7 +1,12 @@
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:provider/provider.dart';
 import 'package:take_it_easy/components/app_button.dart';
-import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
+import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
+import 'package:take_it_easy/rtc/webrtc/voice_call/webrtc.impl.dart';
+import 'package:take_it_easy/rtc/webrtc/webrtc_wrapper/rtc_manager.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
@@ -16,15 +21,26 @@ class _DialerState extends State<Dialer> {
   late RtcInterface rtcInterface;
   @override
   void initState() {
-    rtcInterface = AgoraManager();
+    rtcInterface = WebRtcManager();
+    (rtcInterface as WebRtcManager).makeMicCall(
+        context,
+        UserConnectionData(
+          audio: true,
+          userId: "2345",
+          name: "asdf",
+          username: "aSDFG",
+        ));
+    // rtcInterface = AgoraManager();
     _init();
     super.initState();
   }
+
   @override
-  void dispose(){
-    rtcInterface.dispose();
+  void dispose() {
+    rtcInterface.disconnect();
     super.dispose();
   }
+
   void _init() async {
     await rtcInterface.initialize();
   }
@@ -36,34 +52,53 @@ class _DialerState extends State<Dialer> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Spacing.sizeBoxHt20,
-            CircleAvatar(
-              radius: 40,
-              child: Icon(Icons.people),
-            ),
-            Spacing.sizeBoxHt20,
-            Text('unknown'),
-            Spacing.sizeBoxHt20,
-            Text("Timer"),
-            const Spacer(),
-            AppButton(
-              shapeBorder: CircleBorder(),
-              child: Icon(Icons.call),
-              borderRadius: 35,
-              color: AppColors.lightRed,
-              height: 70.0,
-              width: 70,
-              onPressed: () {},
-            ),
-            Spacing.sizeBoxHt40,
-          ],
-        ),
-      ),
+      body: ChangeNotifierProvider<WebRtcManager>.value(
+          value: rtcInterface as WebRtcManager,
+          builder: (context, snapshot) {
+            return Consumer<WebRtcManager>(builder: (context, snapshot, a) {
+              return RTCVideoView(
+                (rtcInterface as WebRtcManager).rtcVideoRenderer!,
+                mirror: false,
+                filterQuality: FilterQuality.medium,
+                placeholderBuilder: (c) => SizedBox(
+                    height: 60,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                      ],
+                    )),
+              );
+            });
+          }),
+      // body: Center(
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     crossAxisAlignment: CrossAxisAlignment.center,
+      //     children: [
+      //       Spacing.sizeBoxHt20,
+      //       CircleAvatar(
+      //         radius: 40,
+      //         child: Icon(Icons.people),
+      //       ),
+      //       Spacing.sizeBoxHt20,
+      //       Text('unknown'),
+      //       Spacing.sizeBoxHt20,
+      //       Text("Timer"),
+      //       const Spacer(),
+      //       AppButton(
+      //         shapeBorder: CircleBorder(),
+      //         child: Icon(Icons.call),
+      //         borderRadius: 35,
+      //         color: AppColors.lightRed,
+      //         height: 70.0,
+      //         width: 70,
+      //         onPressed: () {},
+      //       ),
+      //       Spacing.sizeBoxHt40,
+      //     ],
+      //   ),
+      // ),
     );
   }
 

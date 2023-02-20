@@ -18,26 +18,33 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.18.5 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_signin_button: ^2.0.0  
   flutter_webrtc: ^0.9.19
+  mic_stream: ^0.6.2
   flutter_background: ^1.0.0
   web_socket_channel: ^2.3.0
   # agora_rtc_engine: 
-  permission_handler: ^5.0.1+1
+  permission_handler: ^10.2.0
+  flutter_sound: ^9.2.13
   # agora_rtm: 
   agora_rtc_engine: ^6.0.0
-  firebase_core: ^0.5.0
-  firebase_auth: ^0.18.0+1
-  google_sign_in: ^4.5.3
-  flutter_simple_dependency_injection: ^1.0.4
+  firebase_core: ^2.4.1
+  flutter_webrtc_wrapper: 
+  provider: ^6.0.5
+  # sound_stream:
+  #     path: ../sound_stream
+    
+  firebase_auth: ^4.2.5
+  google_sign_in: ^5.4.3
   # sound_stream: ^0.3.0
+  flutter_simple_dependency_injection: ^2.0.0
   shared_preferences: ^2.0.15
-  dio: ^3.0.10
+  dio: ^4.0.6
   socket_io_client: ^2.0.1
 
 

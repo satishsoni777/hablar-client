@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:take_it_easy/theme/app_theme.dart';
+import 'package:take_it_easy/style/theme/app_theme.dart';
 
 class FollowFollowers extends StatelessWidget {
   const FollowFollowers({Key? key}) : super(key: key);

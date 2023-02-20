@@ -6,6 +6,7 @@ import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
 class GoogleAuthService {
+  
   bool _isUserSignedIn = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -19,8 +20,8 @@ class GoogleAuthService {
       _isUserSignedIn = isSignedIn;
     } else {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser
-          !.authentication; // get the credentials to (access / id token)
+      final GoogleSignInAuthentication googleAuth = await googleUser!
+          .authentication; // get the credentials to (access / id token)
       // to sign in via Firebase Authentication
       final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
@@ -41,7 +42,7 @@ class GoogleAuthService {
 
   signOut() async {
     final result = await _googleSignIn.signOut();
-    await result.clearAuthCache();
+    result?.clearAuthCache();
     await _auth.signOut();
   }
 

@@ -7,5 +7,18 @@
     // Remove from file watching
     "files.watcherExclude": {
       "**/.fvm": true
+    },
+    "dart.lineLength": 1,  // comment out this line
+    "[dart]": {
+      "editor.defaultFormatter": "Dart-Code.dart-code",
+      "editor.formatOnSave": true,
+      "editor.formatOnType": true,
+      "editor.rulers": [500],
+      "editor.selectionHighlight": false,
+      "editor.suggest.snippetsPreventQuickSuggestions": false,
+      "editor.suggestSelection": "first",
+      "editor.tabCompletion": "onlySnippets",
+      "editor.wordBasedSuggestions": false,
+      "editor.wordWrapColumn": 100000,
     }
   }

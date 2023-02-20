@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -10,8 +15,9 @@ class SocketIO extends AppWebSocket {
     try {
       if (socket?.connected ?? false) return;
       socket?.close();
-      final arg = IO.OptionBuilder()
-          .setTransports(['websocket']) // for Flutter or Dart VM
+      final arg = IO.OptionBuilder().setQuery({
+        "email_id": "satk754@gmail.com"
+      }).setTransports(['websocket']) // for Flutter or Dart VM
           // optional
           .build();
       socket = IO.io(Flavor.internal().baseUrl, arg);
@@ -22,9 +28,8 @@ class SocketIO extends AppWebSocket {
     // socket = socket?.connect();
     socket?.onConnect((_) {
       print('connected');
-      // socket.emit('msg', 'test');
     });
-
+    _onMessage();
     socket?.onDisconnect((_) => print('disconnect'));
     // socket?.on('fromServer', (_) => print(_));
   }
@@ -37,14 +42,18 @@ class SocketIO extends AppWebSocket {
 
   @override
   Future<bool>? sendMessage(Map<String, dynamic> message) {
-    socket?.emit("message", "gdfhjdfgh");
+    message["email_id"] = "satk754@gmail.com";
+    socket?.emit("voiceMessageFromClient", message);
     return Future.value(true);
   }
 
-  @override
-  void onMessage(Function(dynamic p1) call) {
-    socket?.on('event', (data) {
-      call.call(data);
+  void _onMessage() {
+    socket?.on('voiceMessageToClient', (data) {
+      print("on voiceMessageToClient $data");
+      DI.inject<RtcUtil>().play(data);
     });
   }
+
+  @override
+  void onMessage(Function(dynamic p1) call) {}
 }

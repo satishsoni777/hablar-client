@@ -54,10 +54,9 @@ class WebSocketImpl extends AppWebSocket {
 
   @override
   Future<bool>? sendMessage(Map<String, dynamic> message) {
-    // webSocket?.asBroadcastStream();
+    _channel?.sink.add(jsonEncode(message));
     _channel?.sink.add(jsonEncode("asdfasd"));
     return Future.value(true);
-
   }
 
   @override

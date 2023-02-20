@@ -2,14 +2,24 @@ import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
+import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
+import 'package:take_it_easy/utils/call_streaming/flutter_sound.impl.dart';
+import 'package:take_it_easy/utils/call_streaming/mic_stream.dart';
+import 'package:take_it_easy/websocket/socket-io.dart';
+import 'package:take_it_easy/websocket/websocket.i.dart';
 
 class DI {
   DI();
 
   factory DI.initializeDependencies() {
+    
     _addDependency<SharedStorage>(SharedStorageImpl(), true);
     _addDependency<LandingRepo>(LandingRepoImpl(), true);
     _addDependency<RtcBuilder>(RtcBuilderRequest(), true);
+    _addDependency<AppWebSocket>(SocketIO(), true);
+    _addDependency<RtcUtil>(MicStreams(), true);
+    // _addDependency<RtcUtil>(FlutterSoundRecord(), true);
+
     return DI();
   }
 

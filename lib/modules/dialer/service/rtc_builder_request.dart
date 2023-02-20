@@ -1,8 +1,7 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/config/agora_config.dart';
-import 'package:take_it_easy/db/shared_pref.dart';
+import 'package:take_it_easy/storage/db/shared_pref.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
 import 'package:take_it_easy/utils/extensions.dart';
 import 'package:take_it_easy/webservice/http_manager/http_manager.dart';

@@ -6,6 +6,7 @@ import 'package:take_it_easy/config/agora_config.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
+import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
@@ -19,7 +20,7 @@ class AgoraManager extends RtcInterface {
   }
 
   @override
-  Future makeVoiceCall() async {
+  Future makeVoiceCall(UserConnectionData data) async {
     ChannelMediaOptions options = const ChannelMediaOptions(
       clientRoleType: ClientRoleType.clientRoleBroadcaster,
       channelProfile: ChannelProfileType.channelProfileCommunication,
@@ -66,13 +67,11 @@ class AgoraManager extends RtcInterface {
         },
         onUserInfoUpdated: (a, v) {},
         onRtcStats: (r, a) {},
-        onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
+        onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
           debugPrint("User joined channel ${connection.channelId}");
         },
-        onTokenPrivilegeWillExpire:
-            (RtcConnection connection, String token) async {
+        onTokenPrivilegeWillExpire: (RtcConnection connection, String token) async {
           await DI.inject<RtcBuilder>().reGenerateRtcToken();
           debugPrint(
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
@@ -92,10 +91,8 @@ class AgoraManager extends RtcInterface {
     await _engine?.setClientRole(
         role: ClientRoleType.clientRoleAudience,
         options: ClientRoleOptions(
-            audienceLatencyLevel:
-                AudienceLatencyLevelType.audienceLatencyLevelLowLatency));
+            audienceLatencyLevel: AudienceLatencyLevelType.audienceLatencyLevelLowLatency));
     await _enableAudio();
-    await makeVoiceCall();
     _engine!.getAudioMixingCurrentPosition();
   }
 
