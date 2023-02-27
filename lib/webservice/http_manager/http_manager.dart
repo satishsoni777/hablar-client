@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 
-abstract class BaseHttp {}
+abstract class BaseHttp {
+}
 
 abstract class HttpManager extends BaseHttp {
   final Dio http = Dio();
@@ -10,27 +11,24 @@ abstract class HttpManager extends BaseHttp {
   Future<Response> sendRequest(
     HttpMethod httpMethod, {
     Map<String, dynamic>? request,
+    Map<String, dynamic>? queryParameters,
     required String endPoint,
     String? baseUrl,
   }) async {
     setHeaders();
-    return _send(httpMethod, endPoint, baseUrl: baseUrl, request: request);
+    return _send(httpMethod, endPoint, baseUrl: baseUrl, request: request, queryParameters: queryParameters);
   }
 
   void setHeaders({String? arg}) {
     _headers["content-type"] = 'application/json';
   }
 
-  Future<Response> _send(HttpMethod httpMethod, String endPoint,
-      {String? baseUrl, Map<String, dynamic>? request}) async {
+  Future<Response> _send(HttpMethod httpMethod, String endPoint, {String? baseUrl, Map<String, dynamic>? request, Map<String, dynamic>? queryParameters}) async {
     switch (httpMethod) {
       case HttpMethod.GET:
-        return http.get(
-          (baseUrl ?? Flavor.internal().baseUrl) + endPoint,
-        );
+        return http.get((baseUrl ?? Flavor.internal().baseUrl) + endPoint, queryParameters: queryParameters);
       case HttpMethod.POST:
-        return http.post((baseUrl ?? Flavor.internal().baseUrl) + endPoint,
-            data: request);
+        return http.post((baseUrl ?? Flavor.internal().baseUrl) + endPoint, data: request);
       case HttpMethod.DELETE:
         return http.delete(
           (baseUrl ?? Flavor.internal().baseUrl) + endPoint,
@@ -43,4 +41,9 @@ abstract class HttpManager extends BaseHttp {
   }
 }
 
-enum HttpMethod { GET, POST, DELETE, PUT }
+enum HttpMethod {
+  GET,
+  POST,
+  DELETE,
+  PUT
+}

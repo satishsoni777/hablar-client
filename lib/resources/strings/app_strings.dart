@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Endpoints {
- static const  rtcToken='/rtcBuilder/rtcToken';
+  Endpoints._();
+  static const rtcToken = '/rtcBuilder/rtcToken';
+  static const startMeeting = '/api/meeting/start';
+  static const join = "/join";
 }
 
 class AppStrings {
