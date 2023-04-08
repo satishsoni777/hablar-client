@@ -5,7 +5,7 @@ import 'package:take_it_easy/modules/dialer/bloc/rtc_bloc.dart';
 import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
 
-class WebRtcManagerImpl extends RtcInterface {
+class WebRtcManagerImpl {
   WebRtcManagerImpl() {
     init();
   }
@@ -29,8 +29,7 @@ class WebRtcManagerImpl extends RtcInterface {
       'audio': true,
       'video': {
         'mandatory': {
-          'minWidth':
-              '1280', // Provide your own width, height and frame rate here
+          'minWidth': '1280', // Provide your own width, height and frame rate here
           'minHeight': '720',
           'minFrameRate': '30',
         },
@@ -44,7 +43,7 @@ class WebRtcManagerImpl extends RtcInterface {
       _stream?.dispose();
       _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
       _localStream = _stream;
-     final l= _stream?.getAudioTracks().first.enableSpeakerphone(true);
+      final l = _stream?.getAudioTracks().first.enableSpeakerphone(true);
       _localRenderer?.srcObject = _localStream;
     } catch (e) {}
   }

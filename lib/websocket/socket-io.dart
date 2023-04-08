@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
 import 'package:take_it_easy/utils/flovor.dart';
@@ -15,11 +12,9 @@ class SocketIO extends AppWebSocket {
     try {
       if (socket?.connected ?? false) return;
       socket?.close();
-      final arg = IO.OptionBuilder().setQuery({
-        "email_id": "satk754@gmail.com"
-      }).setTransports(['websocket']) // for Flutter or Dart VM
-          // optional
-          .build();
+      final arg = IO.OptionBuilder().setTransports([
+        'websocket'
+      ]).build();
       socket = IO.io(Flavor.internal().baseUrl, arg);
     } catch (_) {
       print('error $_');
@@ -52,6 +47,10 @@ class SocketIO extends AppWebSocket {
       print("on voiceMessageToClient $data");
       DI.inject<RtcUtil>().play(data);
     });
+  }
+
+  void _sendEvent(Map<String, dynamic> message) {
+    final eventType = message["event"];
   }
 
   @override

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/config/agora_config.dart';
 import 'package:take_it_easy/storage/db/shared_pref.dart';
@@ -21,14 +20,12 @@ class RtcBuilderRequest extends HttpManager implements RtcBuilder {
       );
       token = AgoraConfig.tempToken;
       if (token != null || token != '') return token;
-      final res = await this.sendRequest(HttpMethod.POST,
-          endPoint: Endpoints.rtcToken,
-          request: {"channelName": AgoraConfig.channelName});
-      debugPrint("RtcBuilderRequest getRtcToken${res.data} ");
+      final res = await this.sendRequest(HttpMethod.POST, endPoint: Endpoints.rtcToken, request: {
+        "channelName": AgoraConfig.channelName
+      });
       if (res.isSuccesFull()) {
-        await SharedPrefImpl.instance
-            .setString(SharPrefKeys.rtcToken, res.data["rtcToken"]);
-        return res.data["rtcToken"];
+        await SharedPrefImpl.instance.setString(SharPrefKeys.rtcToken, "");
+        return "";
       } else
         throw res;
     } catch (_) {

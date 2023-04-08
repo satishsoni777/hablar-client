@@ -3,7 +3,9 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
 import 'package:take_it_easy/components/app_alert.dart';
+import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/components/app_padding.dart';
+import 'package:take_it_easy/components/app_text_f.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/images/images.dart';
 import 'package:take_it_easy/style/spacing.dart';
@@ -18,6 +20,7 @@ class Authentication extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(ImageAsset.logo),
+              MpbileOtpAith(),
               Spacing.sizeBoxHt100,
               SignInButton(
                 Buttons.FacebookNew,
@@ -33,7 +36,7 @@ class Authentication extends StatelessWidget {
                 onPressed: () async {
                   AppAlert.of(context).dialog();
                   await GoogleAuthService().handleSignIn();
-                   AppAlert.popDialog();
+                  AppAlert.popDialog();
                   Navigator.pushReplacementNamed(context, Routes.home);
                 },
                 mini: false,
@@ -41,6 +44,77 @@ class Authentication extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MpbileOtpAith extends StatefulWidget {
+  MpbileOtpAith({super.key});
+
+  @override
+  State<MpbileOtpAith> createState() => _MpbileOtpAithState();
+}
+
+class _MpbileOtpAithState extends State<MpbileOtpAith> {
+  final TextEditingController controller = TextEditingController();
+  final TextEditingController controllerOTP = TextEditingController();
+  bool isLoading = false;
+  bool otpSent = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          !otpSent
+              ? AppTextF(
+                  controller: controller,
+                  textInputType: TextInputType.number,
+                  hintText: "Enter mobile number",
+                )
+              : AppTextF(
+                  controller: controllerOTP,
+                  hintText: "Enter OTP",
+                  textInputType: TextInputType.number,
+                ),
+          SizedBox(
+            height: 20,
+          ),
+          AppButton(
+            onPressed: () async {
+              if (otpSent) {
+                final res = GoogleAuthService().varifyOTP(controllerOTP.text);
+              }
+              setState(() {
+                isLoading = true;
+              });
+              await GoogleAuthService().sendOtp(controller.text,
+                  callback: (re) => {
+                        if (re == OTP_STATUS.SENT)
+                          {
+                            otpSent = true
+                          },
+                        setState(() {
+                          isLoading = false;
+                        }),
+                        print(re)
+                      });
+            },
+            textStyle: TextStyle(color: Colors.white),
+            child: isLoading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ],
+                  )
+                : Text("Submit"),
+          )
+        ],
       ),
     );
   }

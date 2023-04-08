@@ -56,27 +56,6 @@ class _HomePageState extends State<HomePage> {
       HomeTabs.Profile: UserProfile()
     };
     return Scaffold(
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FloatingActionButton(
-                backgroundColor: Colors.red,
-                onPressed: () {
-                  // _voiceCallManager?.makeCall();
-                  // appWebSocket?.sendMessage({"voice-message":"asdf"});
-                  callStreaming?.call();
-                }),
-            FloatingActionButton(
-                backgroundColor: Colors.yellow,
-                onPressed: () {
-                  // appWebSocket?.sendMessage({"voice-message":"asdf"});
-                  (callStreaming)?.stop();
-                }),
-            FloatingActionButton(onPressed: () {
-              callStreaming?.disconnect();
-            }),
-          ],
-        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (value) {

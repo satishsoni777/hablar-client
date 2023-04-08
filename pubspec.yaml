@@ -28,6 +28,8 @@ dependencies:
   mic_stream: ^0.6.2
   flutter_background: ^1.0.0
   web_socket_channel: ^2.3.0
+  loader_overlay: ^2.1.0
+  webrtc_interface: 1.0.11
   # agora_rtc_engine: 
   permission_handler: ^10.2.0
   flutter_sound: ^9.2.13
@@ -36,6 +38,8 @@ dependencies:
   firebase_core: ^2.4.1
   flutter_webrtc_wrapper: 
   provider: ^6.0.5
+  cloud_firestore: 
+  cloud_firestore_web: 
   # sound_stream:
   #     path: ../sound_stream
     

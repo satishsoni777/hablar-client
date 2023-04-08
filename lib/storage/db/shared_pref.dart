@@ -5,8 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class SharedPref {
   static SharedPreferences? sharedPreferences;
   Future<SharedPreferences> get getPref async {
-    sharedPreferences =
-        sharedPreferences ?? (await SharedPreferences.getInstance());
+    sharedPreferences = sharedPreferences ?? (await SharedPreferences.getInstance());
     return sharedPreferences!;
   }
 
@@ -40,5 +39,7 @@ class SharedPrefImpl extends SharedPref {
 }
 
 class SharPrefKeys {
+  SharPrefKeys._();
   static const String rtcToken = "rtc_token";
+  static const roomId = "roomId";
 }

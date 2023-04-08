@@ -1,8 +1,14 @@
 import 'package:take_it_easy/utils/string_utils.dart';
 
-enum Enviroment { LOCALHOST, PROD, DEV }
+enum Enviroment {
+  LOCALHOST,
+  PROD,
+  DEV,
+  RENDER,
+}
 
 class Flavor {
+  // ignore: unused_element
   factory Flavor._() => _instance;
 
   Flavor.internal();
@@ -20,6 +26,10 @@ class Flavor {
         break;
       case Enviroment.DEV:
         _baseUrl = BaseUrl.local;
+        break;
+      case Enviroment.RENDER:
+        _baseUrl = BaseUrl.render;
+        break;
     }
   }
 
