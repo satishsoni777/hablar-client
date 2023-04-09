@@ -2,10 +2,13 @@ import 'dart:async';
 
 // import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
+import 'package:take_it_easy/navigation/routes.dart';
+import 'package:take_it_easy/resources/app_keys.dart';
 
 part 'landing_page_event.dart';
 part 'landing_page_state.dart';

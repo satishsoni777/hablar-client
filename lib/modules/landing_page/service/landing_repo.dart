@@ -9,11 +9,11 @@ class LandingRepoImpl extends LandingRepo {
   final LandingReq landingRepo = LandingReq();
   @override
   Future<bool> isSignIn() async {
-    return await landingRepo.isSignIn();
+    return landingRepo.isSignIn();
   }
-  
+
   @override
-  Future<bool> logOut() async{
+  Future<bool> logOut() async {
     return await landingRepo.logOut();
   }
 }

@@ -42,4 +42,5 @@ class SharPrefKeys {
   SharPrefKeys._();
   static const String rtcToken = "rtc_token";
   static const roomId = "roomId";
+  static const token = "token";
 }

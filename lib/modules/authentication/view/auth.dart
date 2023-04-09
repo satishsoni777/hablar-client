@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
-import 'package:take_it_easy/components/app_alert.dart';
 import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/components/app_padding.dart';
 import 'package:take_it_easy/components/app_text_f.dart';
-import 'package:take_it_easy/navigation/routes.dart';
+import 'package:take_it_easy/modules/authentication/controller/auth_controller.dart';
 import 'package:take_it_easy/resources/images/images.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
-class Authentication extends StatelessWidget {
+class Login extends StatelessWidget {
+  final AuthController _authController = AuthController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +34,7 @@ class Authentication extends StatelessWidget {
               SignInButton(
                 Buttons.GoogleDark,
                 onPressed: () async {
-                  AppAlert.of(context).dialog();
-                  await GoogleAuthService().handleSignIn();
-                  AppAlert.popDialog();
-                  Navigator.pushReplacementNamed(context, Routes.home);
+                  _authController.gLogin();
                 },
                 mini: false,
               ),
@@ -107,8 +104,11 @@ class _MpbileOtpAithState extends State<MpbileOtpAith> {
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(
-                        color: Colors.white,
+                      SizedBox(
+                        height: 30,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   )

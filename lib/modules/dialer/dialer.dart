@@ -3,7 +3,6 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
-import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/webrtc/signaling.dart';
 import 'package:take_it_easy/rtc/webrtc/webrtc_wrapper/rtc_manager.dart';
 
@@ -15,45 +14,38 @@ class Dialer extends StatefulWidget {
 }
 
 class _DialerState extends State<Dialer> {
-  late WebRtcManager rtcInterface;
   Signaling signaling = Signaling();
   RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   String? roomId;
+  TextEditingController textEditingController = TextEditingController(text: '');
+
   @override
   void initState() {
-    _init();
     _localRenderer.initialize();
     _remoteRenderer.initialize();
-    signaling.createRoom(_remoteRenderer);
     signaling.onAddRemoteStream = ((stream) {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
+
     super.initState();
   }
 
   @override
   void dispose() {
-    signaling.hangUp(_localRenderer);
     _localRenderer.dispose();
     _remoteRenderer.dispose();
-    rtcInterface.disconnect();
-    meetingApi.leaveRoom();
     super.dispose();
-  }
-
-  void _init() async {
-    await rtcInterface.initialize();
   }
 
   final MeetingApi meetingApi = DI.inject<MeetingApi>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () async {
-        final roomId = (await meetingApi.joinRandomRoom()).data?.roomId ?? "";
-      }),
+      // floatingActionButton: FloatingActionButton(onPressed: () async {
+      //   final roomId = (await meetingApi.joinRandomRoom()).data?.roomId ?? "";
+      // }),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -69,14 +61,14 @@ class _DialerState extends State<Dialer> {
                     _remoteRenderer,
                     mirror: false,
                     filterQuality: FilterQuality.low,
-                    placeholderBuilder: (c) => SizedBox(
-                        height: 60,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(),
-                          ],
-                        )),
+                    // placeholderBuilder: (c) => SizedBox(
+                    //     height: 60,
+                    //     child: Column(
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         CircularProgressIndicator(),
+                    //       ],
+                    //     )),
                   ),
                   Positioned(
                       child: SizedBox(
@@ -86,7 +78,25 @@ class _DialerState extends State<Dialer> {
                       _localRenderer,
                       mirror: false,
                     ),
-                  ))
+                  )),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: Text("Create Room"),
+                        onPressed: () {
+                          signaling.createRoom(_remoteRenderer);
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Join"),
+                        onPressed: () {
+                          signaling.joinRoom("J2Z2zLBC5N5Pa2xTnHsB", _remoteRenderer);
+                        },
+                      )
+                    ],
+                  )
                 ],
               );
             });

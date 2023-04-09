@@ -1,10 +1,12 @@
-import 'package:take_it_easy/webservice/base_request.dart';
+import 'package:take_it_easy/auth/google_auth.dart';
+import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
 
-class LandingReq extends BaseRequest {
+class LandingReq extends HttpManager with FlutterAuth {
   Future<bool> isSignIn() async {
-    return await this.isSignInGoogle();
+    return GoogleAuthService().isSignInGoogle();
   }
-  Future<bool> logOut()async{
-    return await this.signOut();
+
+  Future<bool> logOut() async {
+    return logout();
   }
 }

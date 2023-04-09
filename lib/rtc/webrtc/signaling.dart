@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
 
 typedef void StreamStateCallback(MediaStream stream);
 
-class Signaling extends ChangeNotifier {
+class Signaling with ChangeNotifier {
   Map<String, dynamic> configuration = {
     'iceServers': [
       {
@@ -18,7 +16,7 @@ class Signaling extends ChangeNotifier {
       }
     ]
   };
-  final MeetingApi meetingApi = DI.inject<MeetingApi>();
+
   RTCPeerConnection? peerConnection;
   MediaStream? localStream;
   MediaStream? remoteStream;
@@ -27,12 +25,8 @@ class Signaling extends ChangeNotifier {
   StreamStateCallback? onAddRemoteStream;
 
   Future<String> createRoom(RTCVideoRenderer remoteRenderer) async {
-    // Loader.showLoader();
-    final roomId = (await meetingApi.joinRandomRoom()).data?.roomId ?? "";
-    this.roomId = roomId;
-    final FirebaseFirestore db = FirebaseFirestore.instance;
-    final DocumentReference roomRef = db.collection('rooms').doc(roomId);
-    // Loader.hideLoader();
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    DocumentReference roomRef = db.collection('rooms').doc();
 
     print('Create PeerConnection with configuration: $configuration');
 
@@ -63,6 +57,7 @@ class Signaling extends ChangeNotifier {
     };
 
     await roomRef.set(roomWithOffer);
+    var roomId = roomRef.id;
     print('New room created with SDK offer. Room ID: $roomId');
     currentRoomText = 'Current room is $roomId - You are the caller!';
     // Created a Room
@@ -110,13 +105,10 @@ class Signaling extends ChangeNotifier {
       });
     });
     // Listen for remote ICE candidates above
-
     return roomId;
   }
 
-  Future<void> joinRoom(RTCVideoRenderer remoteVideo) async {
-    final roomId = (await meetingApi.joinRandomRoom()).data?.roomId ?? "";
-    this.roomId = roomId;
+  Future<void> joinRoom(String roomId, RTCVideoRenderer remoteVideo) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
     DocumentReference roomRef = db.collection('rooms').doc('$roomId');
     var roomSnapshot = await roomRef.get();

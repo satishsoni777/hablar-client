@@ -17,14 +17,14 @@ class Routes {
   static const voiceCall = '/voice_call';
   static const createStreamData = '/CreateStreamData';
   static const home = '/home';
-  static const auth = '/auth';
+  static const auth = '/login';
   static const landingPage = '/landing_page';
   static const dialer = '/dialer';
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case auth:
         return MaterialPageRoute(builder: (c) {
-          return Authentication();
+          return Login();
         });
       case home:
         return MaterialPageRoute(builder: (c) {
@@ -41,7 +41,7 @@ class Routes {
         Routes.voiceCall: (context) => VoiceCall(),
         Routes.videoCall: (context) => VideoCall(),
         Routes.home: (C) => HomePage(),
-        Routes.auth: (C) => Authentication(),
+        Routes.auth: (C) => Login(),
         Routes.landingPage: (c) => BlocProvider<LandingPageBloc>(
               create: (c) => LandingPageBloc(),
               child: LandingPage(),

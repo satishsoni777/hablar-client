@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/components/loader_widget.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/flutter_auth.dart';
 import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/modules/profile/widgets/follow_followers.dart';
@@ -10,8 +9,9 @@ import 'package:take_it_easy/modules/profile/widgets/profile_tile.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
+import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
 
-class UserProfile extends StatelessWidget with FlutterAtuh {
+class UserProfile extends StatelessWidget with FlutterAuth {
   const UserProfile({Key? key}) : super(key: key);
 
   @override
@@ -135,7 +135,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
       padding: const EdgeInsets.all(Spacing.marginLarge),
       child: AppButton(
         onPressed: () {
-          logOut();
+          logout();
         },
         buttonType: ButtonType.Border,
         text: "Log out",
@@ -172,8 +172,7 @@ class UserProfile extends StatelessWidget with FlutterAtuh {
 }
 
 class DetailsTile extends StatelessWidget {
-  const DetailsTile({Key? key, this.icon, this.text2, this.title})
-      : super(key: key);
+  const DetailsTile({Key? key, this.icon, this.text2, this.title}) : super(key: key);
   final String? title;
   final String? text2;
   final Widget? icon;

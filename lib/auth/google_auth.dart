@@ -3,12 +3,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/navigation/routes.dart';
-import 'package:take_it_easy/resources/app_keys.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
 class GoogleAuthService {
   bool _isUserSignedIn = false;
   static String id = "";
+  static final GoogleAuthService _singleton = GoogleAuthService._internal();
+  factory GoogleAuthService() {
+    return _singleton;
+  }
+  GoogleAuthService._internal();
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   Future<bool> handleSignIn() async {
@@ -59,16 +63,17 @@ class GoogleAuthService {
     return credential;
   }
 
-  Future<bool> signOut() async {
+  Future<bool> logout() async {
     final result = await _googleSignIn.signOut();
     result?.clearAuthCache();
     await _auth.signOut();
-    navigatorKey.currentState?.popUntil((route) => false);
     return true;
   }
 
   Future<bool> isSignInGoogle() async {
-    return await _googleSignIn.isSignedIn();
+    final res = await _googleSignIn.isSignedIn();
+    print("res, $res");
+    return res;
   }
 }
 

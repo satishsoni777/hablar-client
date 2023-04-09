@@ -20,10 +20,7 @@ class AppAlert {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                      child: CircularProgressIndicator(),
-                      height: 40.0,
-                      width: 40.0),
+                  SizedBox(child: CircularProgressIndicator(), height: 40.0, width: 40.0),
                 ],
               );
         });

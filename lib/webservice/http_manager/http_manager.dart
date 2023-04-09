@@ -1,11 +1,16 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:take_it_easy/auth/google_auth.dart';
+import 'package:take_it_easy/components/loader.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/navigation/routes.dart';
+import 'package:take_it_easy/resources/app_keys.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 
 abstract class BaseHttp {}
 
-abstract class HttpManager extends BaseHttp {
+abstract class HttpManager extends BaseHttp with FlutterAuth {
   final Dio http = Dio();
 
   Map<String, dynamic> _headers = {};
@@ -43,6 +48,31 @@ abstract class HttpManager extends BaseHttp {
         return http.put((baseUrl ?? Flavor.internal().baseUrl) + endPoint);
     }
   }
+}
+
+mixin FlutterAuth {
+  Future<bool> logout({LogOutType logOutType = LogOutType.FIREBASE}) async {
+    AppLoader.showLoader();
+    if (logOutType == LogOutType.FIREBASE) {
+      try {
+        final result = await DI.inject<GoogleAuthService>().logout();
+        navigatorKey.currentState?.popUntil((route) {
+          return route.settings.name == Routes.auth;
+        });
+        AppLoader.hideLoader();
+        return result;
+      } catch (_) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+enum LogOutType {
+  GMAIL,
+  OTP,
+  FIREBASE
 }
 
 enum HttpMethod {

@@ -42,7 +42,7 @@ class MeetingServiceImpl extends HttpManager implements MeetingApi {
       final response = await sendRequest(HttpMethod.POST, endPoint: Endpoints.joinRandomRoom, request: req);
       if (response.isSuccesFull()) {
         res = RoomsResponse.fromJson(jsonDecode(response.data));
-        await DI.inject<SharedPref>().setString("roomId", res.data?.roomId ?? '');
+        await DI.inject<SharedPref>().setString(SharPrefKeys.roomId, res.data?.roomId ?? '');
       }
     } on DioError catch (e) {
       throw e;
