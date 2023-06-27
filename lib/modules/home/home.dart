@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/history_page/call_history.dart';
 import 'package:take_it_easy/modules/home/initiate_call_page.dart';

@@ -5,6 +5,7 @@ enum Enviroment {
   PROD,
   DEV,
   RENDER,
+  STAGE
 }
 
 class Flavor {
@@ -30,6 +31,8 @@ class Flavor {
       case Enviroment.RENDER:
         _baseUrl = BaseUrl.render;
         break;
+      case Enviroment.STAGE:
+        _baseUrl = BaseUrl.stage;
     }
   }
 

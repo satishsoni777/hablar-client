@@ -22,20 +22,32 @@ class Routes {
   static const dialer = '/dialer';
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
+      case root:
+        return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (c) {
+              return BlocProvider<LandingPageBloc>(
+                create: (c) => LandingPageBloc(),
+                child: LandingPage(),
+              );
+            });
+
       case auth:
-        return MaterialPageRoute(builder: (c) {
-          return Login();
-        });
+        return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (c) {
+              return Login();
+            });
       case home:
-        return MaterialPageRoute(builder: (c) {
-          return HomePage();
-        });
+        return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (c) {
+              return HomePage();
+            });
       case dialer:
-        return MaterialPageRoute(builder: (c) => Dialer());
+        return MaterialPageRoute(settings: routeSettings, builder: (c) => Dialer());
     }
   }
-
-  static onUnknownRoute(RouteSettings settings) {}
 
   static Map<String, Widget Function(BuildContext context)> getRoutes() => {
         Routes.voiceCall: (context) => VoiceCall(),
@@ -53,5 +65,13 @@ class Routes {
       return auth;
     } else
       return route;
+  }
+
+  static Widget? getLandingPage() {
+    BlocProvider<LandingPageBloc>(
+      create: (c) => LandingPageBloc(),
+      child: LandingPage(),
+    );
+    return null;
   }
 }

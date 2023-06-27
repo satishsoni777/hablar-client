@@ -15,6 +15,16 @@
             ]
         },
         {
+            "name": "karuna-stage-local",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--no-sound-null-safety",
+            ]
+        },
+        {
             "name": "teasy-dev-redmi",
             "request": "launch",
             "type": "dart",

@@ -2,6 +2,10 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:take_it_easy/components/loader.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
+import 'package:take_it_easy/utils/string_utils.dart';
 
 typedef void StreamStateCallback(MediaStream stream);
 
@@ -23,10 +27,17 @@ class Signaling with ChangeNotifier {
   String? roomId;
   String? currentRoomText;
   StreamStateCallback? onAddRemoteStream;
+  final meeting = DI.inject<MeetingApi>();
 
   Future<String> createRoom(RTCVideoRenderer remoteRenderer) async {
+    AppLoader.showLoader();
+    String roomId = (await DI.inject<MeetingApi>().joinRandomRoom()).data?.roomId ?? '';
+    if (isNullOrEmpty(roomId)) {
+      return "";
+    }
+    AppLoader.hideLoader();
     FirebaseFirestore db = FirebaseFirestore.instance;
-    DocumentReference roomRef = db.collection('rooms').doc();
+    DocumentReference roomRef = db.collection('rooms').doc(roomId);
 
     print('Create PeerConnection with configuration: $configuration');
 
@@ -57,7 +68,7 @@ class Signaling with ChangeNotifier {
     };
 
     await roomRef.set(roomWithOffer);
-    var roomId = roomRef.id;
+    roomId = roomRef.id;
     print('New room created with SDK offer. Room ID: $roomId');
     currentRoomText = 'Current room is $roomId - You are the caller!';
     // Created a Room
@@ -108,8 +119,9 @@ class Signaling with ChangeNotifier {
     return roomId;
   }
 
-  Future<void> joinRoom(String roomId, RTCVideoRenderer remoteVideo) async {
-    FirebaseFirestore db = FirebaseFirestore.instance;
+  Future<void> joinRoom(RTCVideoRenderer remoteVideo) async {
+    final roomId = await meeting.joinRandomRoom();
+    final FirebaseFirestore db = FirebaseFirestore.instance;
     DocumentReference roomRef = db.collection('rooms').doc('$roomId');
     var roomSnapshot = await roomRef.get();
     print('Got room ${roomSnapshot.exists}');
@@ -138,6 +150,7 @@ class Signaling with ChangeNotifier {
 
       peerConnection?.onTrack = (RTCTrackEvent event) {
         print('Got remote track: ${event.streams[0]}');
+
         event.streams[0].getTracks().forEach((track) {
           print('Add a track to the remoteStream: $track');
           remoteStream?.addTrack(track);
@@ -190,18 +203,25 @@ class Signaling with ChangeNotifier {
   ) async {
     var stream = await navigator.mediaDevices.getUserMedia({
       'video': true,
-      'audio': false
+      'audio': true
     });
 
     localVideo.srcObject = stream;
     localStream = stream;
-
     remoteVideo.srcObject = await createLocalMediaStream('key');
+    await createRoom(remoteVideo);
   }
 
   Future<void> hangUp(RTCVideoRenderer localVideo) async {
-    List<MediaStreamTrack> tracks = localVideo.srcObject!.getTracks();
-    tracks.forEach((track) {
+    AppLoader.hideLoader();
+    final MeetingApi meetingApi = DI.inject<MeetingApi>();
+    try {
+      final res = await meetingApi.leaveRoom();
+    } catch (_) {
+      print(_);
+    }
+    final List<MediaStreamTrack>? tracks = localVideo.srcObject?.getTracks();
+    tracks?.forEach((track) {
       track.stop();
     });
 
@@ -248,5 +268,26 @@ class Signaling with ChangeNotifier {
       onAddRemoteStream?.call(stream);
       remoteStream = stream;
     };
+  }
+
+  void stop() {
+    try {
+      peerConnection?.onTrack = (a) => {
+            a.streams.forEach((element) {
+              element.getVideoTracks().forEach((element) {
+                element.enabled = false;
+                element.stop();
+              });
+            }),
+            a.streams.forEach((element) {
+              element.getAudioTracks().forEach((element) {
+                element.enabled = false;
+                element.stop();
+              });
+            })
+          };
+    } catch (_) {
+      print(_);
+    }
   }
 }

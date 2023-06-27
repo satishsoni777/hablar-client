@@ -14,6 +14,7 @@ class AppAlert {
     _hasLoader = true;
     await showDialog(
         context: _context!,
+        barrierDismissible: false,
         builder: (c) {
           return child ??
               Column(

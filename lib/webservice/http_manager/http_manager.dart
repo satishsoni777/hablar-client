@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
 import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
@@ -29,7 +30,6 @@ abstract class HttpManager extends BaseHttp with FlutterAuth {
 
   void _setHeaders({String? arg, String? baseUrl}) {
     http.options
-      ..connectTimeout = 10000
       ..baseUrl = (Flavor.internal().baseUrl)
       ..headers = {
         "Content-Type": "application/json"
@@ -55,11 +55,9 @@ mixin FlutterAuth {
     AppLoader.showLoader();
     if (logOutType == LogOutType.FIREBASE) {
       try {
-        final result = await DI.inject<GoogleAuthService>().logout();
-        navigatorKey.currentState?.popUntil((route) {
-          return route.settings.name == Routes.auth;
-        });
+        final result = await GoogleAuthService().logout();
         AppLoader.hideLoader();
+        navigatorKey.currentState?.pushReplacementNamed(Routes.landingPage).then((value) => null);
         return result;
       } catch (_) {
         return false;

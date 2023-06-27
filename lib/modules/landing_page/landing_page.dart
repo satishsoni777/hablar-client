@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_type_check
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/components/loader_widget.dart';
@@ -23,8 +25,8 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       body: BlocConsumer<LandingPageBloc, LandingPageDateState>(
         listener: (curr, prev) {
-          if (curr is LandingPageDateState) {
-            final sate = curr as LandingPageDateState;
+          if (prev is LandingPageDateState) {
+            final sate = prev;
             if (sate.isValidate) {
               Navigator.pushReplacementNamed(context, Routes.home);
             } else {
@@ -32,7 +34,7 @@ class _LandingPageState extends State<LandingPage> {
             }
           }
         },
-        buildWhen: (prev, curr) => false,
+        buildWhen: (prev, curr) => true,
         builder: (context, state) {
           return ProgressLoader();
         },

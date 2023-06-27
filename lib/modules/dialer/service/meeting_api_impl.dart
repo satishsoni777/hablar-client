@@ -5,6 +5,7 @@ import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/model/random_rooms.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
 import 'package:take_it_easy/storage/db/shared_pref.dart';
+import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/extensions.dart';
 import 'package:take_it_easy/utils/utils.dart';
 import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
@@ -42,7 +43,7 @@ class MeetingServiceImpl extends HttpManager implements MeetingApi {
       final response = await sendRequest(HttpMethod.POST, endPoint: Endpoints.joinRandomRoom, request: req);
       if (response.isSuccesFull()) {
         res = RoomsResponse.fromJson(jsonDecode(response.data));
-        await DI.inject<SharedPref>().setString(SharPrefKeys.roomId, res.data?.roomId ?? '');
+        await DI.inject<SharedStorage>().setStringPreference(StorageKey.roomId, res.data?.roomId ?? '');
       }
     } on DioError catch (e) {
       throw e;
@@ -52,7 +53,7 @@ class MeetingServiceImpl extends HttpManager implements MeetingApi {
 
   Future<dynamic> leaveRoom() async {
     final userId = await Utils.userId();
-    final roomId = await DI.inject<SharedPref>().getString(SharPrefKeys.roomId);
+    final roomId = await DI.inject<SharedStorage>().getStringPreference(StorageKey.roomId);
     var response;
     final req = {
       "userId": userId

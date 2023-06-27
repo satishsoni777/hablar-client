@@ -33,7 +33,7 @@ abstract class SharedStorage {
     await preferences.setString(key, value);
   }
 
-  Future<String?> getStringPreference({String? key}) async {
+  Future<String?> getStringPreference(String? key) async {
     return (await _getPreferences).getString(key!);
   }
 
@@ -84,7 +84,12 @@ class SharedStorageImpl extends SharedStorage {
 
   @override
   Future<String> getInitialRoute() async {
-    return await getStringPreference(key: StorageKey.route) ?? '';
+    return await getStringPreference(StorageKey.route) ?? '';
+  }
+
+  Future<dynamic> getJsonObject(String key) async {
+    final result = await this.getStringPreference(key);
+    return jsonDecode(result ?? '');
   }
 }
 
@@ -93,4 +98,7 @@ class StorageKey {
   static final gmailUserDataKey = 'gmail_auth_user_data';
   static final route = 'route';
   static final userId = "userId";
+  static const String rtcToken = "rtc_token";
+  static const roomId = "roomId";
+  static const token = "token";
 }

@@ -22,18 +22,25 @@ class RoomsResponse {
 class Data {
   String? createdAt;
   String? roomId;
+  String? userId;
 
-  Data({this.createdAt, this.roomId});
+  Data({
+    this.createdAt,
+    this.roomId,
+    this.userId,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     createdAt = json['createdAt'];
     roomId = json['roomId'];
+    userId = json["userId"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['createdAt'] = this.createdAt;
     data['roomId'] = this.roomId;
+    data["userId"] = this.userId;
     return data;
   }
 }

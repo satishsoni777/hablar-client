@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
 import 'package:take_it_easy/rtc/webrtc/signaling.dart';
-import 'package:take_it_easy/rtc/webrtc/webrtc_wrapper/rtc_manager.dart';
 
 class Dialer extends StatefulWidget {
   const Dialer({Key? key}) : super(key: key);
@@ -28,14 +27,13 @@ class _DialerState extends State<Dialer> {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
-
+    signaling.openUserMedia(_localRenderer, _remoteRenderer);
     super.initState();
   }
 
   @override
   void dispose() {
-    _localRenderer.dispose();
-    _remoteRenderer.dispose();
+    signaling.hangUp(_localRenderer);
     super.dispose();
   }
 
@@ -92,7 +90,7 @@ class _DialerState extends State<Dialer> {
                       TextButton(
                         child: Text("Join"),
                         onPressed: () {
-                          signaling.joinRoom("J2Z2zLBC5N5Pa2xTnHsB", _remoteRenderer);
+                          signaling.joinRoom(_remoteRenderer);
                         },
                       )
                     ],

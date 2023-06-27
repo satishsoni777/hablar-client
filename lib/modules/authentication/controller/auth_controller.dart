@@ -25,4 +25,8 @@ class AuthController extends ChangeNotifier {
     await GoogleAuthService().sendOtp(n);
     notifyListeners();
   }
+
+  Future<void> logout() async {
+    GoogleAuthService().logout();
+  }
 }

@@ -34,6 +34,7 @@ class GoogleAuthService {
       else
         _isUserSignedIn = true;
     }
+    await user.getIdToken();
     if (_isUserSignedIn) {
       await DI.inject<SharedStorage>().setUserData(user);
       await DI.inject<SharedStorage>().setInitialRoute(route: Routes.home);
