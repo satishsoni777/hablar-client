@@ -1,4 +1,5 @@
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/enums/socket-io.dart';
 import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
@@ -7,7 +8,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 class SocketIO extends AppWebSocket {
   IO.Socket? socket;
   @override
-  void connect(String url, {String? header}) {
+  void connect({String? header}) {
     // Dart client
     try {
       if (socket?.connected ?? false) return;
@@ -22,11 +23,10 @@ class SocketIO extends AppWebSocket {
 
     // socket = socket?.connect();
     socket?.onConnect((_) {
-      print('connected');
+      print('Socket ios connected');
     });
     _onMessage();
     socket?.onDisconnect((_) => print('disconnect'));
-    // socket?.on('fromServer', (_) => print(_));
   }
 
   @override
@@ -36,23 +36,34 @@ class SocketIO extends AppWebSocket {
   }
 
   @override
-  Future<bool>? sendMessage(Map<String, dynamic> message) {
+  Future<bool>? sendMessage(Map<String, dynamic> message, {String? meetingPayloadEnum}) {
+    switch (meetingPayloadEnum) {
+      case MeetingPayloadEnum.OFFER_SDP:
+        socket?.emit(MeetingPayloadEnum.OFFER_SDP, message);
+        break;
+      case MeetingPayloadEnum.JOIN_RANDOM_CALL:
+        socket?.emit(MeetingPayloadEnum.OFFER_SDP, message);
+        break;
+    }
     message["email_id"] = "satk754@gmail.com";
     socket?.emit("voiceMessageFromClient", message);
     return Future.value(true);
   }
 
   void _onMessage() {
-    socket?.on('voiceMessageToClient', (data) {
+    socket?.on(MeetingPayloadEnum.ANSWER_SDP, (data) {
       print("on voiceMessageToClient $data");
-      DI.inject<RtcUtil>().play(data);
+    });
+    socket?.on(MeetingPayloadEnum.USER_LEFTL, (data) {
+      print("on voiceMessageToClient $data");
+    });
+    socket?.on(MeetingPayloadEnum.USER_JOINED, (data) {
+      print("on voiceMessageToClient $data");
     });
   }
 
-  void _sendEvent(Map<String, dynamic> message) {
-    final eventType = message["event"];
-  }
-
   @override
-  void onMessage(Function(dynamic p1) call) {}
+  void onMessage(Function(dynamic p1) data, {String? meetingPayloadEnum}) {
+    // TODO: implement onMessage
+  }
 }

@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     _rtcInterface = WebRtcManager();
     callStreaming = DI.inject<RtcUtil>();
     appWebSocket = DI.inject<AppWebSocket>();
-    // appWebSocket?.connect("ws://localhost:8082");
+    appWebSocket?.connect();
     // agoraVoiceManager = AgoraVoiceManager();
     // agoraVoiceManager.initPlatformState();
     super.initState();

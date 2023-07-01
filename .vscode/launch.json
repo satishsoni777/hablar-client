@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "karuna-dev-local",
+            "name": "dev",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
