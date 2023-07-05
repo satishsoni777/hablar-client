@@ -59,8 +59,7 @@ class _MyHomePageState extends State<WebRtcCall> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  roomId = await signaling.createRoom(_remoteRenderer);
-                  textEditingController.text = roomId!;
+                  signaling.createRoom();
                   setState(() {});
                 },
                 child: Text("Create room"),
@@ -71,7 +70,7 @@ class _MyHomePageState extends State<WebRtcCall> {
               ElevatedButton(
                 onPressed: () {
                   // Add roomId
-                  signaling.joinRoom(_remoteRenderer);
+                  signaling.joinRoom();
                 },
                 child: Text("Join room"),
               ),

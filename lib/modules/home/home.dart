@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/enums/socket-io-events.dart';
 import 'package:take_it_easy/modules/history_page/call_history.dart';
 import 'package:take_it_easy/modules/home/initiate_call_page.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
@@ -27,12 +28,14 @@ class _HomePageState extends State<HomePage> {
   @override
   initState() {
     _rtcInterface = WebRtcManager();
-    callStreaming = DI.inject<RtcUtil>();
     appWebSocket = DI.inject<AppWebSocket>();
     appWebSocket?.connect();
-    // agoraVoiceManager = AgoraVoiceManager();
-    // agoraVoiceManager.initPlatformState();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -51,6 +54,14 @@ class _HomePageState extends State<HomePage> {
       HomeTabs.Profile: UserProfile()
     };
     return Scaffold(
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          appWebSocket?.sendMessage({
+            "userId": "2222",
+            "countryCode": "IN",
+            "stateCode": "KR",
+            "type": "join-random-call"
+          }, meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
+        }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (value) {

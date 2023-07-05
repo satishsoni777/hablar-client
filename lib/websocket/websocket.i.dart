@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:take_it_easy/enums/socket-io.dart';
+import 'package:take_it_easy/enums/socket-io-events.dart';
 import 'package:web_socket_channel/io.dart';
 
 abstract class AppWebSocket {
@@ -10,9 +11,31 @@ abstract class AppWebSocket {
 
   Function(WebSocketConnectionStatus)? status;
 
-  void onMessage(Function(dynamic) data, {String? meetingPayloadEnum});
+  Function(dynamic)? onMessage;
+
+  Function(dynamic)? userJoined;
+
+  Function(dynamic)? roomCreated;
+
+  Function(dynamic)? join;
+
+  Function(dynamic)? answerSdp;
+
+  Function(dynamic)? offerSdp;
+
+  Function(dynamic)? userLeft;
+
+  Function(dynamic)? onConnected;
+
+  bool get isConnected;
+
+  void leaveRoom(Map<String, dynamic> message);
+
+  // ignore: close_sinks
 
   Future<bool>? sendMessage(Map<String, dynamic> message, {String? meetingPayloadEnum});
+
+  Future<void> joinRandomCall();
 
   void close();
 }

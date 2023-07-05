@@ -1,6 +1,6 @@
 import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
-import 'package:take_it_easy/modules/authentication/service/authentication.dart';
+import 'package:take_it_easy/modules/signin/service/authentication.dart';
 import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
 import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';

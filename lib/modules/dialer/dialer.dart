@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
 import 'package:take_it_easy/rtc/webrtc/signaling.dart';
+import 'package:take_it_easy/websocket/websocket.i.dart';
 
 class Dialer extends StatefulWidget {
   const Dialer({Key? key}) : super(key: key);
@@ -18,26 +19,42 @@ class _DialerState extends State<Dialer> {
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   String? roomId;
   TextEditingController textEditingController = TextEditingController(text: '');
-
+  final AppWebSocket appWebSocket = DI.inject<AppWebSocket>();
+  bool joinReqsent = false;
   @override
   void initState() {
+    init();
+    super.initState();
+  }
+
+  void init() async {
     _localRenderer.initialize();
     _remoteRenderer.initialize();
+    DI.inject<AppWebSocket>().onConnected = (a) async {
+      await signaling.openUserMedia(_localRenderer, _remoteRenderer);
+      signaling.joinRandomCall();
+      joinReqsent = true;
+    };
+    if (DI.inject<AppWebSocket>().isConnected && !joinReqsent) {
+      await signaling.openUserMedia(_localRenderer, _remoteRenderer);
+      signaling.joinRandomCall();
+    }
     signaling.onAddRemoteStream = ((stream) {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
-    signaling.openUserMedia(_localRenderer, _remoteRenderer);
-    super.initState();
   }
 
   @override
   void dispose() {
     signaling.hangUp(_localRenderer);
+    signaling.stop();
+    appWebSocket.leaveRoom({
+      "roomId": signaling.roomId
+    });
     super.dispose();
   }
 
-  final MeetingApi meetingApi = DI.inject<MeetingApi>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,49 +69,38 @@ class _DialerState extends State<Dialer> {
           value: signaling,
           builder: (context, snapshot) {
             return Consumer<Signaling>(builder: (context, snapshot, a) {
-              return Stack(
-                alignment: Alignment.bottomRight,
+              return Column(
+                // alignment: Alignment.bottomRight,
                 children: [
-                  RTCVideoView(
-                    _remoteRenderer,
-                    mirror: false,
-                    filterQuality: FilterQuality.low,
-                    // placeholderBuilder: (c) => SizedBox(
-                    //     height: 60,
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         CircularProgressIndicator(),
-                    //       ],
-                    //     )),
-                  ),
-                  Positioned(
+                  RotatedBox(
+                    quarterTurns: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
                       child: SizedBox(
-                    height: 200,
-                    width: 100,
-                    child: RTCVideoView(
-                      _localRenderer,
-                      mirror: false,
-                    ),
-                  )),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        child: Text("Create Room"),
-                        onPressed: () {
-                          signaling.createRoom(_remoteRenderer);
-                        },
+                        height: MediaQuery.of(context).size.height * .9,
+                        width: MediaQuery.of(context).size.width * .9,
+                        child: RTCVideoView(
+                          _localRenderer,
+                          mirror: true,
+                          filterQuality: FilterQuality.low,
+                          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                        ),
                       ),
-                      TextButton(
-                        child: Text("Join"),
-                        onPressed: () {
-                          signaling.joinRoom(_remoteRenderer);
-                        },
-                      )
-                    ],
-                  )
+                    ),
+                  ),
+                  RotatedBox(
+                    quarterTurns: 1,
+                    child: Container(
+                      height: 200,
+                      width: 100,
+                      child: RTCVideoView(
+                        _localRenderer,
+                        mirror: true,
+                        objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+                        filterQuality: FilterQuality.low,
+                      ),
+                    ),
+                  ),
                 ],
               );
             });

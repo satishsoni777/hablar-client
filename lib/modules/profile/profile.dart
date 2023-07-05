@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/components/loader_widget.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/modules/profile/widgets/follow_followers.dart';
 import 'package:take_it_easy/modules/profile/widgets/profile_tile.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
+import 'package:take_it_easy/utils/string_utils.dart';
 import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
 
 class UserProfile extends StatelessWidget with FlutterAuth {
@@ -25,11 +26,23 @@ class UserProfile extends StatelessWidget with FlutterAuth {
           )
         ],
       ),
-      body: FutureBuilder<GmailUserData>(
+      body: FutureBuilder<UserData>(
           future: DI.inject<SharedStorage>().getUserData(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return ProgressLoader();
+              return Column(
+                children: [
+                  ProgressLoader(),
+                  const Spacer(),
+                  ProfileTile(
+                    title: Text("Log Out"),
+                    onPressed: () {
+                      DI.inject<LandingRepo>().logOut();
+                    },
+                    leading: Icon(Icons.feedback),
+                  ),
+                ],
+              );
             } else {
               final data = snapshot.data;
               return _body(context, gmailUserData: data!);
@@ -38,7 +51,7 @@ class UserProfile extends StatelessWidget with FlutterAuth {
     );
   }
 
-  Widget _body(BuildContext context, {GmailUserData? gmailUserData}) {
+  Widget _body(BuildContext context, {UserData? gmailUserData}) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -51,7 +64,7 @@ class UserProfile extends StatelessWidget with FlutterAuth {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _profileFace(gmailUserData!.photoURL!),
+                _profileFace(gmailUserData?.photoURL ?? ''),
                 SizedBox(
                   width: 20.0,
                 ),
@@ -64,11 +77,11 @@ class UserProfile extends StatelessWidget with FlutterAuth {
                         height: 20.0,
                       ),
                       Text(
-                        gmailUserData.displayName!,
+                        gmailUserData?.displayName ?? "",
                         style: const TextStyle(fontSize: FontSize.title),
                       ),
                       // Text(gmailUserData.email ?? ''),
-                      Text(gmailUserData.phoneNumber ?? ''),
+                      Text(gmailUserData?.phoneNumber ?? ''),
                       FollowFollowers()
                     ],
                   ),
@@ -122,6 +135,7 @@ class UserProfile extends StatelessWidget with FlutterAuth {
   }
 
   Widget _profileFace(String url) {
+    if (isNullOrEmpty(url)) return Container();
     return Container(
       child: CircleAvatar(
         maxRadius: 50.0,

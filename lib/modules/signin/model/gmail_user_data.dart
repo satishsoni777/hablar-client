@@ -1,4 +1,4 @@
-class GmailUserData {
+class UserData {
   String? displayName;
   String? email;
   String? photoURL;
@@ -7,18 +7,20 @@ class GmailUserData {
   bool? emailVerified;
   String? tenantId;
   bool? isAnonymous;
+  String? userId;
+  UserData({
+    this.displayName,
+    this.email,
+    this.photoURL,
+    this.uid,
+    this.phoneNumber,
+    this.emailVerified,
+    this.tenantId,
+    this.isAnonymous,
+    this.userId,
+  });
 
-  GmailUserData(
-      {this.displayName,
-      this.email,
-      this.photoURL,
-      this.uid,
-      this.phoneNumber,
-      this.emailVerified,
-      this.tenantId,
-      this.isAnonymous});
-
-  GmailUserData.fromJson(Map<String, dynamic> json) {
+  UserData.fromJson(Map<String, dynamic> json) {
     displayName = json['displayName'];
     email = json['email'];
     photoURL = json['photoURL'];
@@ -27,6 +29,7 @@ class GmailUserData {
     emailVerified = json['emailVerified'];
     tenantId = json['tenantId'];
     isAnonymous = json['isAnonymous'];
+    userId = json['userId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +42,7 @@ class GmailUserData {
     data['emailVerified'] = this.emailVerified;
     data['tenantId'] = this.tenantId;
     data['isAnonymous'] = this.isAnonymous;
+    data["isAnonymous"] = this.userId;
     return data;
   }
 }

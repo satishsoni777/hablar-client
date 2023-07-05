@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
 abstract class SharedStorage {
@@ -37,8 +37,11 @@ abstract class SharedStorage {
     return (await _getPreferences).getString(key!);
   }
 
-  setUserData(User customerData);
-  Future<GmailUserData> getUserData();
+  setUserData(dynamic customerData);
+
+  void setToken(String token);
+
+  Future<UserData> getUserData();
 
   setInitialRoute({String route});
 
@@ -56,25 +59,20 @@ abstract class SharedStorage {
 
 class SharedStorageImpl extends SharedStorage {
   @override
-  setUserData(User user) async {
-    final data = {
-      "displayName": user.displayName,
-      "email": user.email,
-      'photoURL': user.photoURL,
-      'uid': user.uid,
-      'phoneNumber': user.phoneNumber,
-      'emailVerified': user.emailVerified,
-      'tenantId': user.tenantId,
-      'isAnonymous': user.isAnonymous,
-    };
-    await setObjectPreference(StorageKey.gmailUserDataKey, data);
+  setUserData(dynamic user) async {
+    final result = await setObjectPreference(StorageKey.gmailUserDataKey, user);
+    return result;
   }
 
   @override
-  Future<GmailUserData> getUserData() async {
-    final json = (await getObjectPreference(StorageKey.gmailUserDataKey)) as Map;
-    final data = GmailUserData.fromJson((json as Map<String, dynamic>));
-    return data;
+  Future<UserData> getUserData() async {
+    try {
+      final json = (await getObjectPreference(StorageKey.gmailUserDataKey)) as Map;
+      final data = UserData.fromJson((json as Map<String, dynamic>));
+      return data;
+    } catch (_) {
+      throw _;
+    }
   }
 
   @override
@@ -90,6 +88,11 @@ class SharedStorageImpl extends SharedStorage {
   Future<dynamic> getJsonObject(String key) async {
     final result = await this.getStringPreference(key);
     return jsonDecode(result ?? '');
+  }
+
+  @override
+  void setToken(String token) async {
+    await setStringPreference(StorageKey.token, token);
   }
 }
 

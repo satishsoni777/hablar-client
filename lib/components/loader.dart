@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:take_it_easy/components/app_alert.dart';
-import 'package:take_it_easy/resources/app_keys.dart';
 
 class AppLoader {
   AppLoader._();
@@ -9,7 +8,7 @@ class AppLoader {
   static bool _hasLoader = true;
   static showLoader() {
     _hasLoader = true;
-    AppAlert.of(navigatorKey.currentContext!).dialog();
+    AppAlert.dialog();
     timer?.cancel();
     timer = Timer(const Duration(seconds: 5), () {
       hideLoader();

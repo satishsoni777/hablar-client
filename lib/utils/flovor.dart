@@ -18,6 +18,7 @@ class Flavor {
   static final Flavor _instance = Flavor.internal();
 
   static String? _baseUrl;
+  static String? _wsUrl;
   void setFlavor(Enviroment enviroment) {
     switch (enviroment) {
       case Enviroment.LOCALHOST:
@@ -37,10 +38,15 @@ class Flavor {
         break;
       case Enviroment.AWS:
         _baseUrl = BaseUrl.aws;
+        _wsUrl = BaseUrl.awsWWUrl;
     }
   }
 
   String get baseUrl {
     return _baseUrl!;
+  }
+
+  String get wsUrl {
+    return _wsUrl!;
   }
 }

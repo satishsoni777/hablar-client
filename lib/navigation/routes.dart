@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/authentication/view/auth.dart';
+import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/dialer/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
@@ -20,6 +20,7 @@ class Routes {
   static const auth = '/login';
   static const landingPage = '/landing_page';
   static const dialer = '/dialer';
+
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case root:
@@ -31,7 +32,6 @@ class Routes {
                 child: LandingPage(),
               );
             });
-
       case auth:
         return MaterialPageRoute(
             settings: routeSettings,
@@ -44,6 +44,12 @@ class Routes {
             builder: (c) {
               return HomePage();
             });
+      case auth:
+        return MaterialPageRoute(
+            settings: routeSettings,
+            builder: (c) {
+              return Login();
+            });
       case dialer:
         return MaterialPageRoute(settings: routeSettings, builder: (c) => Dialer());
     }
@@ -52,13 +58,13 @@ class Routes {
   static Map<String, Widget Function(BuildContext context)> getRoutes() => {
         Routes.voiceCall: (context) => VoiceCall(),
         Routes.videoCall: (context) => VideoCall(),
-        Routes.home: (C) => HomePage(),
         Routes.auth: (C) => Login(),
         Routes.landingPage: (c) => BlocProvider<LandingPageBloc>(
               create: (c) => LandingPageBloc(),
               child: LandingPage(),
             )
       };
+
   static Future<String> get initialRoute async {
     final route = await DI.inject<SharedStorage>().getInitialRoute();
     if (isNullOrEmpty(route)) {

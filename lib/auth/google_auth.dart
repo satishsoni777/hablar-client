@@ -15,7 +15,7 @@ class GoogleAuthService {
   GoogleAuthService._internal();
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
-  Future<bool> handleSignIn() async {
+  Future<User?> handleSignIn() async {
     // hold the instance of the authenticated user
     User user; // flag to check whether we're signed in already
     bool isSignedIn = await _googleSignIn.isSignedIn();
@@ -25,7 +25,8 @@ class GoogleAuthService {
       _isUserSignedIn = isSignedIn;
     } else {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication; // get the credentials to (access / id token)
+      if (googleUser == null) return null;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication; // get the credentials to (access / id token)
       // to sign in via Firebase Authentication
       final AuthCredential credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       user = (await _auth.signInWithCredential(credential)).user!;
@@ -35,12 +36,11 @@ class GoogleAuthService {
         _isUserSignedIn = true;
     }
     if (_isUserSignedIn) {
-      await DI.inject<SharedStorage>().setUserData(user);
       await DI.inject<SharedStorage>().setInitialRoute(route: Routes.home);
     } else {
       await DI.inject<SharedStorage>().setInitialRoute(route: '');
     }
-    return _isUserSignedIn;
+    return user;
   }
 
   Future<void> sendOtp(String number, {Function(OTP_STATUS)? callback}) async {
@@ -78,7 +78,4 @@ class GoogleAuthService {
 }
 
 // ignore: camel_case_types
-enum OTP_STATUS {
-  SENT,
-  FAILED
-}
+enum OTP_STATUS { SENT, FAILED }

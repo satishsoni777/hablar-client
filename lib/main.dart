@@ -18,5 +18,3 @@ void main() async {
     runApp(MyApp());
   }, (o, e) {});
 }
-
-// ignore: must_be_immutable

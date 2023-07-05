@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:take_it_easy/resources/app_keys.dart';
 
 class AppAlert {
   AppAlert._();
-  bool _hasLoader = false;
+  static bool _hasLoader = false;
   static AppAlert _instance = AppAlert._();
   static BuildContext? _context;
-  factory AppAlert.of(BuildContext context) {
-    _context = context;
+  factory AppAlert.of({BuildContext? context}) {
+    _context = context ?? navigatorKey.currentContext;
     return _instance;
   }
-  Future<void> dialog({Widget? child}) async {
+  static Future<dynamic> dialog({Widget? child, BuildContext? context}) async {
+    print(child);
+    _context = context ?? navigatorKey.currentContext;
     if (_hasLoader) return;
     _hasLoader = true;
     await showDialog(
@@ -28,9 +31,23 @@ class AppAlert {
   }
 
   static popDialog() async {
-    if (_instance._hasLoader) {
-      _instance._hasLoader = false;
+    if (_hasLoader) {
+      _hasLoader = false;
       Navigator.pop(_context!);
     }
+  }
+}
+
+class DialogHelper {
+  static Future<dynamic> showCommonDialog({
+    Widget? child,
+  }) async {
+    final BuildContext context = navigatorKey.currentContext!;
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return child ?? Container();
+      },
+    );
   }
 }

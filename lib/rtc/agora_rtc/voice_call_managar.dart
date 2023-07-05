@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:take_it_easy/config/agora_config.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
@@ -73,8 +73,7 @@ class AgoraManager extends RtcInterface {
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) async {
           await DI.inject<RtcBuilder>().reGenerateRtcToken();
-          debugPrint(
-              '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
+          debugPrint('[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
         onAudioMixingStateChanged: (a, c) {
           print("### ### # # # ##");
@@ -90,8 +89,7 @@ class AgoraManager extends RtcInterface {
 
     await _engine?.setClientRole(
         role: ClientRoleType.clientRoleAudience,
-        options: ClientRoleOptions(
-            audienceLatencyLevel: AudienceLatencyLevelType.audienceLatencyLevelLowLatency));
+        options: ClientRoleOptions(audienceLatencyLevel: AudienceLatencyLevelType.audienceLatencyLevelLowLatency));
     await _enableAudio();
     _engine!.getAudioMixingCurrentPosition();
   }

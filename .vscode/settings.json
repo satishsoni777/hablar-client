@@ -8,7 +8,7 @@
     "files.watcherExclude": {
       "**/.fvm": true
     },
-    "dart.lineLength": 1,  // comment out this line
+    "dart.lineLength": 150,  // comment out this line
     "[dart]": {
       "editor.defaultFormatter": "Dart-Code.dart-code",
       "editor.formatOnSave": true,

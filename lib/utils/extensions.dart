@@ -7,3 +7,14 @@ extension ResponseExtension on Response {
     return this.statusCode! < 300 && this.statusCode! >= 200;
   }
 }
+
+extension StringExtension on String {
+  // Remove / from Url
+  String get getUrl {
+    String url = this;
+    if (this.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
+    }
+    return url;
+  }
+}

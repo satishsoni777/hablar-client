@@ -45,9 +45,7 @@ class _InitiateCallState extends State<InitiateCall> {
         child: AppButton(
           onPressed: () {
             Navigator.pushNamed(context, Routes.dialer);
-            // _callNow();
           },
-          
           icon: Icon(Icons.call),
           text: "Talk now",
         ),
@@ -72,8 +70,7 @@ class _InitiateCallState extends State<InitiateCall> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: Spacing.defaultMargin),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.defaultMargin),
             child: Text(
               "Select gender to talk",
               style: const TextStyle(fontSize: FontSize.subtitle),
@@ -93,18 +90,10 @@ class _InitiateCallState extends State<InitiateCall> {
                 ],
               ),
               Row(
-                children: [
-                  Radio(
-                      value: 1, groupValue: _radio, onChanged: _onChangeradio),
-                  Text("Male")
-                ],
+                children: [Radio(value: 1, groupValue: _radio, onChanged: _onChangeradio), Text("Male")],
               ),
               Row(
-                children: [
-                  Radio(
-                      value: 2, groupValue: _radio, onChanged: _onChangeradio),
-                  Text("Femele")
-                ],
+                children: [Radio(value: 2, groupValue: _radio, onChanged: _onChangeradio), Text("Femele")],
               ),
               const SizedBox(
                 width: 16,
@@ -113,18 +102,14 @@ class _InitiateCallState extends State<InitiateCall> {
           ),
         ],
       ),
-      decoration: BoxDecoration(
-          border: Border.all(color: AppColors.white),
-          borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(border: Border.all(color: AppColors.white), borderRadius: BorderRadius.circular(10)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation:1.0
-      ),
+      appBar: AppBar(elevation: 1.0),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.marginLarge),
