@@ -127,7 +127,7 @@ class _InitiateCallState extends State<InitiateCall> {
               const SizedBox(
                 height: 20.0,
               ),
-              _selectGender(),
+              // _selectGender(),
               const Spacer(),
               _button(),
               const SizedBox(

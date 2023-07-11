@@ -2,25 +2,25 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
+enum CallStatus { Connecting, Connected, CallEnded, Mute, Disconnected }
+
+enum CallType { Video, Audio }
+
 typedef void StreamStateCallback(MediaStream stream);
+final Map<String, dynamic> configuration = {
+  'iceServers': [
+    {
+      'urls': ['stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302']
+    }
+  ]
+};
 
 class Signaling with ChangeNotifier {
-  Map<String, dynamic> configuration = {
-    'iceServers': [
-      {
-        'urls': [
-          'stun:stun3.l.google.com:19302',
-          'stun:stun4.l.google.com:19302'
-        ]
-      }
-    ]
-  };
-
+  CallStatus callStatus = CallStatus.Connecting;
+  CallType callType = CallType.Audio;
   RTCPeerConnection? peerConnection;
   MediaStream? localStream;
   MediaStream? remoteStream;
@@ -28,7 +28,7 @@ class Signaling with ChangeNotifier {
   String? currentRoomText;
   StreamStateCallback? onAddRemoteStream;
   final AppWebSocket appWebSocket = DI.inject<AppWebSocket>();
-  final meeting = DI.inject<MeetingApi>();
+
   void joinRandomCall() async {
     appWebSocket.joinRandomCall();
     appWebSocket.roomCreated = (data) {
@@ -70,9 +70,7 @@ class Signaling with ChangeNotifier {
     await peerConnection!.setLocalDescription(offer);
     print('Created offer: $offer');
 
-    Map<String, dynamic> roomWithOffer = {
-      'offer': offer.toMap()
-    };
+    Map<String, dynamic> roomWithOffer = {'offer': offer.toMap()};
     await roomRef.set(roomWithOffer);
 
     print('New room created with SDK offer. Room ID: $roomId');
@@ -174,10 +172,7 @@ class Signaling with ChangeNotifier {
       await peerConnection!.setLocalDescription(answer);
 
       Map<String, dynamic> roomWithAnswer = {
-        'answer': {
-          'type': answer.type,
-          'sdp': answer.sdp
-        }
+        'answer': {'type': answer.type, 'sdp': answer.sdp}
       };
 
       await roomRef.update(roomWithAnswer);
@@ -206,14 +201,13 @@ class Signaling with ChangeNotifier {
     RTCVideoRenderer localVideo,
     RTCVideoRenderer remoteVideo,
   ) async {
-    final MediaStream stream = await navigator.mediaDevices.getUserMedia({
-      'video': true,
-      'audio': true
-    });
-
+    final MediaStream stream = await navigator.mediaDevices.getUserMedia({'video': true, 'audio': true});
     localVideo.srcObject = stream;
     localStream = stream;
     remoteVideo.srcObject = await createLocalMediaStream('key');
+    remoteVideo.srcObject?.getVideoTracks().forEach((element) {
+      element.enabled = false;
+    });
     notifyListeners();
   }
 
@@ -233,12 +227,9 @@ class Signaling with ChangeNotifier {
       var roomRef = db.collection('rooms').doc(roomId);
       var calleeCandidates = await roomRef.collection('calleeCandidates').get();
       calleeCandidates.docs.forEach((document) => document.reference.delete());
-
       var callerCandidates = await roomRef.collection('callerCandidates').get();
       callerCandidates.docs.forEach((document) => document.reference.delete());
-      appWebSocket.leaveRoom({
-        "roomId": roomId
-      });
+      appWebSocket.leaveRoom({"roomId": roomId});
       await roomRef.delete();
     }
 
@@ -264,7 +255,6 @@ class Signaling with ChangeNotifier {
     };
 
     peerConnection?.onAddStream = (MediaStream stream) {
-      print("Add remote stream");
       onAddRemoteStream?.call(stream);
       remoteStream = stream;
     };

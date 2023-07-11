@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:take_it_easy/config/agora_config.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
-import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
+import 'package:take_it_easy/modules/calling/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/rtc_interface.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';

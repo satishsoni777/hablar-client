@@ -4,26 +4,22 @@ import 'package:dio/dio.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/model/random_rooms.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
-import 'package:take_it_easy/storage/db/shared_pref.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/extensions.dart';
 import 'package:take_it_easy/utils/utils.dart';
 import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
 
-abstract class MeetingApi {
+abstract class CallingApi {
   Future<dynamic> createRoom();
   Future<RoomsResponse> joinRandomRoom();
   Future<dynamic> startMeeting();
   Future<dynamic> leaveRoom();
 }
 
-class MeetingServiceImpl extends HttpManager implements MeetingApi {
+class CallingService extends HttpManager implements CallingApi {
   Future<Response> startMeeting() async {
     final userId = await Utils.userId();
-    final body = {
-      "hostId": userId,
-      "hostName": ""
-    };
+    final body = {"hostId": userId, "hostName": ""};
     final response = await sendRequest(HttpMethod.POST, endPoint: Endpoints.startMeeting, request: body);
     if (response.isSuccesFull()) {
       return response;
@@ -33,11 +29,7 @@ class MeetingServiceImpl extends HttpManager implements MeetingApi {
 
   Future<RoomsResponse> joinRandomRoom() async {
     final userId = await Utils.userId();
-    final Map<String, dynamic> req = {
-      "userId": userId,
-      "countryCode": "IN",
-      "stateCode": "KR"
-    };
+    final Map<String, dynamic> req = {"userId": userId, "countryCode": "IN", "stateCode": "KR"};
     RoomsResponse? res;
     try {
       final response = await sendRequest(HttpMethod.POST, endPoint: Endpoints.joinRandomRoom, request: req);
@@ -55,12 +47,8 @@ class MeetingServiceImpl extends HttpManager implements MeetingApi {
     final userId = await Utils.userId();
     final roomId = await DI.inject<SharedStorage>().getStringPreference(StorageKey.roomId);
     var response;
-    final req = {
-      "userId": userId
-    };
-    final query = {
-      "roomId": roomId
-    };
+    final req = {"userId": userId};
+    final query = {"roomId": roomId};
     try {
       response = await sendRequest(HttpMethod.POST, endPoint: Endpoints.leaveRoom, queryParameters: query, request: req);
     } on DioError catch (_) {

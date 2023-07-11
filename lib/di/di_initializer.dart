@@ -1,8 +1,8 @@
 import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
 import 'package:take_it_easy/modules/signin/service/authentication.dart';
-import 'package:take_it_easy/modules/dialer/service/meeting_api_impl.dart';
-import 'package:take_it_easy/modules/dialer/service/rtc_builder_request.dart';
+import 'package:take_it_easy/modules/calling/service/calling_service.dart';
+import 'package:take_it_easy/modules/calling/service/rtc_builder_request.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
@@ -19,7 +19,7 @@ class DI {
     _addDependency<RtcBuilder>(RtcBuilderRequest(), true);
     _addDependency<AppWebSocket>(SocketIO(), true);
     _addDependency<RtcUtil>(MicStreams(), true);
-    _addDependency<MeetingApi>(MeetingServiceImpl(), true);
+    _addDependency<CallingApi>(CallingService(), true);
     _addDependency<Authentication>(AuthenticationImpl(), true);
     return DI();
   }

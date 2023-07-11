@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
 import 'package:take_it_easy/components/loader.dart';
-import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/app_keys.dart';
 import 'package:take_it_easy/utils/flovor.dart';
@@ -28,12 +26,10 @@ abstract class HttpManager extends BaseHttp with FlutterAuth {
     return _send(httpMethod, endPoint, baseUrl: baseUrl, request: req, queryParameters: queryParameters);
   }
 
-  void _setHeaders({String? arg, String? baseUrl}) {
+  void _setHeaders({String? baseUrl}) {
     http.options
-      ..baseUrl = (Flavor.internal().baseUrl)
-      ..headers = {
-        "Content-Type": "application/json"
-      };
+      ..baseUrl = baseUrl ?? (Flavor.internal().baseUrl)
+      ..headers = {"Content-Type": "application/json"};
   }
 
   Future<Response> _send(HttpMethod httpMethod, String endPoint, {String? baseUrl, request, Map<String, dynamic>? queryParameters}) async {
@@ -67,15 +63,6 @@ mixin FlutterAuth {
   }
 }
 
-enum LogOutType {
-  GMAIL,
-  OTP,
-  FIREBASE
-}
+enum LogOutType { GMAIL, OTP, FIREBASE }
 
-enum HttpMethod {
-  GET,
-  POST,
-  DELETE,
-  PUT
-}
+enum HttpMethod { GET, POST, DELETE, PUT }
