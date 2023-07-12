@@ -7,7 +7,7 @@ class Endpoints {
   static const join = "join";
   static const leaveRoom = 'meeting/leaveRoom';
   static const joinRandomRoom = 'meeting/joinRandomRoom';
-  static const sigin = 'authentication/signIn';
+  static const sigin = 'authentication/sign_in';
 }
 
 class AppStrings {

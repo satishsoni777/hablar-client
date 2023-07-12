@@ -5,7 +5,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
-enum CallStatus { Connecting, Connected, CallEnded, Mute, Disconnected }
+enum CallStatus { Connecting, CallStarted, Connected, CallEnded, Mute, Disconnected }
 
 enum CallType { Video, Audio }
 
@@ -39,25 +39,26 @@ class Signaling with ChangeNotifier {
     appWebSocket.join = (data) {
       print("userJoined $data");
       roomId = data["roomId"];
+      callStatus = CallStatus.CallStarted;
       joinRoom();
     };
   }
 
   Future<void> createRoom() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    DocumentReference roomRef = db.collection('rooms').doc(roomId);
+    final DocumentReference roomRef = db.collection('rooms').doc(roomId);
 
     peerConnection = await createPeerConnection(configuration);
     print('configuration status ${peerConnection?.iceConnectionState}');
 
     registerPeerConnectionListeners();
 
-    localStream?.getTracks().forEach((track) {
+    localStream?.getTracks().forEach((MediaStreamTrack track) {
       peerConnection?.addTrack(track, localStream!);
     });
 
     // Code for collecting ICE candidates below
-    var callerCandidatesCollection = roomRef.collection('callerCandidates');
+    CollectionReference<Map<String, dynamic>> callerCandidatesCollection = roomRef.collection('callerCandidates');
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
       print('Got candidate: ${candidate.toMap()}');
@@ -80,19 +81,19 @@ class Signaling with ChangeNotifier {
     peerConnection?.onTrack = (RTCTrackEvent event) {
       print('Got remote track: ${event.streams[0]}');
 
-      event.streams[0].getTracks().forEach((track) {
+      event.streams[0].getTracks().forEach((MediaStreamTrack track) {
         print('Add a track to the remoteStream $track');
         remoteStream?.addTrack(track);
       });
     };
 
     // Listening for remote session description below
-    roomRef.snapshots().listen((snapshot) async {
+    roomRef.snapshots().listen((DocumentSnapshot<Object?> snapshot) async {
       print('Got updated room: ${snapshot.data()}');
 
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
       if (peerConnection?.getRemoteDescription() != null && data['answer'] != null) {
-        var answer = RTCSessionDescription(
+        RTCSessionDescription answer = RTCSessionDescription(
           data['answer']['sdp'],
           data['answer']['type'],
         );
@@ -104,8 +105,8 @@ class Signaling with ChangeNotifier {
     // Listening for remote session description above
 
     // Listen for remote Ice candidates below
-    roomRef.collection('calleeCandidates').snapshots().listen((snapshot) {
-      snapshot.docChanges.forEach((change) {
+    roomRef.collection('calleeCandidates').snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
+      snapshot.docChanges.forEach((DocumentChange<Map<String, dynamic>> change) {
         if (change.type == DocumentChangeType.added) {
           Map<String, dynamic> data = change.doc.data() as Map<String, dynamic>;
           print('Got new remote ICE candidate: ${jsonEncode(data)}');
@@ -126,7 +127,7 @@ class Signaling with ChangeNotifier {
   Future<void> joinRoom() async {
     final FirebaseFirestore db = FirebaseFirestore.instance;
     DocumentReference roomRef = db.collection('rooms').doc('$roomId');
-    var roomSnapshot = await roomRef.get();
+    DocumentSnapshot<Object?> roomSnapshot = await roomRef.get();
     print('Got room ${roomSnapshot.exists}');
 
     if (roomSnapshot.exists) {
@@ -135,12 +136,12 @@ class Signaling with ChangeNotifier {
 
       registerPeerConnectionListeners();
 
-      localStream?.getTracks().forEach((track) {
+      localStream?.getTracks().forEach((MediaStreamTrack track) {
         peerConnection?.addTrack(track, localStream!);
       });
 
       // Code for collecting ICE candidates below
-      var calleeCandidatesCollection = roomRef.collection('calleeCandidates');
+      CollectionReference<Map<String, dynamic>> calleeCandidatesCollection = roomRef.collection('calleeCandidates');
       peerConnection!.onIceCandidate = (RTCIceCandidate? candidate) {
         if (candidate == null) {
           print('onIceCandidate: complete!');
@@ -153,20 +154,19 @@ class Signaling with ChangeNotifier {
 
       peerConnection?.onTrack = (RTCTrackEvent event) {
         print('Got remote track: ${event.streams[0]}');
-        event.streams[0].getTracks().forEach((track) {
+        event.streams[0].getTracks().forEach((MediaStreamTrack track) {
           print('Add a track to the remoteStream: $track');
           remoteStream?.addTrack(track);
         });
       };
 
       // Code for creating SDP answer below
-      var data = roomSnapshot.data() as Map<String, dynamic>;
-      print('Got offer $data');
+      Map<String, dynamic> data = roomSnapshot.data() as Map<String, dynamic>;
       var offer = data['offer'];
       await peerConnection?.setRemoteDescription(
         RTCSessionDescription(offer['sdp'], offer['type']),
       );
-      var answer = await peerConnection!.createAnswer();
+      RTCSessionDescription answer = await peerConnection!.createAnswer();
       print('Created Answer $answer');
 
       await peerConnection!.setLocalDescription(answer);
@@ -179,11 +179,9 @@ class Signaling with ChangeNotifier {
       // Finished creating SDP answer
 
       // Listening for remote ICE candidates below
-      roomRef.collection('callerCandidates').snapshots().listen((snapshot) {
-        snapshot.docChanges.forEach((document) {
-          var data = document.doc.data() as Map<String, dynamic>;
-          print(data);
-          print('Got new remote ICE candidate: $data');
+      roomRef.collection('callerCandidates').snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
+        snapshot.docChanges.forEach((DocumentChange<Map<String, dynamic>> document) {
+          Map<String, dynamic> data = document.doc.data() as Map<String, dynamic>;
           peerConnection!.addCandidate(
             RTCIceCandidate(
               data['candidate'],
@@ -205,7 +203,7 @@ class Signaling with ChangeNotifier {
     localVideo.srcObject = stream;
     localStream = stream;
     remoteVideo.srcObject = await createLocalMediaStream('key');
-    remoteVideo.srcObject?.getVideoTracks().forEach((element) {
+    remoteVideo.srcObject?.getVideoTracks().forEach((MediaStreamTrack element) {
       element.enabled = false;
     });
     notifyListeners();
@@ -213,22 +211,22 @@ class Signaling with ChangeNotifier {
 
   Future<void> hangUp(RTCVideoRenderer localVideo) async {
     final List<MediaStreamTrack>? tracks = localVideo.srcObject?.getTracks();
-    tracks?.forEach((track) {
+    tracks?.forEach((MediaStreamTrack track) {
       track.stop();
     });
 
     if (remoteStream != null) {
-      remoteStream!.getTracks().forEach((track) => track.stop());
+      remoteStream!.getTracks().forEach((MediaStreamTrack track) => track.stop());
     }
     if (peerConnection != null) peerConnection!.close();
 
     if (roomId != null) {
-      var db = FirebaseFirestore.instance;
-      var roomRef = db.collection('rooms').doc(roomId);
-      var calleeCandidates = await roomRef.collection('calleeCandidates').get();
-      calleeCandidates.docs.forEach((document) => document.reference.delete());
-      var callerCandidates = await roomRef.collection('callerCandidates').get();
-      callerCandidates.docs.forEach((document) => document.reference.delete());
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      DocumentReference<Map<String, dynamic>> roomRef = db.collection('rooms').doc(roomId);
+      QuerySnapshot<Map<String, dynamic>> calleeCandidates = await roomRef.collection('calleeCandidates').get();
+      calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
+      QuerySnapshot<Map<String, dynamic>> callerCandidates = await roomRef.collection('callerCandidates').get();
+      callerCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
       appWebSocket.leaveRoom({"roomId": roomId});
       await roomRef.delete();
     }
@@ -262,15 +260,15 @@ class Signaling with ChangeNotifier {
 
   void stop() {
     try {
-      peerConnection?.onTrack = (a) => {
-            a.streams.forEach((element) {
-              element.getVideoTracks().forEach((element) {
+      peerConnection?.onTrack = (RTCTrackEvent a) => {
+            a.streams.forEach((MediaStream element) {
+              element.getVideoTracks().forEach((MediaStreamTrack element) {
                 element.enabled = false;
                 element.stop();
               });
             }),
-            a.streams.forEach((element) {
-              element.getAudioTracks().forEach((element) {
+            a.streams.forEach((MediaStream element) {
+              element.getAudioTracks().forEach((MediaStreamTrack element) {
                 element.enabled = false;
                 element.stop();
               });

@@ -6,7 +6,6 @@ import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/components/app_padding.dart';
 import 'package:take_it_easy/components/app_text_f.dart';
 import 'package:take_it_easy/modules/signin/controller/auth_controller.dart';
-import 'package:take_it_easy/resources/images/images.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
 class Login extends StatelessWidget {
@@ -22,14 +21,14 @@ class Login extends StatelessWidget {
               // Image.asset(ImageAsset.logo),
               MpbileOtpAith(),
               Spacing.sizeBoxHt100,
-              // SignInButton(
-              //   Buttons.FacebookNew,
-              //   onPressed: () async {
-              //     // Navigator.pushNamed(context, Routes.home);
-              //     // await GoogleAuthService().handleSignIn();
-              //   },
-              //   mini: false,
-              // ),
+              SignInButton(
+                Buttons.FacebookNew,
+                onPressed: () async {
+                  // Navigator.pushNamed(context, Routes.home);
+                  // await GoogleAuthService().handleSignIn();
+                },
+                mini: false,
+              ),
               Spacing.sizeBoxHt20,
               SignInButton(
                 Buttons.GoogleDark,

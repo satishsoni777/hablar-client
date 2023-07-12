@@ -7,6 +7,9 @@ class LandingReq extends HttpManager with FlutterAuth {
   }
 
   Future<bool> logOut() async {
-    return logout();
+    try {
+      return logout();
+    } catch (_) {}
+    return true;
   }
 }

@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = <HomeTabs, Widget>{HomeTabs.Call: InitiateCall(), HomeTabs.History: CallHistory(), HomeTabs.Profile: UserProfile()};
+    final tabs = <HomeTabs, Widget>{HomeTabs.Call: InitiateCall(), HomeTabs.Profile: UserProfile()};
     return Scaffold(
         floatingActionButton: FloatingActionButton(onPressed: () {
           appWebSocket?.sendMessage({"userId": "2222", "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"},
@@ -53,7 +53,6 @@ class _HomePageState extends State<HomePage> {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
-            BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Recent Calls'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
         ),
@@ -61,4 +60,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-enum HomeTabs { Call, History, Profile }
+enum HomeTabs { Call, Profile }

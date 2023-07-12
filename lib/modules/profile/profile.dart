@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/components/loader_widget.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
@@ -8,27 +7,38 @@ import 'package:take_it_easy/modules/profile/widgets/follow_followers.dart';
 import 'package:take_it_easy/modules/profile/widgets/profile_tile.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/style/font.dart';
-import 'package:take_it_easy/style/spacing.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
-import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
 
-class UserProfile extends StatelessWidget with FlutterAuth {
+class UserProfile extends StatelessWidget {
   const UserProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {},
-          )
+        actions: <Widget>[
+          // ignore: always_specify_types
+          PopupMenuButton(itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem<int>(
+                value: 2,
+                child: Text("Logout"),
+              ),
+            ];
+          }, onSelected: (int value) {
+            if (value == 0) {
+              print("My account menu is selected.");
+            } else if (value == 1) {
+              print("Settings menu is selected.");
+            } else if (value == 2) {
+              DI.inject<LandingRepo>().logOut();
+            }
+          }),
         ],
       ),
       body: FutureBuilder<UserData>(
           future: DI.inject<SharedStorage>().getUserData(),
-          builder: (context, snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<UserData> snapshot) {
             if (!snapshot.hasData) {
               return Column(
                 children: [
@@ -44,7 +54,7 @@ class UserProfile extends StatelessWidget with FlutterAuth {
                 ],
               );
             } else {
-              final data = snapshot.data;
+              final UserData? data = snapshot.data;
               return _body(context, gmailUserData: data!);
             }
           }),
@@ -90,20 +100,21 @@ class UserProfile extends StatelessWidget with FlutterAuth {
             ),
           ),
           _summary(),
+
           ProfileTile(
-            title: Text("Address"),
+            title: Text("Call History"),
             onPressed: () {},
-            leading: Icon(Icons.card_membership),
+            leading: Icon(Icons.history),
+          ),
+          ProfileTile(
+            title: Text("Conversational Feedback"),
+            onPressed: () {},
+            leading: Icon(Icons.feedback),
           ),
           ProfileTile(
             title: Text("Become Plus Memeber"),
             onPressed: () {},
             leading: Icon(Icons.card_membership),
-          ),
-          ProfileTile(
-            title: Text("Call History"),
-            onPressed: () {},
-            leading: Icon(Icons.history),
           ),
           ProfileTile(
             title: Text("Contact Us"),
@@ -115,18 +126,7 @@ class UserProfile extends StatelessWidget with FlutterAuth {
             onPressed: () {},
             leading: Icon(Icons.more),
           ),
-          ProfileTile(
-            title: Text("Feedback"),
-            onPressed: () {},
-            leading: Icon(Icons.feedback),
-          ),
-          ProfileTile(
-            title: Text("Log Out"),
-            onPressed: () {
-              DI.inject<LandingRepo>().logOut();
-            },
-            leading: Icon(Icons.feedback),
-          ),
+
           // const Spacer(),
           // _logOutCta()
         ],
@@ -144,30 +144,18 @@ class UserProfile extends StatelessWidget with FlutterAuth {
     );
   }
 
-  Widget _logOutCta() {
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.marginLarge),
-      child: AppButton(
-        onPressed: () {
-          logout();
-        },
-        buttonType: ButtonType.Border,
-        text: "Log out",
-      ),
-    );
-  }
-
   Widget _summary() {
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.white12)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           Expanded(
-              child: DetailsTile(
-            text2: "Level",
-            title: "Intermediate",
-          )),
+            child: DetailsTile(
+              text2: "Rating",
+              title: "3.4/5",
+            ),
+          ),
           Expanded(
               child: DetailsTile(
             title: "30 Mins",
@@ -186,10 +174,11 @@ class UserProfile extends StatelessWidget with FlutterAuth {
 }
 
 class DetailsTile extends StatelessWidget {
-  const DetailsTile({Key? key, this.icon, this.text2, this.title}) : super(key: key);
+  const DetailsTile({Key? key, this.icon, this.text2, this.title, this.widget2}) : super(key: key);
   final String? title;
   final String? text2;
   final Widget? icon;
+  final Widget? widget2;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -202,10 +191,11 @@ class DetailsTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                text2 ?? "Advance",
-                style: TextStyle(fontSize: 10),
-              ),
+              widget2 ??
+                  Text(
+                    text2 ?? "Advance",
+                    style: TextStyle(fontSize: 10),
+                  ),
             ],
           ),
         ],

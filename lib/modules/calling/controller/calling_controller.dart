@@ -6,4 +6,6 @@ class CallingController extends ChangeNotifier {
   void joinRandomCall() async {
     _signaling.joinRandomCall();
   }
+
+  void toggleAudio() {}
 }

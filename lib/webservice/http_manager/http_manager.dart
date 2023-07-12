@@ -2,9 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
-import 'package:take_it_easy/components/loader.dart';
-import 'package:take_it_easy/navigation/routes.dart';
-import 'package:take_it_easy/resources/app_keys.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 
 abstract class BaseHttp {}
@@ -48,16 +45,11 @@ abstract class HttpManager extends BaseHttp with FlutterAuth {
 
 mixin FlutterAuth {
   Future<bool> logout({LogOutType logOutType = LogOutType.FIREBASE}) async {
-    AppLoader.showLoader();
     if (logOutType == LogOutType.FIREBASE) {
       try {
         final result = await GoogleAuthService().logout();
-        AppLoader.hideLoader();
-        navigatorKey.currentState?.pushReplacementNamed(Routes.landingPage).then((value) => null);
         return result;
-      } catch (_) {
-        return false;
-      }
+      } catch (_) {}
     }
     return true;
   }

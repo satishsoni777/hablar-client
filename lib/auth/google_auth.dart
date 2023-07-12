@@ -29,6 +29,7 @@ class GoogleAuthService {
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication; // get the credentials to (access / id token)
       // to sign in via Firebase Authentication
       final AuthCredential credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      // user = (await _auth.signInWithCustomToken("asdadasdada789DISJHJKDAFSLD")).user!;
       user = (await _auth.signInWithCredential(credential)).user!;
       if (user == null)
         _isUserSignedIn = false;
@@ -38,10 +39,12 @@ class GoogleAuthService {
     if (_isUserSignedIn) {
       await DI.inject<SharedStorage>().setInitialRoute(route: Routes.home);
     } else {
-      await DI.inject<SharedStorage>().setInitialRoute(route: '');
+      await DI.inject<SharedStorage>().setInitialRoute(route: Routes.landingPage);
     }
     return user;
   }
+
+  Future<dynamic> facebookLogin() async {}
 
   Future<void> sendOtp(String number, {Function(OTP_STATUS)? callback}) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
@@ -64,8 +67,8 @@ class GoogleAuthService {
   }
 
   Future<bool> logout() async {
-    final result = await _googleSignIn.signOut();
-    result?.clearAuthCache();
+    final GoogleSignInAccount? result = await _googleSignIn.signOut();
+    await result?.clearAuthCache();
     await _auth.signOut();
     return true;
   }
