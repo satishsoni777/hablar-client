@@ -82,5 +82,23 @@
         </form>
     </div>
 </body>
+ <?php
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $name = $_POST["name"];
+        $email = $_POST["email"];
+        $message = $_POST["message"];
 
+        // Send email to your address
+        $to = "satk754@gmail";
+        $subject = "Random Call App - Contact Form Submission";
+        $body = "Name: $name\nEmail: $email\n\n$message";
+        $headers = "From: $email";
+
+        if (mail($to, $subject, $body, $headers)) {
+            echo "<p>Email sent successfully. Thank you for contacting us!</p>";
+        } else {
+            echo "<p>Sorry, there was an error sending your email. Please try again later.</p>";
+        }
+    }
+    ?>
 </html>
