@@ -1,8 +1,10 @@
 # Miscellaneous
+*.fvm/
 *.class
 *.log
 *.pyc
 *.swp
+*.lock
 .DS_Store
 .atom/
 .buildlog/

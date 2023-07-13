@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
-import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
 class InitiateCall extends StatefulWidget {
-  const InitiateCall({Key key}) : super(key: key);
+  const InitiateCall({Key? key}) : super(key: key);
 
   @override
   _InitiateCallState createState() => _InitiateCallState();
 }
 
 class _InitiateCallState extends State<InitiateCall> {
-  AgoraVoiceManager agoraVoiceManager;
+  // AgoraVoiceManager agoraVoiceManager;
 
   final TextEditingController _userName = new TextEditingController();
 
@@ -24,31 +23,32 @@ class _InitiateCallState extends State<InitiateCall> {
 
   @override
   initState() {
-    agoraVoiceManager = AgoraVoiceManager();
+    // agoraVoiceManager = AgoraVoiceManager();
     // agoraVoiceManager.initPlatformState();
     super.initState();
   }
 
   @override
   dispose() {
-    agoraVoiceManager?.dispose();
+    // agoraVoiceManager?.dispose();
     super.dispose();
   }
 
   void _callNow() async {
-    await agoraVoiceManager.initPlatformState();
+    // await agoraVoiceManager.initPlatformState();
   }
 
-  Widget _body() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * .7,
-      child: AppButton(
-        onPressed: () {
-          Navigator.pushNamed(context, Routes.dialer);
-          // _callNow();
-        },
-        icon: Icon(Icons.call),
-        text: "Talk now",
+  Widget _button() {
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * .7,
+        child: AppButton(
+          onPressed: () {
+            Navigator.pushNamed(context, Routes.dialer);
+          },
+          icon: Icon(Icons.call),
+          text: "Talk now",
+        ),
       ),
     );
   }
@@ -60,7 +60,7 @@ class _InitiateCallState extends State<InitiateCall> {
 
   Widget _selectGender() {
     return Container(
-      height: 120.0,
+      // height: 120.0,
       padding: const EdgeInsets.only(
         top: Spacing.defaultMargin,
         bottom: Spacing.defaultMargin,
@@ -70,8 +70,7 @@ class _InitiateCallState extends State<InitiateCall> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: Spacing.defaultMargin),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.defaultMargin),
             child: Text(
               "Select gender to talk",
               style: const TextStyle(fontSize: FontSize.subtitle),
@@ -91,18 +90,10 @@ class _InitiateCallState extends State<InitiateCall> {
                 ],
               ),
               Row(
-                children: [
-                  Radio(
-                      value: 1, groupValue: _radio, onChanged: _onChangeradio),
-                  Text("Male")
-                ],
+                children: [Radio(value: 1, groupValue: _radio, onChanged: _onChangeradio), Text("Male")],
               ),
               Row(
-                children: [
-                  Radio(
-                      value: 2, groupValue: _radio, onChanged: _onChangeradio),
-                  Text("Femele")
-                ],
+                children: [Radio(value: 2, groupValue: _radio, onChanged: _onChangeradio), Text("Femele")],
               ),
               const SizedBox(
                 width: 16,
@@ -111,37 +102,36 @@ class _InitiateCallState extends State<InitiateCall> {
           ),
         ],
       ),
-      decoration: BoxDecoration(
-          border: Border.all(color: AppColors.white),
-          borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(border: Border.all(color: AppColors.white), borderRadius: BorderRadius.circular(10)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(elevation: 1.0),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.marginLarge),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
               Text(
                 AppStrings.of(context).startTalkingBuddy,
                 style: const TextStyle(fontSize: FontSize.title),
               ),
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
-              _selectGender(),
+              // _selectGender(),
               const Spacer(),
-              _body(),
+              _button(),
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
             ],
           ),

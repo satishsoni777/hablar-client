@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:take_it_easy/modules/history_page/call_history.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/enums/socket-io-events.dart';
 import 'package:take_it_easy/modules/home/initiate_call_page.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
-import 'package:take_it_easy/rtc/agora_rtc/voice_call_managar.dart';
+import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
+import 'package:take_it_easy/websocket/websocket.i.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatefulWidget {
@@ -11,35 +13,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AgoraVoiceManager agoraVoiceManager;
-  final TextEditingController _userName = new TextEditingController();
-  final TextEditingController _channelName = new TextEditingController();
   HomeTabs homeTabs = HomeTabs.Call;
+  AppWebSocket? appWebSocket;
+  RtcUtil? callStreaming;
+
   @override
   initState() {
-    agoraVoiceManager = AgoraVoiceManager();
-    // agoraVoiceManager.initPlatformState();
+    appWebSocket = DI.inject<AppWebSocket>();
+    appWebSocket?.connect();
     super.initState();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   dispose() {
-    agoraVoiceManager?.dispose();
+    appWebSocket?.close();
+    callStreaming?.disconnect();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabs = <HomeTabs, Widget>{
-      HomeTabs.Call: InitiateCall(),
-      HomeTabs.History: CallHistory(),
-      HomeTabs.Profile: UserProfile()
-    };
+    final tabs = <HomeTabs, Widget>{HomeTabs.Call: InitiateCall(), HomeTabs.Profile: UserProfile()};
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          appWebSocket?.sendMessage({"userId": "2222", "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"},
+              meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
+        }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (value) {
@@ -48,8 +52,6 @@ class _HomePageState extends State<HomePage> {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.history), label: 'History'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],
         ),
@@ -57,4 +59,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-enum HomeTabs { Call, History, Profile }
+enum HomeTabs { Call, Profile }

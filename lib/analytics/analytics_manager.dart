@@ -1,5 +1,5 @@
 class AnalyticsManager {
-  Future<void> init() {
+  Future<void>? init() {
     //TODO::
   }
 }

@@ -5,23 +5,46 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "teasy-dev",
+            "name": "dev",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
-            "program": "lib/main.dart"
+            "program": "lib/main.dart",
+            "args": [
+                "--no-sound-null-safety",
+            ]
         },
         {
-            "name": "teasy (profile mode)",
+            "name": "karuna-stage-local",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--no-sound-null-safety",
+            ]
         },
         {
-            "name": "teasy (release mode)",
+            "name": "teasy-dev-redmi",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
-        }
+            "flutterMode": "debug",
+            "deviceId": "h685ifrozdt4in9d",
+            "program": "lib/main.dart",
+            "args": [
+                "--no-sound-null-safety",
+            ]
+        },
+        {
+            "name": "teasy-dev-render-server",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "deviceId": "h685ifrozdt4in9d",
+            "program": "lib/main.dart",
+            "args": [
+                "--no-sound-null-safety",
+            ]
+        },        
     ]
 }

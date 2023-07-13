@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Endpoints {}
+class Endpoints {
+  Endpoints._();
+  static const rtcToken = 'rtcBuilder/rtcToken';
+  static const startMeeting = 'meeting/start';
+  static const join = "join";
+  static const leaveRoom = 'meeting/leaveRoom';
+  static const joinRandomRoom = 'meeting/joinRandomRoom';
+  static const sigin = 'authentication/sign_in';
+}
 
 class AppStrings {
   AppStrings._();

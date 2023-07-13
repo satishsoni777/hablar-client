@@ -3,7 +3,7 @@ import 'package:take_it_easy/enums/widget_enum.dart';
 
 class AppPadding extends StatelessWidget {
   const AppPadding({this.bodyPadding=BodyPadding.LeftRight, this.child});
-  final Widget child;
+  final Widget ?child;
   final BodyPadding bodyPadding;
 
   EdgeInsets get _getPadding {

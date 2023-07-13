@@ -1,54 +1,56 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:take_it_easy/modules/authentication/model/gmail_user_data.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
 abstract class SharedStorage {
-  static SharedPreferences sharedPreferences;
+  static SharedPreferences? sharedPreferences;
 
   Future<SharedPreferences> get _getPreferences async {
     if (sharedPreferences == null)
       return sharedPreferences = await SharedPreferences.getInstance();
     else
-      return sharedPreferences;
+      return sharedPreferences!;
   }
 
   getObjectPreference(String key) async {
-    final preferences = await _getPreferences;
-    final jsonString = preferences.getString(key);
-    if (isNullOrEmpty(jsonString)) {
+    final SharedPreferences preferences = await _getPreferences;
+    final String? jsonString = preferences.getString(key);
+    if (isNullOrEmpty(jsonString!)) {
       return null;
     }
     return jsonDecode(jsonString);
   }
 
   Future<bool> setObjectPreference(String key, var object) async {
-    final preferences = await _getPreferences;
+    final SharedPreferences preferences = await _getPreferences;
     return await preferences.setString(key, jsonEncode(object));
   }
 
   setStringPreference(String key, String value) async {
-    final preferences = await _getPreferences;
+    final SharedPreferences preferences = await _getPreferences;
     await preferences.setString(key, value);
   }
 
-  getStringPreference({String key}) async {
-    return (await _getPreferences).getString(key);
+  Future<String?> getStringPreference(String? key) async {
+    return (await _getPreferences).getString(key!);
   }
 
-  setUserData(User customerData);
-  Future<GmailUserData> getUserData();
+  setUserData(dynamic customerData);
+
+  void setToken(String token);
+
+  Future<UserData> getUserData();
 
   setInitialRoute({String route});
-  
+
   Future<String> getInitialRoute();
 
   // Remove aall store key from shared preferences
   Future<bool> resetFlow() async {
     bool isClear = false;
-    for (final key in sharedPreferences.getKeys()) {
-      isClear = await sharedPreferences?.remove(key);
+    for (final String key in sharedPreferences!.getKeys()) {
+      isClear = await sharedPreferences!.remove(key);
     }
     return isClear;
   }
@@ -56,41 +58,49 @@ abstract class SharedStorage {
 
 class SharedStorageImpl extends SharedStorage {
   @override
-  setUserData(User user) async {
-    final data = {
-      "displayName": user.displayName,
-      "email": user.email,
-      'photoURL': user.photoURL,
-      'uid': user.uid,
-      'phoneNumber': user.phoneNumber,
-      'emailVerified': user.emailVerified,
-      'tenantId': user.tenantId,
-      'isAnonymous': user.isAnonymous,
-    };
-    await setObjectPreference(StorageKey.gmailUserDataKey, data);
+  setUserData(dynamic user) async {
+    final bool result = await setObjectPreference(StorageKey.gmailUserDataKey, user);
+    return result;
   }
 
   @override
-  Future<GmailUserData> getUserData() async {
-    final json =
-        (await getObjectPreference(StorageKey.gmailUserDataKey)) as Map;
-    final data = GmailUserData.fromJson(json);
-    return data;
+  Future<UserData> getUserData() async {
+    try {
+      final dynamic json = (await getObjectPreference(StorageKey.gmailUserDataKey));
+      final UserData data = UserData.fromJson((json as Map<String, dynamic>));
+      return data;
+    } catch (_) {
+      throw _;
+    }
   }
 
   @override
-  setInitialRoute({String route}) async {
-    await setStringPreference(StorageKey.route, route);
+  setInitialRoute({String? route}) async {
+    await setStringPreference(StorageKey.route, route!);
   }
 
   @override
   Future<String> getInitialRoute() async {
-    return await getStringPreference(key: StorageKey.route);
+    return await getStringPreference(StorageKey.route) ?? '';
+  }
+
+  Future<dynamic> getJsonObject(String key) async {
+    final String? result = await this.getStringPreference(key);
+    return jsonDecode(result ?? '');
+  }
+
+  @override
+  void setToken(String token) async {
+    await setStringPreference(StorageKey.token, token);
   }
 }
 
 // Define All storage keys here.
 class StorageKey {
-  static final gmailUserDataKey = 'gmail_auth_user_data';
-  static final route = 'route';
+  static final String gmailUserDataKey = 'gmail_auth_user_data';
+  static final String route = 'route';
+  static final String userId = "userId";
+  static const String rtcToken = "rtc_token";
+  static const String roomId = "roomId";
+  static const String token = "token";
 }
