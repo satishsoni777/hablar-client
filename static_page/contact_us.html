@@ -12,14 +12,13 @@
         h1 {
             margin-bottom: 20px;
         }
-        .form-group {
-            margin-bottom: 20px;
-        }
 
         .contact-form {
             width: 400px;
             padding: 20px;
             padding-right: 40px;
+            background-color: #f2f2f2;
+            border-radius: 4px;
         }
 
         .form-group {
@@ -56,6 +55,16 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -63,7 +72,7 @@
     <h1>Contact Us</h1>
 
     <div class="contact-form">
-        <form action="submit_contact.php" method="POST">
+        <form id="contactForm">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
@@ -81,24 +90,55 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById("contactForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var form = document.getElementById("contactForm");
+            var name = form.elements["name"].value;
+            var email = form.elements["email"].value;
+            var message = form.elements["message"].value;
+
+            // Create an object with the form data
+            var formData = {
+                name: name,
+                email: email,
+                message: message
+            };
+
+            // Send the form data to the server
+            fetch("submit_contact.php", {
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error("Error: " + response.status);
+            })
+            .then(function(data) {
+                // Display success message
+                var successMessage = document.createElement("p");
+                successMessage.className = "success-message";
+                successMessage.textContent = data;
+                form.appendChild(successMessage);
+
+                // Clear form fields
+                form.reset();
+            })
+            .catch(function(error) {
+                // Display error message
+                var errorMessage = document.createElement("p");
+                errorMessage.className = "error-message";
+                errorMessage.textContent = "An error occurred while submitting the form. Please try again later.";
+                form.appendChild(errorMessage);
+
+                console.log(error);
+            });
+        });
+    </script>
 </body>
- <?php
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $name = $_POST["name"];
-        $email = $_POST["email"];
-        $message = $_POST["message"];
 
-        // Send email to your address
-        $to = "satk754@gmail";
-        $subject = "Random Call App - Contact Form Submission";
-        $body = "Name: $name\nEmail: $email\n\n$message";
-        $headers = "From: $email";
-
-        if (mail($to, $subject, $body, $headers)) {
-            echo "<p>Email sent successfully. Thank you for contacting us!</p>";
-        } else {
-            echo "<p>Sorry, there was an error sending your email. Please try again later.</p>";
-        }
-    }
-    ?>
 </html>
