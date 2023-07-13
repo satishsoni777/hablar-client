@@ -6,65 +6,77 @@ import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
 import 'package:take_it_easy/modules/landing_page/landing_page.dart';
+import 'package:take_it_easy/modules/static_page/static_page.dart';
 import 'package:take_it_easy/modules/video_call/video_call.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
 class Routes {
-  static const root = '/';
-  static const videoCall = '/video_call';
-  static const voiceCall = '/voice_call';
-  static const createStreamData = '/CreateStreamData';
-  static const home = '/home';
-  static const auth = '/login';
-  static const landingPage = '/landing_page';
-  static const dialer = '/dialer';
+  Routes._();
+  static const String root = '/';
+  static const String videoCall = '/video_call';
+  static const String voiceCall = '/voice_call';
+  static const String createStreamData = '/CreateStreamData';
+  static const String home = '/home';
+  static const String auth = '/login';
+  static const String landingPage = '/landing_page';
+  static const String dialer = '/dialer';
+  static const String staticPage = "/static_page";
 
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case root:
-        return MaterialPageRoute(
+        return MaterialPageRoute<dynamic>(
             settings: routeSettings,
-            builder: (c) {
+            builder: (BuildContext c) {
               return BlocProvider<LandingPageBloc>(
-                create: (c) => LandingPageBloc(),
+                create: (BuildContext c) => LandingPageBloc(),
                 child: LandingPage(),
               );
             });
       case auth:
-        return MaterialPageRoute(
+        return MaterialPageRoute<dynamic>(
             settings: routeSettings,
-            builder: (c) {
+            builder: (BuildContext c) {
               return Login();
             });
       case home:
-        return MaterialPageRoute(
+        return MaterialPageRoute<dynamic>(
             settings: routeSettings,
-            builder: (c) {
+            builder: (BuildContext c) {
               return HomePage();
             });
       case auth:
-        return MaterialPageRoute(
+        return MaterialPageRoute<dynamic>(
             settings: routeSettings,
-            builder: (c) {
+            builder: (BuildContext c) {
               return Login();
             });
+
+      case staticPage:
+        return MaterialPageRoute<dynamic>(
+            settings: routeSettings,
+            builder: (BuildContext c) {
+              return StaticPage(
+                url: routeSettings.arguments.toString(),
+              );
+            });
       case dialer:
-        return MaterialPageRoute(settings: routeSettings, builder: (c) => Dialer());
+        return MaterialPageRoute<dynamic>(settings: routeSettings, builder: (BuildContext c) => Dialer());
     }
   }
 
   static Map<String, Widget Function(BuildContext context)> getRoutes() => {
-        Routes.videoCall: (context) => VideoCall(),
-        Routes.auth: (C) => Login(),
-        Routes.landingPage: (c) => BlocProvider<LandingPageBloc>(
-              create: (c) => LandingPageBloc(),
+        Routes.videoCall: (BuildContext context) => VideoCall(),
+        Routes.auth: (BuildContext C) => Login(),
+        Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
+              create: (BuildContext c) => LandingPageBloc(),
               child: LandingPage(),
             )
       };
 
   static Future<String> get initialRoute async {
-    final route = await DI.inject<SharedStorage>().getInitialRoute();
+    final String route = await DI.inject<SharedStorage>().getInitialRoute();
     if (isNullOrEmpty(route)) {
       return auth;
     } else
@@ -73,7 +85,7 @@ class Routes {
 
   static Widget? getLandingPage() {
     BlocProvider<LandingPageBloc>(
-      create: (c) => LandingPageBloc(),
+      create: (BuildContext c) => LandingPageBloc(),
       child: LandingPage(),
     );
     return null;

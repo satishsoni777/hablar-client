@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/resources/app_keys.dart';
 
 class AppAlert {
@@ -7,12 +8,12 @@ class AppAlert {
   static AppAlert _instance = AppAlert._();
   static BuildContext? _context;
   factory AppAlert.of({BuildContext? context}) {
-    _context = context ?? navigatorKey.currentContext;
+    _context = context ?? NavigationManager.navigationKey.currentContext;
     return _instance;
   }
   static Future<dynamic> dialog({Widget? child, BuildContext? context}) async {
     print(child);
-    _context = context ?? navigatorKey.currentContext;
+    _context = context ?? NavigationManager.navigationKey.currentContext;
     if (_hasLoader) return;
     _hasLoader = true;
     await showDialog(
@@ -42,7 +43,7 @@ class DialogHelper {
   static Future<dynamic> showCommonDialog({
     Widget? child,
   }) async {
-    final BuildContext context = navigatorKey.currentContext!;
+    final BuildContext context = NavigationManager.navigationKey.currentContext!;
     return await showDialog(
       context: context,
       builder: (BuildContext context) {

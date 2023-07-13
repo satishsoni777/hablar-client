@@ -3,6 +3,7 @@ import 'package:take_it_easy/auth/google_auth.dart';
 import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/signin/service/authentication.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/app_keys.dart';
 
@@ -17,7 +18,7 @@ class AuthController extends ChangeNotifier {
     isLoading = true;
     final bool res = await DI.inject<Authentication>().gLogin();
     if (res) {
-      Navigator.pushReplacementNamed(navigatorKey.currentContext!, Routes.home);
+      NavigationManager.pushReplacementNamed(Routes.home);
     }
     isLoading = false;
   }

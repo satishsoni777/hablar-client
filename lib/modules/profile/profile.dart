@@ -5,6 +5,8 @@ import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/modules/profile/widgets/follow_followers.dart';
 import 'package:take_it_easy/modules/profile/widgets/profile_tile.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
+import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
@@ -118,12 +120,16 @@ class UserProfile extends StatelessWidget {
           ),
           ProfileTile(
             title: Text("Contact Us"),
-            onPressed: () {},
+            onPressed: () {
+              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
+            },
             leading: Icon(Icons.contact_phone),
           ),
           ProfileTile(
             title: Text("About Us"),
-            onPressed: () {},
+            onPressed: () {
+              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
+            },
             leading: Icon(Icons.more),
           ),
 

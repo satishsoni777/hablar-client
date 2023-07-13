@@ -1,5 +1,6 @@
 import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_req.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/app_keys.dart';
 
@@ -22,7 +23,7 @@ class LandingRepoImpl extends LandingRepo {
       await landingRepo.logOut();
     } catch (_) {}
     AppLoader.showLoader();
-    navigatorKey.currentState?.pushReplacementNamed(Routes.root).then((value) => null);
+    NavigationManager.pushReplacementNamed(Routes.root);
     return true;
   }
 }

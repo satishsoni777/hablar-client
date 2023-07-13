@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/resources/app_keys.dart';
 
 class GenderSelection extends StatelessWidget {
@@ -13,19 +14,19 @@ class GenderSelection extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () {
-                Navigator.pop(navigatorKey.currentContext!, Gender.m);
+                NavigationManager.pop(Gender.m);
               },
               child: Text("Male"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(navigatorKey.currentContext!, Gender.f);
+                NavigationManager.pop(Gender.f);
               },
               child: Text("Female"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(navigatorKey.currentContext!, Gender.o);
+                NavigationManager.pop(Gender.o);
               },
               child: Text("Other"),
             ),
