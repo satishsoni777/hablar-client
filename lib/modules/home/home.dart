@@ -16,6 +16,10 @@ class _HomePageState extends State<HomePage> {
   HomeTabs homeTabs = HomeTabs.Call;
   AppWebSocket? appWebSocket;
   RtcUtil? callStreaming;
+  final Map<HomeTabs, Widget> tabs = <HomeTabs, Widget>{
+    HomeTabs.Call: InitiateCall(),
+    HomeTabs.Profile: UserProfile(),
+  };
 
   @override
   initState() {
@@ -38,19 +42,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = <HomeTabs, Widget>{HomeTabs.Call: InitiateCall(), HomeTabs.Profile: UserProfile()};
     return Scaffold(
         floatingActionButton: FloatingActionButton(onPressed: () {
-          appWebSocket?.sendMessage({"userId": "2222", "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"},
+          appWebSocket?.sendMessage(<String, dynamic>{"userId": "2222", "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"},
               meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
         }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
-          onTap: (value) {
+          onTap: (int value) {
             homeTabs = HomeTabs.values[value];
             setState(() {});
           },
-          items: [
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
           ],

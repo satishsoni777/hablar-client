@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:take_it_easy/modules/calling/controller/calling_controller.dart';
 import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
 import 'package:take_it_easy/style/theme/image_path.dart';
 
@@ -12,7 +11,7 @@ class VoiceCall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Signaling>(builder: (context, provide, a) {
+    return Consumer<Signaling>(builder: (BuildContext context, Signaling provide, Widget? a) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -66,7 +65,7 @@ class VoiceCall extends StatelessWidget {
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       MaterialButton(
                         onPressed: () {},
                         color: Colors.red,

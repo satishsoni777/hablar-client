@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/call_history/call_history.dart';
 import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
@@ -22,6 +23,7 @@ class Routes {
   static const String landingPage = '/landing_page';
   static const String dialer = '/dialer';
   static const String staticPage = "/static_page";
+  static const String callHistory = "/call_history";
 
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -61,6 +63,11 @@ class Routes {
                 url: routeSettings.arguments.toString(),
               );
             });
+
+      case callHistory:
+        return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
+          return CallHistory();
+        });
       case dialer:
         return MaterialPageRoute<dynamic>(settings: routeSettings, builder: (BuildContext c) => Dialer());
     }
