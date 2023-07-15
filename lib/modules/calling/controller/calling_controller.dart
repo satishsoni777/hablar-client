@@ -8,4 +8,8 @@ class CallingController extends ChangeNotifier {
   }
 
   void toggleAudio() {}
+
+  void callEnd() {
+    _signaling.callEnd();
+  }
 }

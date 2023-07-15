@@ -47,11 +47,11 @@ class UserProfile extends StatelessWidget {
                   ProgressLoader(),
                   const Spacer(),
                   ProfileTile(
-                    title: Text("Log Out"),
+                    title: "Log Out",
                     onPressed: () {
                       DI.inject<LandingRepo>().logOut();
                     },
-                    leading: Icon(Icons.feedback),
+                    icon: (Icons.contact_phone),
                   ),
                 ],
               );
@@ -104,33 +104,33 @@ class UserProfile extends StatelessWidget {
           _summary(),
 
           ProfileTile(
-            title: Text("Call History"),
+            title: ("Call History"),
             onPressed: () {},
-            leading: Icon(Icons.history),
+            icon: (Icons.contact_phone),
           ),
           ProfileTile(
-            title: Text("Conversational Feedback"),
+            title: ("Conversational Feedback"),
             onPressed: () {},
-            leading: Icon(Icons.feedback),
+            icon: (Icons.contact_phone),
           ),
           ProfileTile(
-            title: Text("Become Plus Memeber"),
+            title: ("Become Plus Memeber"),
             onPressed: () {},
-            leading: Icon(Icons.card_membership),
+            icon: (Icons.contact_phone),
           ),
           ProfileTile(
-            title: Text("Contact Us"),
+            title: ("Contact Us"),
             onPressed: () {
               NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
             },
-            leading: Icon(Icons.contact_phone),
+            icon: (Icons.contact_phone),
           ),
           ProfileTile(
-            title: Text("About Us"),
+            title: ("About Us"),
             onPressed: () {
               NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
             },
-            leading: Icon(Icons.more),
+            icon: (Icons.contact_phone),
           ),
 
           // const Spacer(),

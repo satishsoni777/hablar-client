@@ -10,10 +10,11 @@ enum CallStatus { Connecting, CallStarted, Connected, CallEnded, Mute, Disconnec
 enum CallType { Video, Audio }
 
 typedef void StreamStateCallback(MediaStream stream);
-final Map<String, dynamic> configuration = {
-  'iceServers': [
-    {
-      'urls': ['stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302']
+
+final Map<String, dynamic> configuration = <String, dynamic>{
+  'iceServers': <dynamic>[
+    <String, dynamic>{
+      'urls': <String>['stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302']
     }
   ]
 };
@@ -277,5 +278,10 @@ class Signaling with ChangeNotifier {
     } catch (_) {
       print(_);
     }
+  }
+
+  void callEnd() {
+    callStatus = CallStatus.CallEnded;
+    notifyListeners();
   }
 }

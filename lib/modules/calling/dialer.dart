@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +43,7 @@ class _DialerState extends State<Dialer> {
       await signaling.openUserMedia(_localRenderer, _remoteRenderer);
       signaling.joinRandomCall();
     }
-    signaling.onAddRemoteStream = ((stream) {
+    signaling.onAddRemoteStream = ((MediaStream stream) {
       _remoteRenderer.srcObject = stream;
       setState(() {});
     });
@@ -67,8 +69,8 @@ class _DialerState extends State<Dialer> {
             ChangeNotifierProvider<CallingController>.value(value: CallingController()),
             ChangeNotifierProvider<Signaling>.value(value: Signaling())
           ],
-          builder: (context, snapshot) {
-            return Consumer<Signaling>(builder: (context, snapshot, a) {
+          builder: (BuildContext context, Widget? snapshot) {
+            return Consumer<Signaling>(builder: (BuildContext context, Signaling snapshot, Widget? a) {
               return snapshot.callType == CallType.Audio ? VoiceCall() : VideoCall();
             });
           }),

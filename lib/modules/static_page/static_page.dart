@@ -21,22 +21,26 @@ class _StaticPageState extends State<StaticPage> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-          child: WebView(
-        initialUrl: widget.url,
-        onProgress: (a) {},
-        onPageFinished: (a) {
-          _isLoading = true;
-          setState(() {});
-        },
-        onPageStarted: (a) {
-          _isLoading = true;
-          setState(() {});
-        },
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (c) {
-          _controller = c;
-        },
-      )),
+          child: !_isLoading
+              ? CircularProgressIndicator()
+              : WebView(
+                  initialUrl: widget.url,
+                  onProgress: (a) {},
+                  onPageFinished: (a) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                  },
+                  onPageStarted: (a) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                  },
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onWebViewCreated: (c) {
+                    _controller = c;
+                  },
+                )),
     );
   }
 }
