@@ -5,7 +5,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
-enum CallStatus { Connecting, CallStarted, Connected, CallEnded, Mute, Disconnected }
+enum CallStatus { Connecting, CallStarted, CallEnded, Mute, Disconnected }
 
 enum CallType { Video, Audio }
 
@@ -200,7 +200,9 @@ class Signaling with ChangeNotifier {
     RTCVideoRenderer localVideo,
     RTCVideoRenderer remoteVideo,
   ) async {
-    final MediaStream stream = await navigator.mediaDevices.getUserMedia({'video': true, 'audio': true});
+    final MediaStream stream = await navigator.mediaDevices.getUserMedia(
+      <String, bool>{'video': true, 'audio': false},
+    );
     localVideo.srcObject = stream;
     localStream = stream;
     remoteVideo.srcObject = await createLocalMediaStream('key');

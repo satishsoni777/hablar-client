@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/call_history/call_history.dart';
+import 'package:take_it_easy/modules/calling/widgets/video_call.dart';
 import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
 import 'package:take_it_easy/modules/landing_page/landing_page.dart';
 import 'package:take_it_easy/modules/static_page/static_page.dart';
-import 'package:take_it_easy/modules/video_call/video_call.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 

@@ -19,7 +19,7 @@ class VoiceCall extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            provide.callStatus == CallStatus.Connected
+            provide.callStatus == CallStatus.CallStarted
                 ? CircleAvatar(
                     child: Icon(Icons.person),
                     maxRadius: 40,
@@ -33,17 +33,17 @@ class VoiceCall extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            if (provide.callStatus == CallStatus.Connected)
+            if (provide.callStatus == CallStatus.CallStarted)
               TimerConverter(
                 seconds: 1,
               )
             else
               Text("Connecting..."),
             Spacer(),
-            provide.callStatus == CallStatus.Connected
+            provide.callStatus == CallStatus.CallStarted
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       IconButton(
                         onPressed: () {},
                         icon: SvgPicture.asset(
@@ -86,9 +86,8 @@ class VoiceCall extends StatelessWidget {
 }
 
 class TimerConverter extends StatefulWidget {
+  const TimerConverter({required this.seconds});
   final int seconds;
-
-  TimerConverter({required this.seconds});
 
   @override
   State<TimerConverter> createState() => _TimerConverterState();

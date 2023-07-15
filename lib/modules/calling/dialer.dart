@@ -7,8 +7,9 @@ import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/calling/controller/calling_controller.dart';
 import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
 import 'package:take_it_easy/modules/calling/widgets/voice_call.dart';
-import 'package:take_it_easy/modules/video_call/video_call.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
+
+import 'widgets/video_call.dart';
 
 class Dialer extends StatefulWidget {
   const Dialer({Key? key}) : super(key: key);
@@ -27,7 +28,6 @@ class _DialerState extends State<Dialer> {
   bool joinReqsent = false;
   @override
   void initState() {
-    // init();
     super.initState();
   }
 
@@ -70,8 +70,13 @@ class _DialerState extends State<Dialer> {
             ChangeNotifierProvider<Signaling>.value(value: Signaling())
           ],
           builder: (BuildContext context, Widget? snapshot) {
-            return Consumer<Signaling>(builder: (BuildContext context, Signaling snapshot, Widget? a) {
-              return snapshot.callType == CallType.Audio ? VoiceCall() : VideoCall();
+            return Consumer<Signaling>(builder: (BuildContext context, Signaling prodider, Widget? a) {
+              return Stack(
+                children: [
+                  VideoCall(),
+                  if (prodider.callType == CallType.Audio) VoiceCall(),
+                ],
+              );
             });
           }),
     );
