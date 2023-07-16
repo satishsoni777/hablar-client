@@ -8,6 +8,7 @@ class Endpoints {
   static const leaveRoom = 'meeting/leaveRoom';
   static const joinRandomRoom = 'meeting/joinRandomRoom';
   static const sigin = 'authentication/sign_in';
+  static const toggleOffOn = 'meeting/toggleOffOn';
 }
 
 class AppStrings {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/loader_widget.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/home/widget/off_line_toggle.dart';
 import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/modules/profile/widgets/follow_followers.dart';
@@ -37,6 +38,7 @@ class UserProfile extends StatelessWidget {
             }
           }),
         ],
+        leading: OfflineToggle(),
       ),
       body: FutureBuilder<UserData>(
           future: DI.inject<SharedStorage>().getUserData(),
@@ -105,7 +107,11 @@ class UserProfile extends StatelessWidget {
 
           ProfileTile(
             title: ("Call History"),
-            onPressed: () {},
+            onPressed: () {
+              NavigationManager.navigateTo(
+                Routes.callHistory,
+              );
+            },
             icon: (Icons.contact_phone),
           ),
           ProfileTile(

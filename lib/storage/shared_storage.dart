@@ -97,6 +97,7 @@ class SharedStorageImpl extends SharedStorage {
 
 // Define All storage keys here.
 class StorageKey {
+  StorageKey._();
   static final String gmailUserDataKey = 'gmail_auth_user_data';
   static final String route = 'route';
   static final String userId = "userId";

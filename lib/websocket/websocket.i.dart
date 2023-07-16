@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:take_it_easy/enums/socket-io-events.dart';
-import 'package:web_socket_channel/io.dart';
 
 abstract class AppWebSocket {
   Function(dynamic)? onMessageCallback;
@@ -98,10 +94,4 @@ class WebSocketConnectionStatus {
   WebSocketStatus? webSocketStatus;
 }
 
-enum WebSocketStatus {
-  Connecting,
-  Connected,
-  Closed,
-  Error,
-  Disconnected
-}
+enum WebSocketStatus { Connecting, Connected, Closed, Error, Disconnected }

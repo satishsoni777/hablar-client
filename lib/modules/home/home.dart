@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/enums/socket-io-events.dart';
+import 'package:take_it_easy/modules/home/controller/home_controller.dart';
 import 'package:take_it_easy/modules/home/initiate_call_page.dart';
+import 'package:take_it_easy/modules/home/service/home_service.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
 import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
@@ -20,9 +22,10 @@ class _HomePageState extends State<HomePage> {
     HomeTabs.Call: InitiateCall(),
     HomeTabs.Profile: UserProfile(),
   };
-
+  late HomeController homeController;
   @override
   initState() {
+    homeController = HomeController(homeService: HomeServiceImp());
     appWebSocket = DI.inject<AppWebSocket>();
     appWebSocket?.connect();
     super.initState();
@@ -44,8 +47,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(onPressed: () {
-          appWebSocket?.sendMessage(<String, dynamic>{"userId": "2222", "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"},
-              meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
+          appWebSocket?.sendMessage(<String, dynamic>{
+            "userId": "2222",
+            "countryCode": "IN",
+            "stateCode": "KR",
+            "type": "join-random-call",
+          }, meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
         }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,

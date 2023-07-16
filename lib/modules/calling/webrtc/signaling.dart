@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 enum CallStatus { Connecting, CallStarted, CallEnded, Mute, Disconnected }
@@ -33,14 +34,16 @@ class Signaling with ChangeNotifier {
   void joinRandomCall() async {
     appWebSocket.joinRandomCall();
     appWebSocket.roomCreated = (data) {
-      print("roomCreated $data");
+      print("roomCreated with a Room Id $data");
       roomId = data["roomId"];
       createRoom();
+      DI.inject<SharedStorage>().setStringPreference(StorageKey.roomId, roomId ?? '');
     };
     appWebSocket.join = (data) {
-      print("userJoined $data");
+      print("userJoined with a Room Id $data");
       roomId = data["roomId"];
       callStatus = CallStatus.CallStarted;
+      DI.inject<SharedStorage>().setStringPreference(StorageKey.roomId, roomId ?? '');
       joinRoom();
     };
   }
@@ -81,9 +84,9 @@ class Signaling with ChangeNotifier {
 
     peerConnection?.onTrack = (RTCTrackEvent event) {
       print('Got remote track: ${event.streams[0]}');
-
       event.streams[0].getTracks().forEach((MediaStreamTrack track) {
         print('Add a track to the remoteStream $track');
+        notifyListeners();
         remoteStream?.addTrack(track);
       });
     };
@@ -181,6 +184,8 @@ class Signaling with ChangeNotifier {
 
       // Listening for remote ICE candidates below
       roomRef.collection('callerCandidates').snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
+        print("## callerCandidates ##");
+        notifyListeners();
         snapshot.docChanges.forEach((DocumentChange<Map<String, dynamic>> document) {
           Map<String, dynamic> data = document.doc.data() as Map<String, dynamic>;
           peerConnection!.addCandidate(
@@ -201,7 +206,7 @@ class Signaling with ChangeNotifier {
     RTCVideoRenderer remoteVideo,
   ) async {
     final MediaStream stream = await navigator.mediaDevices.getUserMedia(
-      <String, bool>{'video': true, 'audio': false},
+      <String, bool>{'video': false, 'audio': true},
     );
     localVideo.srcObject = stream;
     localStream = stream;
@@ -230,7 +235,7 @@ class Signaling with ChangeNotifier {
       calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
       QuerySnapshot<Map<String, dynamic>> callerCandidates = await roomRef.collection('callerCandidates').get();
       callerCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
-      appWebSocket.leaveRoom({"roomId": roomId});
+      appWebSocket.leaveRoom(<String, dynamic>{"roomId": roomId});
       await roomRef.delete();
     }
 

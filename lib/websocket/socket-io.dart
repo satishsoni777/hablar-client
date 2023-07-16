@@ -21,19 +21,13 @@ class SocketIO extends AppWebSocket {
       if (socket?.connected ?? false) return;
       socket?.close();
       socket = IO.io(url, <String, dynamic>{
-        'transports': [
-          'websocket'
-        ],
+        'transports': ['websocket'],
       });
       IO.OptionBuilder()
         ..setReconnectionDelay(5000)
-        ..setTransports([
-          'websocket'
-        ])
+        ..setTransports(['websocket'])
         ..setReconnectionAttempts(2000)
-        ..setQuery({
-          "userId": userId
-        }).build();
+        ..setQuery({"userId": userId}).build();
       socket?.connect();
     } catch (_) {
       print('error $_');
@@ -97,21 +91,24 @@ class SocketIO extends AppWebSocket {
 
   @override
   Future<void> joinRandomCall() async {
-    print("#connected ${socket?.connected} ");
-    final msg = {
-      "userId": userId,
-      "countryCode": "IN",
-      "stateCode": "KR",
-      "type": "join-random-call"
-    };
-    socket?.emit("message", msg);
+    if (isConnected) {
+      print("#connected ${socket?.connected} ");
+      final msg = {"userId": userId, "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"};
+      socket?.emit("message", msg);
+    } else {
+      connect();
+    }
   }
 
   @override
   void leaveRoom(Map<String, dynamic> message) {
-    message["userId"] = userId;
-    message["type"] = "leave-room";
-    socket?.emit("message", message);
+    if (isConnected) {
+      message["userId"] = userId;
+      message["type"] = "leave-room";
+      socket?.emit("message", message);
+    } else {
+      connect();
+    }
   }
 
   @override
