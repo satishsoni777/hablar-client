@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class Endpoints {
   Endpoints._();
-  static const rtcToken = 'rtcBuilder/rtcToken';
-  static const startMeeting = 'meeting/start';
-  static const join = "join";
-  static const leaveRoom = 'meeting/leaveRoom';
-  static const joinRandomRoom = 'meeting/joinRandomRoom';
-  static const sigin = 'authentication/sign_in';
-  static const toggleOffOn = 'meeting/toggleOffOn';
+  static const String rtcToken = 'rtcBuilder/rtcToken';
+  static const String startMeeting = 'meeting/start';
+  static const String join = "join";
+  static const String sigin = 'authentication/sign_in';
+  static const String toggleOffOn = 'callStream/toggleOffOn';
+  static const String leaveRoom = 'callStream/leaveRoom';
+  static const String joinRandomRoom = 'callStream/joinRandomRoom';
 }
 
 class AppStrings {
