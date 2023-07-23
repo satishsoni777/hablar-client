@@ -7,6 +7,9 @@ import 'package:take_it_easy/utils/string_utils.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 class CallingController extends ChangeNotifier {
+  CallingController(this._signaling);
+  Signaling _signaling;
+  Signaling get signaling => _signaling;
   void joinRandomCall(Signaling signaling) async {
     final String roomId = await DI.inject<SharedStorage>().getStringPreference(StorageKey.roomId) ?? '';
     await FirebaseDbUtil.instance.deleteRoomIfExist(roomId);
@@ -19,8 +22,8 @@ class CallingController extends ChangeNotifier {
 
   void toggleAudio() {}
 
-  void callEnd(Signaling signaling) {
-    signaling.callEnd();
+  Future<void> callEnd(Signaling signaling) async {
+    await signaling.callEnd();
   }
 
   void onNavigationChanged() {}

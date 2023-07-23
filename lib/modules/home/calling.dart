@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:take_it_easy/components/app_button.dart';
+import 'package:take_it_easy/modules/home/controller/home_controller.dart';
+import 'package:take_it_easy/modules/home/widget/off_line_toggle.dart';
 import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
 
-class InitiateCall extends StatefulWidget {
-  const InitiateCall({Key? key}) : super(key: key);
+class Calling extends StatefulWidget {
+  const Calling({Key? key}) : super(key: key);
 
   @override
-  _InitiateCallState createState() => _InitiateCallState();
+  _CallingState createState() => _CallingState();
 }
 
-class _InitiateCallState extends State<InitiateCall> {
+class _CallingState extends State<Calling> {
   // AgoraVoiceManager agoraVoiceManager;
 
   final TextEditingController _userName = new TextEditingController();
@@ -44,7 +47,7 @@ class _InitiateCallState extends State<InitiateCall> {
         width: MediaQuery.of(context).size.width * .7,
         child: AppButton(
           onPressed: () {
-            Navigator.pushNamed(context, Routes.dialer);
+            Navigator.pushNamed(context, Routes.dialer, arguments: Provider.of<HomeController>(context, listen: false));
           },
           icon: Icon(Icons.call),
           text: "Talk now",
@@ -109,7 +112,10 @@ class _InitiateCallState extends State<InitiateCall> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(elevation: 1.0),
+      appBar: AppBar(
+        elevation: 1.0,
+        actions: [OfflineToggle()],
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.marginLarge),

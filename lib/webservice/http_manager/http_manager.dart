@@ -44,8 +44,8 @@ abstract class HttpManager extends BaseHttp with FlutterAuth {
 }
 
 mixin FlutterAuth {
-  Future<bool> logout({LogOutType logOutType = LogOutType.FIREBASE}) async {
-    if (logOutType == LogOutType.FIREBASE) {
+  Future<bool> logout({LogOutType logOutType = LogOutType.GMAIL}) async {
+    if (logOutType == LogOutType.GMAIL) {
       try {
         final result = await GoogleAuthService().logout();
         return result;

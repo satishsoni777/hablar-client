@@ -17,7 +17,8 @@ class MeetingPayloadEnum {
       UNKNOWN = "unknown",
       CHAT_MESSAGE = "chat-message",
       JOIN = "join",
-      CREATE_ROOM = "create-room";
+      CREATE_ROOM = "create-room",
+      CALL_STARTED = "call-started";
 }
 
 class SocketEvents {

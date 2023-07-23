@@ -21,24 +21,24 @@ class UserProfile extends StatelessWidget {
       appBar: AppBar(
         actions: <Widget>[
           // ignore: always_specify_types
-          PopupMenuButton(itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem<int>(
-                value: 2,
-                child: Text("Logout"),
-              ),
-            ];
-          }, onSelected: (int value) {
-            if (value == 0) {
-              print("My account menu is selected.");
-            } else if (value == 1) {
-              print("Settings menu is selected.");
-            } else if (value == 2) {
-              DI.inject<LandingRepo>().logOut();
-            }
-          }),
+          // PopupMenuButton(itemBuilder: (BuildContext context) {
+          //   return [
+          //     PopupMenuItem<int>(
+          //       value: 2,
+          //       child: Text("Logout"),
+          //     ),
+          //   ];
+          // }, onSelected: (int value) {
+          //   if (value == 0) {
+          //     print("My account menu is selected.");
+          //   } else if (value == 1) {
+          //     print("Settings menu is selected.");
+          //   } else if (value == 2) {
+          //     DI.inject<LandingRepo>().logOut();
+          //   }
+          // }),
+          OfflineToggle(),
         ],
-        leading: OfflineToggle(),
       ),
       body: FutureBuilder<UserData>(
           future: DI.inject<SharedStorage>().getUserData(),
@@ -51,7 +51,7 @@ class UserProfile extends StatelessWidget {
                   ProfileTile(
                     title: "Log Out",
                     onPressed: () {
-                      DI.inject<LandingRepo>().logOut();
+                      DI.inject<LandingRepo>().logout();
                     },
                     icon: (Icons.contact_phone),
                   ),
@@ -86,7 +86,7 @@ class UserProfile extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       SizedBox(
                         height: 20.0,
                       ),
@@ -94,7 +94,7 @@ class UserProfile extends StatelessWidget {
                         gmailUserData?.displayName ?? "",
                         style: const TextStyle(fontSize: FontSize.title),
                       ),
-                      // Text(gmailUserData.email ?? ''),
+                      Text(gmailUserData?.email ?? ''),
                       Text(gmailUserData?.phoneNumber ?? ''),
                       FollowFollowers()
                     ],
@@ -104,7 +104,6 @@ class UserProfile extends StatelessWidget {
             ),
           ),
           _summary(),
-
           ProfileTile(
             title: ("Call History"),
             onPressed: () {
@@ -135,6 +134,24 @@ class UserProfile extends StatelessWidget {
             title: ("About Us"),
             onPressed: () {
               NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
+            },
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("Terms & Condition"),
+            onPressed: () {
+              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/terms_condition.html");
+            },
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("Logout"),
+            onPressed: () async {
+              final res = await DI.inject<LandingRepo>().logout();
+              if (res) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pushReplacementNamed(Routes.root);
+              }
             },
             icon: (Icons.contact_phone),
           ),

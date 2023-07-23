@@ -37,7 +37,7 @@ class VoiceCall extends StatelessWidget {
               TimerConverter(
                 seconds: 1,
               )
-            else
+            else if (provide.callStatus == CallStatus.Connecting)
               Text("Connecting..."),
             Spacer(),
             provide.callStatus == CallStatus.CallStarted

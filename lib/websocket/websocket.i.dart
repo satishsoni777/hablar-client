@@ -15,6 +15,8 @@ abstract class AppWebSocket {
 
   Function(dynamic)? join;
 
+  Function(dynamic)? callStarted;
+
   Function(dynamic)? answerSdp;
 
   Function(dynamic)? offerSdp;
@@ -26,8 +28,6 @@ abstract class AppWebSocket {
   bool get isConnected;
 
   void leaveRoom(Map<String, dynamic> message);
-
-  // ignore: close_sinks
 
   Future<bool>? sendMessage(Map<String, dynamic> message, {String? meetingPayloadEnum});
 

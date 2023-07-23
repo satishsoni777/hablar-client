@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/call_history/call_history.dart';
-import 'package:take_it_easy/modules/calling/widgets/video_call.dart';
 import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
@@ -73,14 +72,13 @@ class Routes {
     }
   }
 
-  static Map<String, Widget Function(BuildContext context)> getRoutes() => {
-        Routes.videoCall: (BuildContext context) => VideoCall(),
-        Routes.auth: (BuildContext C) => Login(),
-        Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
-              create: (BuildContext c) => LandingPageBloc(),
-              child: LandingPage(),
-            )
-      };
+  // static Map<String, Widget Function(BuildContext context)> getRoutes() => {
+  //       Routes.auth: (BuildContext C) => Login(),
+  //       Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
+  //             create: (BuildContext c) => LandingPageBloc(),
+  //             child: LandingPage(),
+  //           )
+  //     };
 
   static Future<String> get initialRoute async {
     final String route = await DI.inject<SharedStorage>().getInitialRoute();

@@ -12,7 +12,6 @@ class AppAlert {
     return _instance;
   }
   static Future<dynamic> dialog({Widget? child, BuildContext? context}) async {
-    print(child);
     _context = context ?? NavigationManager.navigationKey.currentContext;
     if (_hasLoader) return;
     _hasLoader = true;

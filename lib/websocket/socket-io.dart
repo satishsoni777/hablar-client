@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/enums/socket-io-events.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
@@ -11,30 +9,32 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketIO extends AppWebSocket {
   IO.Socket? socket;
-  String? userId = "";
+  int? userId;
+  final SharedStorage _pref = DI.inject<SharedStorage>();
   @override
-  void connect({String? header}) async {
+  void connect({String? header, Function? revereCallback}) async {
     try {
+      final String token = await _pref.getToken() ?? '';
       userId = (await DI.inject<SharedStorage>().getUserData()).userId;
       final String url = Flavor.internal().baseUrl.getUrl;
-
       if (socket?.connected ?? false) return;
       socket?.close();
-      socket = IO.io(url, <String, dynamic>{
-        'transports': ['websocket'],
-      });
-      IO.OptionBuilder()
-        ..setReconnectionDelay(5000)
-        ..setTransports(['websocket'])
-        ..setReconnectionAttempts(2000)
-        ..setQuery({"userId": userId}).build();
+      socket = IO.io(
+        url + '?userId=$userId',
+        IO.OptionBuilder()
+            .setTransports(<String>['websocket'])
+            .setExtraHeaders(<String, dynamic>{"authorization": "Bearer $token"})
+            .setReconnectionAttempts(2000)
+            .build(),
+      );
       socket?.connect();
     } catch (_) {
       print('error $_');
     }
     socket?.onConnect((_) {
+      print("Socket IO connected");
       onConnected?.call(WebSocketStatus.Connected);
-      print("On connected");
+      revereCallback?.call();
     });
     socket?.onDisconnect((_) {
       print("On Disconnect");
@@ -59,7 +59,7 @@ class SocketIO extends AppWebSocket {
         socket?.emit("message", message);
         break;
     }
-    return Future.value(true);
+    return Future<bool>.value(true);
   }
 
   void _onMessage() {
@@ -83,8 +83,12 @@ class SocketIO extends AppWebSocket {
       join?.call(data);
     });
     socket?.on(MeetingPayloadEnum.CREATE_ROOM, (data) {
-      print("on JOIED 2$data");
+      print("MeetingPayloadEnum.CREATE_ROOM $data");
       roomCreated?.call(data);
+    });
+    socket?.on(MeetingPayloadEnum.CALL_STARTED, (data) {
+      print("MeetingPayloadEnum.CALL_STARTED $userId");
+      callStarted?.call(data);
     });
     socket?.on("message", (data) => onMessage?.call(data));
   }
@@ -92,11 +96,13 @@ class SocketIO extends AppWebSocket {
   @override
   Future<void> joinRandomCall() async {
     if (isConnected) {
-      print("#connected ${socket?.connected} ");
-      final msg = {"userId": userId, "countryCode": "IN", "stateCode": "KR", "type": "join-random-call"};
+      final Map<String, dynamic> msg = <String, dynamic>{"countryCode": "IN", "stateCode": "KR", "type": "join-random-call"};
       socket?.emit("message", msg);
     } else {
       connect();
+      onConnected = (_) {
+        joinRandomCall();
+      };
     }
   }
 
@@ -108,6 +114,9 @@ class SocketIO extends AppWebSocket {
       socket?.emit("message", message);
     } else {
       connect();
+      onConnected = (_) {
+        leaveRoom(message);
+      };
     }
   }
 

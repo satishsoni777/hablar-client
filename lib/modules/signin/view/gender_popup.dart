@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/navigation/navigation_manager.dart';
-import 'package:take_it_easy/resources/app_keys.dart';
 
 class GenderSelection extends StatelessWidget {
   const GenderSelection({super.key});
