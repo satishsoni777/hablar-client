@@ -1,3 +1,3 @@
 git add .
 git commit -m "WIP"
-git push origin $1
+git push origin stage
