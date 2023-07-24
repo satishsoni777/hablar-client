@@ -44,17 +44,12 @@ class VoiceCall extends StatelessWidget {
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
+                      IconButton(onPressed: () {}, icon: Icon(Icons.speaker)),
                       IconButton(
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          ImagePath.speaker,
-                          color: Colors.white,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.mic),
-                      ),
+                          onPressed: () {
+                            provide.mute(provide.muted);
+                          },
+                          icon: provide.muted ? Icon(Icons.mic_off) : Icon((Icons.mic))),
                       MaterialButton(
                         onPressed: () {},
                         color: Colors.red,

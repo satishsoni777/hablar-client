@@ -107,7 +107,7 @@ class UserProfile extends StatelessWidget {
           ProfileTile(
             title: ("Call History"),
             onPressed: () {
-              NavigationManager.navigateTo(
+              NavigationManager.instance.navigateTo(
                 Routes.callHistory,
               );
             },
@@ -126,21 +126,23 @@ class UserProfile extends StatelessWidget {
           ProfileTile(
             title: ("Contact Us"),
             onPressed: () {
-              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
+              NavigationManager.instance
+                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
             },
             icon: (Icons.contact_phone),
           ),
           ProfileTile(
             title: ("About Us"),
             onPressed: () {
-              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
+              NavigationManager.instance.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
             },
             icon: (Icons.contact_phone),
           ),
           ProfileTile(
             title: ("Terms & Condition"),
             onPressed: () {
-              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/terms_condition.html");
+              NavigationManager.instance
+                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/terms_condition.html");
             },
             icon: (Icons.contact_phone),
           ),

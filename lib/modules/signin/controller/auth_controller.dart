@@ -17,7 +17,7 @@ class AuthController extends ChangeNotifier {
     AppLoader.showLoader();
     try {
       final UserData? res = await _authentication.login();
-      if (res != null) NavigationManager.pushReplacementNamed(Routes.home);
+      if (res != null) NavigationManager.instance.pushReplacementNamed(Routes.home);
     } catch (_) {
       print(_);
     }

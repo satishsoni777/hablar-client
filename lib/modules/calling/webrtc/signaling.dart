@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
+import 'package:take_it_easy/utils/string_utils.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 enum CallStatus { Connecting, CallStarted, CallEnded, Mute, Disconnected }
 
 enum CallType { Video, Audio }
+
+enum HostType { Callee, Caller }
 
 typedef void StreamStateCallback(MediaStream stream);
 
@@ -32,6 +35,9 @@ class Signaling with ChangeNotifier {
   RTCVideoRenderer? _locaRTCVideoRenderer;
   final AppWebSocket appWebSocket = DI.inject<AppWebSocket>();
   final SharedStorage _pref = DI.inject<SharedStorage>();
+  bool _muted = false;
+  bool get muted => _muted;
+  HostType? hostType;
 
   void joinRandomCall() async {
     appWebSocket.joinRandomCall();
@@ -44,6 +50,7 @@ class Signaling with ChangeNotifier {
       roomId = data["roomId"];
       await _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
       final userId = (await _pref.getUserData()).userId;
+      await callStarted();
       if (userId == int.parse(data["hostId"].toString())) {
         await createRoom();
       }
@@ -62,6 +69,7 @@ class Signaling with ChangeNotifier {
   }
 
   Future<void> callStarted() async {
+    final userId = await _pref.getStringPreference(StorageKey.userId);
     final FirebaseFirestore db = FirebaseFirestore.instance;
 
     final DocumentReference<dynamic> roomRef = db.collection('rooms').doc(roomId);
@@ -76,8 +84,7 @@ class Signaling with ChangeNotifier {
     });
 
     // Code for collecting ICE candidates below
-    final CollectionReference<Map<String, dynamic>> callerCandidatesCollection = roomRef.collection('callerCandidates');
-    final CollectionReference<Map<String, dynamic>> calleeCandidatesCollection = roomRef.collection('calleeCandidates');
+    final CollectionReference<Map<String, dynamic>> callerCandidatesCollection = roomRef.collection('caller-$userId');
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
       print('Got candidate: ${candidate.toMap()}');
@@ -98,10 +105,8 @@ class Signaling with ChangeNotifier {
     // Created a Room
 
     peerConnection?.onTrack = (RTCTrackEvent event) {
-      print('Got remote track: ${event.streams[0]}');
       event.streams[0].getTracks().forEach((MediaStreamTrack track) {
         print('Add a track to the remoteStream $track');
-        notifyListeners();
         remoteStream?.addTrack(track);
       });
     };
@@ -139,26 +144,6 @@ class Signaling with ChangeNotifier {
 
     DocumentSnapshot<Object?> roomSnapshot = await roomRef.get();
     if (roomSnapshot.exists) {
-      peerConnection = await createPeerConnection(configuration);
-
-      registerPeerConnectionListeners();
-      // Code for collecting ICE candidates below
-      peerConnection!.onIceCandidate = (RTCIceCandidate? candidate) {
-        if (candidate == null) {
-          print('onIceCandidate: complete!');
-          return;
-        }
-        print('onIceCandidate: ${candidate.toMap()}');
-        calleeCandidatesCollection.add(candidate.toMap());
-      };
-      // Code for collecting ICE candidate above
-
-      // Code for creating SDP answer below
-      Map<String, dynamic> data = roomSnapshot.data() as Map<String, dynamic>;
-      var offer = data['offer'];
-      await peerConnection?.setRemoteDescription(
-        RTCSessionDescription(offer['sdp'], offer['type']),
-      );
       RTCSessionDescription answer = await peerConnection!.createAnswer();
       print('Created Answer $answer');
 
@@ -170,21 +155,6 @@ class Signaling with ChangeNotifier {
 
       await roomRef.update(roomWithAnswer);
       // Finished creating SDP answer
-
-      // Listening for remote ICE candidates below
-      calleeCandidatesCollection.snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
-        print("## callerCandidates ##");
-        snapshot.docChanges.forEach((DocumentChange<Map<String, dynamic>> document) {
-          Map<String, dynamic> data = document.doc.data() as Map<String, dynamic>;
-          peerConnection!.addCandidate(
-            RTCIceCandidate(
-              data['candidate'],
-              data['sdpMid'],
-              data['sdpMLineIndex'],
-            ),
-          );
-        });
-      });
     }
     notifyListeners();
   }
@@ -265,6 +235,7 @@ class Signaling with ChangeNotifier {
         }
       });
     });
+    hostType = HostType.Caller;
     // Listen for remote ICE candidates above
     notifyListeners();
   }
@@ -339,6 +310,7 @@ class Signaling with ChangeNotifier {
         });
       });
     }
+    hostType = HostType.Callee;
     notifyListeners();
   }
 
@@ -347,6 +319,7 @@ class Signaling with ChangeNotifier {
     RTCVideoRenderer remoteVideo,
   ) async {
     _locaRTCVideoRenderer = localVideo;
+    _locaRTCVideoRenderer?.muted = false;
     final MediaStream stream = await navigator.mediaDevices.getUserMedia(
       <String, bool>{'video': false, 'audio': true},
     );
@@ -433,17 +406,26 @@ class Signaling with ChangeNotifier {
     }
   }
 
+  void mute(bool mute) async {
+    _locaRTCVideoRenderer?.muted = !mute;
+    _muted = !mute;
+    notifyListeners();
+  }
+
   Future<void> callEnd() async {
     try {
       final String? roomId = await _pref.getStringPreference(StorageKey.roomId);
-      if (roomId == null) return;
+      if (isNullOrEmpty(roomId)) return;
       appWebSocket.leaveRoom(<String, dynamic>{"roomId": roomId});
       FirebaseFirestore db = FirebaseFirestore.instance;
       DocumentReference<Map<String, dynamic>> roomRef = db.collection('rooms').doc(roomId);
-      // QuerySnapshot<Map<String, dynamic>> calleeCandidates = await roomRef.collection('calleeCandidates').get();
-      // calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
-      // QuerySnapshot<Map<String, dynamic>> callerCandidates = await roomRef.collection('callerCandidates').get();
-      // callerCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
+      if (hostType == HostType.Callee) {
+        QuerySnapshot<Map<String, dynamic>> calleeCandidates = await roomRef.collection('calleeCandidates').get();
+        calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
+      } else {
+        QuerySnapshot<Map<String, dynamic>> callerCanidates = await roomRef.collection('callerCandidates').get();
+        callerCanidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
+      }
       await roomRef.delete();
       await hangUp(_locaRTCVideoRenderer!);
       stop();
@@ -451,6 +433,7 @@ class Signaling with ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    await _pref.setStringPreference(StorageKey.roomId, "");
     notifyListeners();
   }
 }

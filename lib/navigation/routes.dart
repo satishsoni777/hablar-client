@@ -26,14 +26,11 @@ class Routes {
 
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      case root:
+      case landingPage:
         return MaterialPageRoute<dynamic>(
             settings: routeSettings,
             builder: (BuildContext c) {
-              return BlocProvider<LandingPageBloc>(
-                create: (BuildContext c) => LandingPageBloc(),
-                child: LandingPage(),
-              );
+              return LandingPage();
             });
       case auth:
         return MaterialPageRoute<dynamic>(
@@ -67,18 +64,22 @@ class Routes {
         return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
           return CallHistory();
         });
+      case Routes.auth:
+        return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
+          return Login();
+        });
       case dialer:
         return MaterialPageRoute<dynamic>(settings: routeSettings, builder: (BuildContext c) => Dialer());
     }
   }
 
-  // static Map<String, Widget Function(BuildContext context)> getRoutes() => {
-  //       Routes.auth: (BuildContext C) => Login(),
-  //       Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
-  //             create: (BuildContext c) => LandingPageBloc(),
-  //             child: LandingPage(),
-  //           )
-  //     };
+  static Map<String, Widget Function(BuildContext context)> getRoutes() => {
+        Routes.auth: (BuildContext C) => Login(),
+        Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
+              create: (BuildContext c) => LandingPageBloc(),
+              child: LandingPage(),
+            )
+      };
 
   static Future<String> get initialRoute async {
     final String route = await DI.inject<SharedStorage>().getInitialRoute();
@@ -89,10 +90,9 @@ class Routes {
   }
 
   static Widget? getLandingPage() {
-    BlocProvider<LandingPageBloc>(
+    return BlocProvider<LandingPageBloc>(
       create: (BuildContext c) => LandingPageBloc(),
       child: LandingPage(),
     );
-    return null;
   }
 }
