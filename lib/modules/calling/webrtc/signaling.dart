@@ -50,7 +50,11 @@ class Signaling with ChangeNotifier {
       roomId = data["roomId"];
       await _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
       final userId = (await _pref.getUserData()).userId;
-      await callStarted();
+    };
+    appWebSocket.join = (dynamic data) async {
+      roomId = data["roomId"];
+      await _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
+      final userId = (await _pref.getUserData()).userId;
       if (userId == int.parse(data["hostId"].toString())) {
         await createRoom();
       }
@@ -59,104 +63,6 @@ class Signaling with ChangeNotifier {
         await joinRoom();
       }
     };
-    appWebSocket.join = (dynamic data) {
-      roomId = data["roomId"];
-      callStatus = CallStatus.CallStarted;
-      _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
-      joinRoom();
-      notifyListeners();
-    };
-  }
-
-  Future<void> callStarted() async {
-    final userId = await _pref.getStringPreference(StorageKey.userId);
-    final FirebaseFirestore db = FirebaseFirestore.instance;
-
-    final DocumentReference<dynamic> roomRef = db.collection('rooms').doc(roomId);
-
-    peerConnection = await createPeerConnection(configuration);
-    print('configuration status ${peerConnection?.iceConnectionState}');
-
-    registerPeerConnectionListeners();
-
-    localStream?.getTracks().forEach((MediaStreamTrack track) {
-      peerConnection?.addTrack(track, localStream!);
-    });
-
-    // Code for collecting ICE candidates below
-    final CollectionReference<Map<String, dynamic>> callerCandidatesCollection = roomRef.collection('caller-$userId');
-
-    peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
-      print('Got candidate: ${candidate.toMap()}');
-      callerCandidatesCollection.add(candidate.toMap());
-    };
-    // Finish Code for collecting ICE candidate
-
-    // Add code for creating a room
-    RTCSessionDescription offer = await peerConnection!.createOffer();
-    await peerConnection?.setLocalDescription(offer);
-    print('Created offer: $offer');
-
-    Map<String, dynamic> roomWithOffer = {'offer': offer.toMap()};
-    await roomRef.set(roomWithOffer);
-
-    print('New room created with SDK offer. Room ID: $roomId');
-    currentRoomText = 'Current room is $roomId - You are the caller!';
-    // Created a Room
-
-    peerConnection?.onTrack = (RTCTrackEvent event) {
-      event.streams[0].getTracks().forEach((MediaStreamTrack track) {
-        print('Add a track to the remoteStream $track');
-        remoteStream?.addTrack(track);
-      });
-    };
-    // Listening for remote session description below
-    roomRef.snapshots().listen((DocumentSnapshot<Object?> snapshot) async {
-      print('Got updated room: ${snapshot.data()}');
-
-      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      if (peerConnection?.getRemoteDescription() != null && data['answer'] != null) {
-        RTCSessionDescription answer = RTCSessionDescription(
-          data['answer']['sdp'],
-          data['answer']['type'],
-        );
-
-        print("Someone tried to connect");
-        await peerConnection?.setRemoteDescription(answer);
-      }
-    });
-
-    // Listen for remote Ice candidates below
-    callerCandidatesCollection.snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
-      snapshot.docChanges.forEach((DocumentChange<Map<String, dynamic>> change) {
-        if (change.type == DocumentChangeType.added) {
-          final Map<String, dynamic> data = change.doc.data() as Map<String, dynamic>;
-          peerConnection!.addCandidate(
-            RTCIceCandidate(
-              data['candidate'],
-              data['sdpMid'],
-              data['sdpMLineIndex'],
-            ),
-          );
-        }
-      });
-    });
-
-    DocumentSnapshot<Object?> roomSnapshot = await roomRef.get();
-    if (roomSnapshot.exists) {
-      RTCSessionDescription answer = await peerConnection!.createAnswer();
-      print('Created Answer $answer');
-
-      await peerConnection!.setLocalDescription(answer);
-
-      Map<String, dynamic> roomWithAnswer = {
-        'answer': {'type': answer.type, 'sdp': answer.sdp}
-      };
-
-      await roomRef.update(roomWithAnswer);
-      // Finished creating SDP answer
-    }
-    notifyListeners();
   }
 
   Future<void> createRoom() async {
@@ -319,7 +225,6 @@ class Signaling with ChangeNotifier {
     RTCVideoRenderer remoteVideo,
   ) async {
     _locaRTCVideoRenderer = localVideo;
-    _locaRTCVideoRenderer?.muted = false;
     final MediaStream stream = await navigator.mediaDevices.getUserMedia(
       <String, bool>{'video': false, 'audio': true},
     );

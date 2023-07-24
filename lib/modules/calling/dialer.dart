@@ -47,12 +47,12 @@ class _DialerState extends State<Dialer> {
   void init() async {
     _localRenderer.initialize();
     _remoteRenderer.initialize();
-    DI.inject<AppWebSocket>().onConnected = (dynamic a) async {
+    appWebSocket.onConnected = (dynamic a) async {
       await signaling.openUserMedia(_localRenderer, _remoteRenderer);
       _callingController.joinRandomCall(signaling);
       joinReqsent = true;
     };
-    if (DI.inject<AppWebSocket>().isConnected && !joinReqsent) {
+    if (appWebSocket.isConnected && !joinReqsent) {
       await signaling.openUserMedia(_localRenderer, _remoteRenderer);
       _callingController.joinRandomCall(signaling);
     }

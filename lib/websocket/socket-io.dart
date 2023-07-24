@@ -31,15 +31,23 @@ class SocketIO extends AppWebSocket {
     } catch (_) {
       print('error $_');
     }
+
     socket?.onConnect((_) {
       print("Socket IO connected");
       onConnected?.call(WebSocketStatus.Connected);
-      revereCallback?.call();
     });
+
+    socket?.onReconnect((data) {
+      print("On onReconnect");
+    });
+
+    socket?.onConnecting((data) => print("On Connecting"));
+
     socket?.onDisconnect((_) {
       print("On Disconnect");
       onConnected?.call(WebSocketStatus.Disconnected);
     });
+
     _onMessage();
   }
 
