@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/loader_widget.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/home/widget/off_line_toggle.dart';
 import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/modules/profile/widgets/follow_followers.dart';
@@ -20,22 +21,23 @@ class UserProfile extends StatelessWidget {
       appBar: AppBar(
         actions: <Widget>[
           // ignore: always_specify_types
-          PopupMenuButton(itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem<int>(
-                value: 2,
-                child: Text("Logout"),
-              ),
-            ];
-          }, onSelected: (int value) {
-            if (value == 0) {
-              print("My account menu is selected.");
-            } else if (value == 1) {
-              print("Settings menu is selected.");
-            } else if (value == 2) {
-              DI.inject<LandingRepo>().logOut();
-            }
-          }),
+          // PopupMenuButton(itemBuilder: (BuildContext context) {
+          //   return [
+          //     PopupMenuItem<int>(
+          //       value: 2,
+          //       child: Text("Logout"),
+          //     ),
+          //   ];
+          // }, onSelected: (int value) {
+          //   if (value == 0) {
+          //     print("My account menu is selected.");
+          //   } else if (value == 1) {
+          //     print("Settings menu is selected.");
+          //   } else if (value == 2) {
+          //     DI.inject<LandingRepo>().logOut();
+          //   }
+          // }),
+          OfflineToggle(),
         ],
       ),
       body: FutureBuilder<UserData>(
@@ -47,11 +49,11 @@ class UserProfile extends StatelessWidget {
                   ProgressLoader(),
                   const Spacer(),
                   ProfileTile(
-                    title: Text("Log Out"),
+                    title: "Log Out",
                     onPressed: () {
-                      DI.inject<LandingRepo>().logOut();
+                      DI.inject<LandingRepo>().logout();
                     },
-                    leading: Icon(Icons.feedback),
+                    icon: (Icons.contact_phone),
                   ),
                 ],
               );
@@ -84,7 +86,7 @@ class UserProfile extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       SizedBox(
                         height: 20.0,
                       ),
@@ -92,7 +94,7 @@ class UserProfile extends StatelessWidget {
                         gmailUserData?.displayName ?? "",
                         style: const TextStyle(fontSize: FontSize.title),
                       ),
-                      // Text(gmailUserData.email ?? ''),
+                      Text(gmailUserData?.email ?? ''),
                       Text(gmailUserData?.phoneNumber ?? ''),
                       FollowFollowers()
                     ],
@@ -102,35 +104,58 @@ class UserProfile extends StatelessWidget {
             ),
           ),
           _summary(),
-
           ProfileTile(
-            title: Text("Call History"),
-            onPressed: () {},
-            leading: Icon(Icons.history),
-          ),
-          ProfileTile(
-            title: Text("Conversational Feedback"),
-            onPressed: () {},
-            leading: Icon(Icons.feedback),
-          ),
-          ProfileTile(
-            title: Text("Become Plus Memeber"),
-            onPressed: () {},
-            leading: Icon(Icons.card_membership),
-          ),
-          ProfileTile(
-            title: Text("Contact Us"),
+            title: ("Call History"),
             onPressed: () {
-              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
+              NavigationManager.instance.navigateTo(
+                Routes.callHistory,
+              );
             },
-            leading: Icon(Icons.contact_phone),
+            icon: (Icons.contact_phone),
           ),
           ProfileTile(
-            title: Text("About Us"),
+            title: ("Conversational Feedback"),
+            onPressed: () {},
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("Become Plus Memeber"),
+            onPressed: () {},
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("Contact Us"),
             onPressed: () {
-              NavigationManager.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
+              NavigationManager.instance
+                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
             },
-            leading: Icon(Icons.more),
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("About Us"),
+            onPressed: () {
+              NavigationManager.instance.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
+            },
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("Terms & Condition"),
+            onPressed: () {
+              NavigationManager.instance
+                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/terms_condition.html");
+            },
+            icon: (Icons.contact_phone),
+          ),
+          ProfileTile(
+            title: ("Logout"),
+            onPressed: () async {
+              final res = await DI.inject<LandingRepo>().logout();
+              if (res) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.of(context).pushReplacementNamed(Routes.root);
+              }
+            },
+            icon: (Icons.contact_phone),
           ),
 
           // const Spacer(),

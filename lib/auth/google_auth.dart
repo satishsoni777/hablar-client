@@ -6,42 +6,54 @@ import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
 class GoogleAuthService {
-  bool _isUserSignedIn = false;
-  static String id = "";
-  static final GoogleAuthService _singleton = GoogleAuthService._internal();
+  GoogleAuthService._internal();
   factory GoogleAuthService() {
     return _singleton;
   }
-  GoogleAuthService._internal();
+  bool _isUserSignedIn = false;
+  static String id = "";
+  static final GoogleAuthService _singleton = GoogleAuthService._internal();
+  final SharedStorage _sharedStorage = DI.inject<SharedStorage>();
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
-  Future<User?> handleSignIn() async {
+  Future<GoogleSignInAccount?> handleSignIn() async {
+    GoogleSignInAccount? googleUser;
     // hold the instance of the authenticated user
-    User user; // flag to check whether we're signed in already
+    User? user; // flag to check whether we're signed in already
+    await _googleSignIn.signOut();
+    try {
+      await _googleSignIn.disconnect();
+    } catch (_) {}
     bool isSignedIn = await _googleSignIn.isSignedIn();
     if (isSignedIn && _auth.currentUser != null) {
       // if so, return the current user
       user = _auth.currentUser!;
       _isUserSignedIn = isSignedIn;
     } else {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication; // get the credentials to (access / id token)
-      // to sign in via Firebase Authentication
-      final AuthCredential credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-      // user = (await _auth.signInWithCustomToken("asdadasdada789DISJHJKDAFSLD")).user!;
-      user = (await _auth.signInWithCredential(credential)).user!;
-      if (user == null)
-        _isUserSignedIn = false;
-      else
+      try {
+        googleUser = await _googleSignIn.signIn();
+      } catch (_) {}
+      if (googleUser == null)
+        return null;
+      else {
         _isUserSignedIn = true;
+      }
+      // final GoogleSignInAuthentication googleAuth = await googleUser.authentication; // get the credentials to (access / id token)
+      // // to sign in via Firebase Authentication
+      // final AuthCredential credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      // // user = (await _auth.signInWithCustomToken("asdadasdada789DISJHJKDAFSLD")).user!;
+      // user = (await _auth.signInWithCredential(credential)).user!;
+      // if (user == null)
+      //   _isUserSignedIn = false;
+      // else
+      //   _isUserSignedIn = true;
     }
     if (_isUserSignedIn) {
-      await DI.inject<SharedStorage>().setInitialRoute(route: Routes.home);
+      await _sharedStorage.setInitialRoute(route: Routes.home);
     } else {
-      await DI.inject<SharedStorage>().setInitialRoute(route: Routes.landingPage);
+      await _sharedStorage.setInitialRoute(route: Routes.landingPage);
     }
-    return user;
+    return googleUser;
   }
 
   Future<dynamic> facebookLogin() async {}

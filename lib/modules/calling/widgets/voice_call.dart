@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:take_it_easy/modules/calling/controller/calling_controller.dart';
 import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
 import 'package:take_it_easy/style/theme/image_path.dart';
 
@@ -12,7 +11,7 @@ class VoiceCall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Signaling>(builder: (context, provide, a) {
+    return Consumer<Signaling>(builder: (BuildContext context, Signaling provide, Widget? a) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -20,7 +19,7 @@ class VoiceCall extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            provide.callStatus == CallStatus.Connected
+            provide.callStatus == CallStatus.CallStarted
                 ? CircleAvatar(
                     child: Icon(Icons.person),
                     maxRadius: 40,
@@ -34,28 +33,23 @@ class VoiceCall extends StatelessWidget {
             SizedBox(
               height: 16,
             ),
-            if (provide.callStatus == CallStatus.Connected)
+            if (provide.callStatus == CallStatus.CallStarted)
               TimerConverter(
                 seconds: 1,
               )
-            else
+            else if (provide.callStatus == CallStatus.Connecting)
               Text("Connecting..."),
             Spacer(),
-            provide.callStatus == CallStatus.Connected
+            provide.callStatus == CallStatus.CallStarted
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
+                      IconButton(onPressed: () {}, icon: Icon(Icons.speaker)),
                       IconButton(
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          ImagePath.speaker,
-                          color: Colors.white,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.mic),
-                      ),
+                          onPressed: () {
+                            provide.mute(provide.muted);
+                          },
+                          icon: provide.muted ? Icon(Icons.mic_off) : Icon((Icons.mic))),
                       MaterialButton(
                         onPressed: () {},
                         color: Colors.red,
@@ -66,7 +60,7 @@ class VoiceCall extends StatelessWidget {
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       MaterialButton(
                         onPressed: () {},
                         color: Colors.red,
@@ -87,9 +81,8 @@ class VoiceCall extends StatelessWidget {
 }
 
 class TimerConverter extends StatefulWidget {
+  const TimerConverter({required this.seconds});
   final int seconds;
-
-  TimerConverter({required this.seconds});
 
   @override
   State<TimerConverter> createState() => _TimerConverterState();

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/call_history/call_history.dart';
 import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
 import 'package:take_it_easy/modules/landing_page/landing_page.dart';
 import 'package:take_it_easy/modules/static_page/static_page.dart';
-import 'package:take_it_easy/modules/video_call/video_call.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
@@ -22,17 +22,15 @@ class Routes {
   static const String landingPage = '/landing_page';
   static const String dialer = '/dialer';
   static const String staticPage = "/static_page";
+  static const String callHistory = "/call_history";
 
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      case root:
+      case landingPage:
         return MaterialPageRoute<dynamic>(
             settings: routeSettings,
             builder: (BuildContext c) {
-              return BlocProvider<LandingPageBloc>(
-                create: (BuildContext c) => LandingPageBloc(),
-                child: LandingPage(),
-              );
+              return LandingPage();
             });
       case auth:
         return MaterialPageRoute<dynamic>(
@@ -61,13 +59,21 @@ class Routes {
                 url: routeSettings.arguments.toString(),
               );
             });
+
+      case callHistory:
+        return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
+          return CallHistory();
+        });
+      case Routes.auth:
+        return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
+          return Login();
+        });
       case dialer:
         return MaterialPageRoute<dynamic>(settings: routeSettings, builder: (BuildContext c) => Dialer());
     }
   }
 
   static Map<String, Widget Function(BuildContext context)> getRoutes() => {
-        Routes.videoCall: (BuildContext context) => VideoCall(),
         Routes.auth: (BuildContext C) => Login(),
         Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
               create: (BuildContext c) => LandingPageBloc(),
@@ -84,10 +90,9 @@ class Routes {
   }
 
   static Widget? getLandingPage() {
-    BlocProvider<LandingPageBloc>(
+    return BlocProvider<LandingPageBloc>(
       create: (BuildContext c) => LandingPageBloc(),
       child: LandingPage(),
     );
-    return null;
   }
 }

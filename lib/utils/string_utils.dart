@@ -1,4 +1,4 @@
-bool isNullOrEmpty(String str) {
+bool isNullOrEmpty(String? str) {
   return str == null || str.length == 0;
 }
 

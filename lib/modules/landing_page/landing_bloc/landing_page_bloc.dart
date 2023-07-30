@@ -9,7 +9,7 @@ part 'landing_page_state.dart';
 
 class LandingPageBloc extends Bloc<LandingPageEvent, LandingPageDateState> {
   LandingPageBloc() : super(LandingPageDateState());
-  final repo = DI.inject<LandingRepo>();
+  final LandingRepo repo = DI.inject<LandingRepo>();
   @override
   Stream<LandingPageDateState> mapEventToState(
     LandingPageEvent event,
@@ -17,12 +17,11 @@ class LandingPageBloc extends Bloc<LandingPageEvent, LandingPageDateState> {
     if (event is TokenValidate) {
       try {
         yield state.copyWith(isValidate: false, isLoading: true);
-        final result = await repo.isSignIn();
+        final bool result = await repo.isSignIn();
         yield state.copyWith(isLoading: false, isValidate: result);
       } catch (e) {
         yield state.copyWith(isLoading: false, isValidate: false);
       }
     }
-    // TODO: implement mapEventToState
   }
 }

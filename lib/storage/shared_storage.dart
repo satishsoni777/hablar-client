@@ -16,10 +16,10 @@ abstract class SharedStorage {
   getObjectPreference(String key) async {
     final SharedPreferences preferences = await _getPreferences;
     final String? jsonString = preferences.getString(key);
-    if (isNullOrEmpty(jsonString!)) {
+    if (isNullOrEmpty(jsonString)) {
       return null;
     }
-    return jsonDecode(jsonString);
+    return jsonDecode(jsonString ?? '');
   }
 
   Future<bool> setObjectPreference(String key, var object) async {
@@ -27,9 +27,9 @@ abstract class SharedStorage {
     return await preferences.setString(key, jsonEncode(object));
   }
 
-  setStringPreference(String key, String value) async {
+  Future<bool> setStringPreference(String key, String value) async {
     final SharedPreferences preferences = await _getPreferences;
-    await preferences.setString(key, value);
+    return await preferences.setString(key, value);
   }
 
   Future<String?> getStringPreference(String? key) async {
@@ -38,13 +38,25 @@ abstract class SharedStorage {
 
   setUserData(dynamic customerData);
 
-  void setToken(String token);
+  Future<void> setToken(String token);
+
+  Future<bool> setNewUser(String value);
+
+  Future<String?> getToken();
+
+  Future<bool> isSignIn();
+
+  Future<bool?> isNewUser();
 
   Future<UserData> getUserData();
 
   setInitialRoute({String route});
 
   Future<String> getInitialRoute();
+
+  Future<void> logout() async {
+    (await sharedPreferences)?.clear();
+  }
 
   // Remove aall store key from shared preferences
   Future<bool> resetFlow() async {
@@ -90,17 +102,41 @@ class SharedStorageImpl extends SharedStorage {
   }
 
   @override
-  void setToken(String token) async {
+  Future<void> setToken(String token) async {
     await setStringPreference(StorageKey.token, token);
+  }
+
+  @override
+  Future<String?> getToken() async {
+    return getStringPreference(StorageKey.token);
+  }
+
+  @override
+  Future<bool> setNewUser(String value) async {
+    return await setStringPreference(StorageKey.isNewUser, value);
+  }
+
+  @override
+  Future<bool?> isNewUser() async {
+    return (await getStringPreference(StorageKey.isNewUser)) == "true" ? true : false;
+  }
+
+  @override
+  Future<bool> isSignIn() async {
+    final String? token = await getStringPreference(StorageKey.token);
+    return !isNullOrEmpty(token);
   }
 }
 
 // Define All storage keys here.
 class StorageKey {
+  StorageKey._();
   static final String gmailUserDataKey = 'gmail_auth_user_data';
   static final String route = 'route';
   static final String userId = "userId";
   static const String rtcToken = "rtc_token";
   static const String roomId = "roomId";
   static const String token = "token";
+  static const String online = "online";
+  static const String isNewUser = "is_new_user";
 }

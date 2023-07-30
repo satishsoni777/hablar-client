@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:take_it_easy/enums/socket-io-events.dart';
-import 'package:web_socket_channel/io.dart';
 
 abstract class AppWebSocket {
   Function(dynamic)? onMessageCallback;
@@ -19,6 +15,8 @@ abstract class AppWebSocket {
 
   Function(dynamic)? join;
 
+  Function(dynamic)? callStarted;
+
   Function(dynamic)? answerSdp;
 
   Function(dynamic)? offerSdp;
@@ -30,8 +28,6 @@ abstract class AppWebSocket {
   bool get isConnected;
 
   void leaveRoom(Map<String, dynamic> message);
-
-  // ignore: close_sinks
 
   Future<bool>? sendMessage(Map<String, dynamic> message, {String? meetingPayloadEnum});
 
@@ -98,10 +94,4 @@ class WebSocketConnectionStatus {
   WebSocketStatus? webSocketStatus;
 }
 
-enum WebSocketStatus {
-  Connecting,
-  Connected,
-  Closed,
-  Error,
-  Disconnected
-}
+enum WebSocketStatus { Connecting, Connected, Closed, Error, Disconnected }

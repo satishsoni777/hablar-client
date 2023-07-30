@@ -8,12 +8,11 @@ class AppAlert {
   static AppAlert _instance = AppAlert._();
   static BuildContext? _context;
   factory AppAlert.of({BuildContext? context}) {
-    _context = context ?? NavigationManager.navigationKey.currentContext;
+    _context = context ?? NavigationManager.instance.navigationKey.currentContext;
     return _instance;
   }
   static Future<dynamic> dialog({Widget? child, BuildContext? context}) async {
-    print(child);
-    _context = context ?? NavigationManager.navigationKey.currentContext;
+    _context = context ?? NavigationManager.instance.navigationKey.currentContext;
     if (_hasLoader) return;
     _hasLoader = true;
     await showDialog(
@@ -43,7 +42,7 @@ class DialogHelper {
   static Future<dynamic> showCommonDialog({
     Widget? child,
   }) async {
-    final BuildContext context = NavigationManager.navigationKey.currentContext!;
+    final BuildContext context = NavigationManager.instance.navigationKey.currentContext!;
     return await showDialog(
       context: context,
       builder: (BuildContext context) {

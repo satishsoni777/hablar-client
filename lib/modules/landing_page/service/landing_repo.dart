@@ -1,29 +1,40 @@
+import 'package:take_it_easy/auth/google_auth.dart';
 import 'package:take_it_easy/components/loader.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_req.dart';
-import 'package:take_it_easy/navigation/navigation_manager.dart';
-import 'package:take_it_easy/navigation/routes.dart';
-import 'package:take_it_easy/resources/app_keys.dart';
+import 'package:take_it_easy/storage/shared_storage.dart';
 
 abstract class LandingRepo {
   Future<bool> isSignIn();
-  Future<bool> logOut();
+  Future<bool> logout();
 }
 
 class LandingRepoImpl extends LandingRepo {
   final LandingReq landingRepo = LandingReq();
+  final SharedStorage _sharedStorage = DI.inject<SharedStorage>();
   @override
   Future<bool> isSignIn() async {
-    return landingRepo.isSignIn();
+    final bool res = await landingRepo.isGSignIn();
+    if (await _sharedStorage.isSignIn()) {
+      return true;
+    } else if (res && !(await _sharedStorage.isSignIn())) {
+      await logout();
+      return false;
+    } else {
+      logout();
+      return false;
+    }
   }
 
   @override
-  Future<bool> logOut() async {
+  Future<bool> logout() async {
+    AppLoader.showLoader();
     try {
       AppLoader.showLoader();
-      await landingRepo.logOut();
+      await GoogleAuthService().logout();
+      await _sharedStorage.logout();
     } catch (_) {}
-    AppLoader.showLoader();
-    NavigationManager.pushReplacementNamed(Routes.root);
+    AppLoader.hideLoader();
     return true;
   }
 }

@@ -9,7 +9,6 @@ class StaticPage extends StatefulWidget {
 }
 
 class _StaticPageState extends State<StaticPage> {
-  late WebViewController _controller;
   bool _isLoading = false;
   @override
   void initState() {
@@ -21,21 +20,33 @@ class _StaticPageState extends State<StaticPage> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-          child: WebView(
-        initialUrl: widget.url,
-        onProgress: (a) {},
-        onPageFinished: (a) {
-          _isLoading = true;
-          setState(() {});
-        },
-        onPageStarted: (a) {
-          _isLoading = true;
-          setState(() {});
-        },
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (c) {
-          _controller = c;
-        },
+          child: Stack(
+        children: [
+          WebView(
+            initialUrl: widget.url,
+            onProgress: (a) {},
+            onPageFinished: (a) {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            onPageStarted: (a) {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (c) {},
+          ),
+          if (!_isLoading)
+            Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+              ],
+            ))
+        ],
       )),
     );
   }
