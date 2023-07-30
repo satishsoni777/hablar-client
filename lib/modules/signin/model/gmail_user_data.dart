@@ -1,4 +1,6 @@
-class UserData {
+import 'package:flutter/material.dart';
+
+class UserData extends ChangeNotifier {
   UserData({
     this.displayName,
     this.email,
@@ -10,6 +12,7 @@ class UserData {
     this.isAnonymous,
     this.userId,
   });
+  UserData? instance;
 
   UserData.fromJson(Map<String, dynamic>? json) {
     if (json != null) {
@@ -24,6 +27,21 @@ class UserData {
       userId = json['userId'];
       gender = json["gender"];
       isNewUser = json["isNewUser"];
+    }
+  }
+  void copy(UserData data) {
+    this.instance = data;
+    if (instance != null) {
+      displayName = data.displayName;
+      email = data.email;
+      emailVerified = data.emailVerified;
+      gender = data.gender;
+      isNewUser = data.isNewUser;
+      photoURL = data.photoURL;
+      phoneNumber = data.phoneNumber;
+      uid = data.uid;
+      userId = data.userId;
+      tenantId = data.tenantId;
     }
   }
 

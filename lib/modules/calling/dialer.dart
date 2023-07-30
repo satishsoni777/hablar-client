@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
-import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/calling/controller/calling_controller.dart';
 import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 import 'package:take_it_easy/modules/calling/widgets/voice_call.dart';
@@ -30,11 +30,8 @@ class _DialerState extends State<Dialer> {
 
   @override
   void initState() {
-    signaling = Signaling();
+    signaling = Signaling(DI.inject<UserData>());
     _callingController = CallingController(signaling);
-    appWebSocket.userLeft = (dynamic data) {
-      _callingController.callEnd(signaling);
-    };
     super.initState();
   }
 
@@ -45,17 +42,22 @@ class _DialerState extends State<Dialer> {
   }
 
   void init() async {
-    _localRenderer.initialize();
+    appWebSocket.connect();
+
+    appWebSocket.userLeft = (dynamic data) {
+      _callingController.callEnd(signaling);
+    };
     _remoteRenderer.initialize();
+    _localRenderer.initialize();
     appWebSocket.onConnected = (dynamic a) async {
       await signaling.openUserMedia(_localRenderer, _remoteRenderer);
-      _callingController.joinRandomCall(signaling);
+      if (!joinReqsent) _callingController.joinRandomCall(signaling);
       joinReqsent = true;
     };
-    if (appWebSocket.isConnected && !joinReqsent) {
-      await signaling.openUserMedia(_localRenderer, _remoteRenderer);
-      _callingController.joinRandomCall(signaling);
-    }
+    // if (appWebSocket.isConnected && !joinReqsent) {
+    //   await signaling.openUserMedia(_localRenderer, _remoteRenderer);
+    //   _callingController.joinRandomCall(signaling);
+    // }
     signaling.onAddRemoteStream = ((MediaStream stream) {
       _remoteRenderer.srcObject = stream;
       setState(() {});
@@ -64,16 +66,13 @@ class _DialerState extends State<Dialer> {
 
   @override
   void dispose() {
+    appWebSocket.close();
     appWebSocket.leaveRoom(<String, dynamic>{"roomId": signaling.roomId});
     super.dispose();
   }
 
   Future<bool> _handUp() async {
-    AppLoader.showLoader();
-    try {
-      await _callingController.callEnd(signaling);
-    } catch (_) {}
-    AppLoader.hideLoader();
+    await _callingController.callEnd(signaling);
     return true;
   }
 

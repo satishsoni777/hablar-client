@@ -20,19 +20,21 @@ class ProfileTile extends StatelessWidget {
         border: Border.all(color: Colors.white12),
       ),
       child: ListTile(
-          title: Text(
-            title,
-            style: TextStyle(fontSize: 14),
-          ),
-          leading: Icon(
-            icon,
-            size: 16,
-          ),
-          onTap: onPressed,
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            size: 14,
-          )),
+        title: Text(
+          title,
+          style: TextStyle(fontSize: 14),
+        ),
+        leading: Icon(
+          icon,
+          size: 16,
+        ),
+        isThreeLine: false,
+        onTap: onPressed,
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 14,
+        ),
+      ),
     );
   }
 }

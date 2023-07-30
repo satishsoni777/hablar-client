@@ -6,6 +6,7 @@ import 'package:take_it_easy/modules/home/controller/home_controller.dart';
 import 'package:take_it_easy/modules/home/calling.dart';
 import 'package:take_it_easy/modules/home/service/home_service.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
@@ -24,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   initState() {
     homeController = HomeController(homeService: HomeServiceImp(), sharedStorage: DI.inject<SharedStorage>());
     appWebSocket = DI.inject<AppWebSocket>();
-    appWebSocket?.connect();
     super.initState();
   }
 
@@ -52,14 +52,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          appWebSocket?.sendMessage(<String, dynamic>{
-            "userId": "2222",
-            "countryCode": "IN",
-            "stateCode": "KR",
-            "type": "join-random-call",
-          }, meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
-        }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (int value) {

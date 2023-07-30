@@ -1,31 +1,31 @@
 import 'dart:async';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/enums/socket-io-events.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/extensions.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+final int PING_DURATION = 4;
+
 class SocketIO extends AppWebSocket {
   IO.Socket? socket;
   int? userId;
+  Timer? _timer;
   final SharedStorage _pref = DI.inject<SharedStorage>();
   @override
   void connect({String? header, Function? revereCallback}) async {
     try {
       final String token = await _pref.getToken() ?? '';
-      userId = (await DI.inject<SharedStorage>().getUserData()).userId;
+      userId = DI.inject<UserData>().userId;
       final String url = Flavor.internal().baseUrl.getUrl;
       if (socket?.connected ?? false) return;
       socket?.close();
       socket = IO.io(
         url + '?userId=$userId',
-        IO.OptionBuilder()
-            .setTransports(<String>['websocket'])
-            .setExtraHeaders(<String, dynamic>{"authorization": "Bearer $token"})
-            .setReconnectionAttempts(2000)
-            .build(),
+        IO.OptionBuilder().setTransports(<String>['websocket']).setExtraHeaders(<String, dynamic>{"authorization": "Bearer $token"}).build(),
       );
       socket?.connect();
     } catch (_) {
@@ -46,15 +46,11 @@ class SocketIO extends AppWebSocket {
     socket?.onDisconnect((_) {
       print("On Disconnect");
       onConnected?.call(WebSocketStatus.Disconnected);
+      // connect();
+      socket?.connected = false;
     });
-
+    _pingPong();
     _onMessage();
-  }
-
-  @override
-  void close() {
-    socket?.clearListeners();
-    socket?.close();
   }
 
   @override
@@ -70,13 +66,25 @@ class SocketIO extends AppWebSocket {
     return Future<bool>.value(true);
   }
 
+  void _pingPong() {
+    userId = DI.inject<UserData>().userId;
+    _timer?.cancel();
+    final pingMessage = {"type": "ping", "userId": userId};
+    _timer = Timer.periodic(Duration(seconds: PING_DURATION), (Timer a) {
+      if (isConnected) {
+        print("Send Ping $pingMessage");
+        socket?.emit(MeetingPayloadEnum.PING, pingMessage);
+      } else {
+        // connect();
+      }
+    });
+  }
+
   void _onMessage() {
-    socket?.onPing((data) => null);
-    socket?.onPong((data) => null);
-    // socket?.packet(packet);
+    socket?.onPong((data) => print("pong recieved $data"));
+
     socket?.on(MeetingPayloadEnum.ANSWER_SDP, (data) {
       print("on ANSWER_SDP $data");
-      answerSdp?.call(data);
     });
     socket?.on(MeetingPayloadEnum.USER_LEFTL, (data) {
       print("on USER_LEFTL $data");
@@ -92,7 +100,7 @@ class SocketIO extends AppWebSocket {
     });
     socket?.on(MeetingPayloadEnum.CREATE_ROOM, (data) {
       print("MeetingPayloadEnum.CREATE_ROOM $data");
-      roomCreated?.call(data);
+      createRoom?.call(data);
     });
     socket?.on(MeetingPayloadEnum.CALL_STARTED, (data) {
       print("MeetingPayloadEnum.CALL_STARTED $userId");
@@ -107,7 +115,6 @@ class SocketIO extends AppWebSocket {
       final Map<String, dynamic> msg = <String, dynamic>{"countryCode": "IN", "stateCode": "KR", "type": "join-random-call"};
       socket?.emit("message", msg);
     } else {
-      connect();
       onConnected = (_) {
         joinRandomCall();
       };
@@ -116,16 +123,18 @@ class SocketIO extends AppWebSocket {
 
   @override
   void leaveRoom(Map<String, dynamic> message) {
-    if (isConnected) {
-      message["userId"] = userId;
-      message["type"] = "leave-room";
-      socket?.emit("message", message);
-    } else {
-      connect();
-      onConnected = (_) {
-        leaveRoom(message);
-      };
-    }
+    message["userId"] = userId;
+    message["type"] = "leave-room";
+    socket?.emit("message", message);
+  }
+
+  @override
+  void close() {
+    socket?.close();
+    socket?.connected = false;
+    socket?.disconnect();
+    socket?.clearListeners();
+    _timer?.cancel();
   }
 
   @override

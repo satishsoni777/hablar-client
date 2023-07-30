@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/call_history/call_history.dart';
+import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
@@ -73,14 +75,6 @@ class Routes {
     }
   }
 
-  static Map<String, Widget Function(BuildContext context)> getRoutes() => {
-        Routes.auth: (BuildContext C) => Login(),
-        Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
-              create: (BuildContext c) => LandingPageBloc(),
-              child: LandingPage(),
-            )
-      };
-
   static Future<String> get initialRoute async {
     final String route = await DI.inject<SharedStorage>().getInitialRoute();
     if (isNullOrEmpty(route)) {
@@ -91,7 +85,10 @@ class Routes {
 
   static Widget? getLandingPage() {
     return BlocProvider<LandingPageBloc>(
-      create: (BuildContext c) => LandingPageBloc(),
+      create: (BuildContext c) => LandingPageBloc(
+        DI.inject<LandingRepo>(),
+        sharedStorage: DI.inject<SharedStorage>(),
+      ),
       child: LandingPage(),
     );
   }

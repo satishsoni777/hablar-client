@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:take_it_easy/modules/calling/controller/calling_controller.dart';
 import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
 import 'package:take_it_easy/style/theme/image_path.dart';
 
@@ -11,7 +11,8 @@ class VoiceCall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Signaling>(builder: (BuildContext context, Signaling provide, Widget? a) {
+    return Consumer2<Signaling, CallingController>(
+        builder: (BuildContext context, Signaling provide, CallingController callingController, Widget? a) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -44,25 +45,33 @@ class VoiceCall extends StatelessWidget {
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      IconButton(onPressed: () {}, icon: Icon(Icons.speaker)),
-                      IconButton(
-                          onPressed: () {
-                            provide.mute(provide.muted);
-                          },
-                          icon: provide.muted ? Icon(Icons.mic_off) : Icon((Icons.mic))),
+                      IconButton(onPressed: () {}, icon: Icon(Icons.speaker_phone_rounded)),
                       MaterialButton(
                         onPressed: () {},
                         color: Colors.red,
                         shape: CircleBorder(),
-                        child: Icon(Icons.phone_forwarded_sharp),
-                      )
+                        height: 60,
+                        child: Icon(
+                          Icons.phone_forwarded_sharp,
+                          size: 20,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          provide.mute(provide.muted);
+                        },
+                        icon: provide.muted ? Icon(Icons.mic_off) : Icon((Icons.mic)),
+                      ),
                     ],
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       MaterialButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await callingController.callEnd(provide);
+                          Navigator.pop(context);
+                        },
                         color: Colors.red,
                         shape: CircleBorder(),
                         height: 65,

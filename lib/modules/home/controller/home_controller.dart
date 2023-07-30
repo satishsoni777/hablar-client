@@ -8,6 +8,10 @@ class HomeController extends ChangeNotifier {
   final HomeService? homeService;
   final SharedStorage? sharedStorage;
   bool isOffline = false;
+  int _level = 0;
+  String _genger = "";
+  String get gedner => _genger;
+  int get selectedLevel => _level;
   Future<dynamic> toggleOffOn(bool offline) async {
     try {
       AppLoader.showLoader();
@@ -18,5 +22,15 @@ class HomeController extends ChangeNotifier {
       AppLoader.hideLoader();
       notifyListeners();
     } catch (_) {}
+  }
+
+  void selectLevel(int level) {
+    this._level = level;
+    notifyListeners();
+  }
+
+  void selectGender(String value) {
+    this._genger = value;
+    notifyListeners();
   }
 }

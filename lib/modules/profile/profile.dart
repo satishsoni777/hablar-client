@@ -96,7 +96,7 @@ class UserProfile extends StatelessWidget {
                       ),
                       Text(gmailUserData?.email ?? ''),
                       Text(gmailUserData?.phoneNumber ?? ''),
-                      FollowFollowers()
+                      // FollowFollowers()
                     ],
                   ),
                 )
@@ -127,14 +127,14 @@ class UserProfile extends StatelessWidget {
             title: ("Contact Us"),
             onPressed: () {
               NavigationManager.instance
-                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/contact_us.html");
+                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/hablar/static_page/contact_us.html");
             },
             icon: (Icons.contact_phone),
           ),
           ProfileTile(
             title: ("About Us"),
             onPressed: () {
-              NavigationManager.instance.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/about.html");
+              NavigationManager.instance.navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/hablar/static_page/about.html");
             },
             icon: (Icons.contact_phone),
           ),
@@ -142,7 +142,7 @@ class UserProfile extends StatelessWidget {
             title: ("Terms & Condition"),
             onPressed: () {
               NavigationManager.instance
-                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/teasy/static_page/terms_condition.html");
+                  .navigateTo(Routes.staticPage, arguments: "https://satishsoni777.github.io/hablar/static_page/terms_condition.html");
             },
             icon: (Icons.contact_phone),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
 import 'package:take_it_easy/storage/db/firebase_db.dart';
@@ -10,11 +11,13 @@ class CallingController extends ChangeNotifier {
   CallingController(this._signaling);
   Signaling _signaling;
   Signaling get signaling => _signaling;
+
   void joinRandomCall(Signaling signaling) async {
     final String roomId = await DI.inject<SharedStorage>().getStringPreference(StorageKey.roomId) ?? '';
     await FirebaseDbUtil.instance.deleteRoomIfExist(roomId);
     if (isNullOrEmpty(roomId)) {
-      DI.inject<AppWebSocket>().leaveRoom(<String, dynamic>{"roomId": roomId});
+      // DI.inject<AppWebSocket>().leaveRoom(<String, dynamic>{"roomId": roomId});
+      // (await DI.inject<SharedStorage>()).setStringPreference(StorageKey.roomId, "");
     }
 
     signaling.joinRandomCall();
@@ -22,8 +25,11 @@ class CallingController extends ChangeNotifier {
 
   void toggleAudio() {}
 
-  Future<void> callEnd(Signaling signaling) async {
+  Future<bool> callEnd(Signaling signaling) async {
+    AppLoader.showLoader();
     await signaling.callEnd();
+    AppLoader.hideLoader();
+    return true;
   }
 
   void onNavigationChanged() {}
