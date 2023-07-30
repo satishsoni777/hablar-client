@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/enums/socket-io-events.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/extensions.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+final int PING_DURATION = 4;
+
 class SocketIO extends AppWebSocket {
   IO.Socket? socket;
+  Timer? _timer;
   int? userId;
   final SharedStorage _pref = DI.inject<SharedStorage>();
   @override
@@ -70,10 +74,23 @@ class SocketIO extends AppWebSocket {
     return Future<bool>.value(true);
   }
 
+  void _pingPong() {
+    userId = DI.inject<UserData>().userId;
+    _timer?.cancel();
+    final pingMessage = {"type": "ping", "userId": userId};
+    _timer = Timer.periodic(Duration(seconds: PING_DURATION), (Timer a) {
+      if (isConnected) {
+        print("Send Ping $pingMessage");
+        socket?.emit(MeetingPayloadEnum.PING, pingMessage);
+      } else {
+        // connect();
+      }
+    });
+  }
+
   void _onMessage() {
     socket?.onPing((data) => null);
     socket?.onPong((data) => null);
-    // socket?.packet(packet);
     socket?.on(MeetingPayloadEnum.ANSWER_SDP, (data) {
       print("on ANSWER_SDP $data");
       answerSdp?.call(data);

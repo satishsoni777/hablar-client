@@ -7,7 +7,7 @@ class Spacing {
   static const double mediumMargin = 12;
   static const double smallMargin = 8;
   static const double halfSmallMargin = 4;
-  static const double marginLarge=24;
+  static const double marginLarge = 24;
 
   //Height
   static const sizeBoxHt2 = const SizedBox(height: 2.0);
@@ -38,6 +38,7 @@ class Spacing {
 }
 
 class Dimensions {
+  Dimensions._();
   static const iconSize = const Size(24.0, 24.0);
   static const double smallRadius = 2;
   static const double defaultRadius = 4;
@@ -47,4 +48,9 @@ class Dimensions {
   static const double scrollbarThickness = 8.0;
   static const double mtCardRadius = 14.0;
   static const payLaterButtonHeight = 56.0;
+}
+
+class Borders {
+  Borders._();
+  static const double border = .5;
 }

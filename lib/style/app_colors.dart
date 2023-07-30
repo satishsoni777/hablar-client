@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  AppColors._();
   static const Color white = Color(0xffFFFFFF);
   static const Color primary = Color(0xff1d1e23);
   static const Color accent = Color(0xffff822e);
@@ -50,7 +51,8 @@ class AppColors {
   static const Color explosion2 = Color(0xffD193FF);
   static const Color explosion3 = Color(0xffF7D48D);
   static const Color explosion4 = Color(0xffF69E7B);
-  static const lightGradientStart=Color(0xffF2FEB2);
-  static const lightGradientEnd=Color(0xff46FECE);
-  static const Color tertiaryGreen=Color(0xff087B73);
+  static const lightGradientStart = Color(0xffF2FEB2);
+  static const lightGradientEnd = Color(0xff46FECE);
+  static const Color tertiaryGreen = Color(0xff087B73);
+  static const Color border = Colors.white24;
 }

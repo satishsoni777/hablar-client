@@ -320,25 +320,25 @@ class Signaling with ChangeNotifier {
   Future<void> callEnd() async {
     try {
       final String? roomId = await _pref.getStringPreference(StorageKey.roomId);
-      if (isNullOrEmpty(roomId)) return;
-      appWebSocket.leaveRoom(<String, dynamic>{"roomId": roomId});
       FirebaseFirestore db = FirebaseFirestore.instance;
       DocumentReference<Map<String, dynamic>> roomRef = db.collection('rooms').doc(roomId);
+      final List<dynamic> result = await Future.wait([roomRef.collection('calleeCandidates').get(), roomRef.collection('callerCandidates').get()]);
+      QuerySnapshot<Map<String, dynamic>> calleeCandidates = result.first;
+      QuerySnapshot<Map<String, dynamic>> callerCanidates = result[1];
+      if (isNullOrEmpty(roomId)) return;
+      appWebSocket.leaveRoom(<String, dynamic>{"roomId": roomId});
+
       if (hostType == HostType.Callee) {
-        QuerySnapshot<Map<String, dynamic>> calleeCandidates = await roomRef.collection('calleeCandidates').get();
         calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
       } else {
-        QuerySnapshot<Map<String, dynamic>> callerCanidates = await roomRef.collection('callerCandidates').get();
         callerCanidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
       }
-      await roomRef.delete();
-      await hangUp(_locaRTCVideoRenderer!);
+      await Future.wait([roomRef.delete(), hangUp(_locaRTCVideoRenderer!), _pref.setStringPreference(StorageKey.roomId, "")]);
       stop();
       callStatus = CallStatus.CallEnded;
     } catch (e) {
       print(e);
     }
-    await _pref.setStringPreference(StorageKey.roomId, "");
     notifyListeners();
   }
 }
