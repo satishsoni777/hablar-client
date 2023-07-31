@@ -7,8 +7,9 @@ import 'package:take_it_easy/utils/string_utils.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 class CallingController extends ChangeNotifier {
-  CallingController(this._signaling);
-  Signaling _signaling;
+  CallingController(this._signaling, this._appWebSocket);
+  final Signaling _signaling;
+  final AppWebSocket _appWebSocket;
   Signaling get signaling => _signaling;
   void joinRandomCall(Signaling signaling) async {
     final String roomId = await DI.inject<SharedStorage>().getStringPreference(StorageKey.roomId) ?? '';

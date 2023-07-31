@@ -31,7 +31,7 @@ class _DialerState extends State<Dialer> {
   @override
   void initState() {
     signaling = Signaling();
-    _callingController = CallingController(signaling);
+    _callingController = CallingController(signaling, appWebSocket);
     appWebSocket.userLeft = (dynamic data) {
       _callingController.callEnd(signaling);
     };

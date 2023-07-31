@@ -1,7 +1,7 @@
 class UserData {
   UserData({
     this.displayName,
-    this.email,
+    this.emailId,
     this.photoURL,
     this.uid,
     this.phoneNumber,
@@ -9,28 +9,33 @@ class UserData {
     this.tenantId,
     this.isAnonymous,
     this.userId,
+    this.gender,
+    this.isNewUser,
   });
 
-  UserData.fromJson(Map<String, dynamic>? json) {
+  factory UserData.fromJson(Map<String, dynamic>? json) {
     if (json != null) {
-      displayName = json['displayName'];
-      email = json['emailId"'];
-      photoURL = json['photoURL'];
-      uid = json['uid'];
-      phoneNumber = json['phoneNumber'];
-      emailVerified = json['emailVerified'];
-      tenantId = json['tenantId'];
-      isAnonymous = json['isAnonymous'];
-      userId = json['userId'];
-      gender = json["gender"];
-      isNewUser = json["isNewUser"];
-    }
+      return UserData(
+        displayName: json['displayName'],
+        emailId: json['emailId"'],
+        photoURL: json['photoURL'],
+        uid: json['uid'],
+        phoneNumber: json['phoneNumber'],
+        emailVerified: json['emailVerified'],
+        tenantId: json['tenantId'],
+        isAnonymous: json['isAnonymous'],
+        userId: json['userId'],
+        gender: json["gender"],
+        isNewUser: json["isNewUser"],
+      );
+    } else
+      return UserData();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['displayName'] = this.displayName;
-    data['emailId'] = this.email;
+    data['emailId'] = this.emailId;
     data['photoURL'] = this.photoURL;
     data['uid'] = this.uid;
     data['phoneNumber'] = this.phoneNumber;
@@ -44,7 +49,7 @@ class UserData {
   }
 
   String? displayName;
-  String? email;
+  String? emailId;
   String? photoURL;
   String? uid;
   String? phoneNumber;

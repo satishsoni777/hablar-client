@@ -21,7 +21,9 @@ class HomeController extends ChangeNotifier {
       await sharedStorage?.setStringPreference(StorageKey.online, offline.toString());
       AppLoader.hideLoader();
       notifyListeners();
-    } catch (_) {}
+    } catch (_) {
+      print(_);
+    }
   }
 
   void selectLevel(int level) {

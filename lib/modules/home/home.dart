@@ -52,14 +52,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () {
-          appWebSocket?.sendMessage(<String, dynamic>{
-            "userId": "2222",
-            "countryCode": "IN",
-            "stateCode": "KR",
-            "type": "join-random-call",
-          }, meetingPayloadEnum: MeetingPayloadEnum.JOIN_RANDOM_CALL);
-        }),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: homeTabs.index,
           onTap: (int value) {

@@ -6,7 +6,7 @@ class Endpoints {
   static const String startMeeting = 'meeting/start';
   static const String join = "join";
   static const String sigin = 'authentication/signIn';
-  static const String toggleOffOn = 'signaling/toggleOnline';
+  static const String toggleOffOn = 'signaling/toggle_online';
   static const String leaveRoom = 'signaling/leaveRoom';
   static const String joinRandomRoom = 'signaling/joinRandomRoom';
   static const String updateUserData = 'users/updateUserData';

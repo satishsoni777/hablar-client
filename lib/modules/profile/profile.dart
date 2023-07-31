@@ -45,7 +45,7 @@ class UserProfile extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot<UserData> snapshot) {
             if (!snapshot.hasData) {
               return Column(
-                children: [
+                children: <Widget>[
                   ProgressLoader(),
                   const Spacer(),
                   ProfileTile(
@@ -69,7 +69,7 @@ class UserProfile extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+        children: <Widget>[
           SizedBox(
             height: 10.0,
           ),
@@ -94,7 +94,7 @@ class UserProfile extends StatelessWidget {
                         gmailUserData?.displayName ?? "",
                         style: const TextStyle(fontSize: FontSize.title),
                       ),
-                      Text(gmailUserData?.email ?? ''),
+                      Text(gmailUserData?.emailId ?? ''),
                       Text(gmailUserData?.phoneNumber ?? ''),
                       FollowFollowers()
                     ],
@@ -216,12 +216,12 @@ class DetailsTile extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8, bottom: 8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           Text(title ?? "Level"),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: <Widget>[
               widget2 ??
                   Text(
                     text2 ?? "Advance",

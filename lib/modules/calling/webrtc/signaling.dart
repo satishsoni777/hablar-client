@@ -18,7 +18,11 @@ typedef void StreamStateCallback(MediaStream stream);
 final Map<String, dynamic> configuration = <String, dynamic>{
   'iceServers': <dynamic>[
     <String, dynamic>{
-      'urls': <String>['stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302']
+      'urls': <String>['stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302'],
+      "candidateNetworkPolicy": "all",
+      "iceCandidatePoolSize": 50,
+      "iceTransportPolicy": "all",
+      "bundlePolicy": "max-bundle",
     }
   ]
 };
@@ -30,36 +34,44 @@ class Signaling with ChangeNotifier {
   MediaStream? localStream;
   MediaStream? remoteStream;
   String? roomId;
+  String? deleteByRoomlId;
   String? currentRoomText;
   StreamStateCallback? onAddRemoteStream;
   RTCVideoRenderer? _locaRTCVideoRenderer;
   final AppWebSocket appWebSocket = DI.inject<AppWebSocket>();
   final SharedStorage _pref = DI.inject<SharedStorage>();
-  bool _muted = false;
-  bool get muted => _muted;
   HostType? hostType;
+  int? userId;
+  bool get muted => _muted;
+  bool _muted = false;
+  bool _speaker = false;
+  bool _created = false;
+  bool _joined = false;
 
   void joinRandomCall() async {
     appWebSocket.joinRandomCall();
     appWebSocket.roomCreated = (dynamic data) {
-      roomId = data["roomId"];
+      roomId = data["id"];
+      deleteByRoomlId = data["roomId"];
       createRoom();
       _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
     };
     appWebSocket.callStarted = (dynamic data) async {
-      roomId = data["roomId"];
+      roomId = data["_id"];
+      deleteByRoomlId = data["roomId"];
       await _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
-      final userId = (await _pref.getUserData()).userId;
+      userId = (await _pref.getUserData()).userId;
     };
     appWebSocket.join = (dynamic data) async {
-      roomId = data["roomId"];
+      roomId = data["_id"];
+      deleteByRoomlId = data["roomId"];
       await _pref.setStringPreference(StorageKey.roomId, roomId ?? '');
-      final userId = (await _pref.getUserData()).userId;
-      if (userId == int.parse(data["hostId"].toString())) {
+      userId = (await _pref.getUserData()).userId;
+      if (userId == int.parse(data["hostId"].toString()) && !_created) {
+        _created = true;
         await createRoom();
-      }
-      if (userId != int.parse(data["hostId"].toString())) {
-        await Future.delayed(const Duration(seconds: 1));
+      } else if (userId != int.parse(data["hostId"].toString()) && !_joined) {
+        _joined = true;
         await joinRoom();
       }
     };
@@ -79,7 +91,7 @@ class Signaling with ChangeNotifier {
     });
 
     // Code for collecting ICE candidates below
-    CollectionReference<Map<String, dynamic>> callerCandidatesCollection = roomRef.collection('callerCandidates');
+    final CollectionReference<Map<String, dynamic>> callerCandidatesCollection = roomRef.collection('callerCandidates');
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
       print('Got candidate: ${candidate.toMap()}');
@@ -95,7 +107,7 @@ class Signaling with ChangeNotifier {
     Map<String, dynamic> roomWithOffer = {'offer': offer.toMap()};
     await roomRef.set(roomWithOffer);
 
-    print('New room created with SDK offer. Room ID: $roomId');
+    print('New room _created with SDK offer. Room ID: $roomId');
     currentRoomText = 'Current room is $roomId - You are the caller!';
     // Created a Room
 
@@ -103,7 +115,6 @@ class Signaling with ChangeNotifier {
       print('Got remote track: ${event.streams[0]}');
       event.streams[0].getTracks().forEach((MediaStreamTrack track) {
         print('Add a track to the remoteStream $track');
-        notifyListeners();
         remoteStream?.addTrack(track);
       });
     };
@@ -153,9 +164,8 @@ class Signaling with ChangeNotifier {
     print('Got room ${roomSnapshot.exists}');
 
     if (roomSnapshot.exists) {
-      print('Create PeerConnection with configuration: $configuration');
       peerConnection = await createPeerConnection(configuration);
-
+      print('Create PeerConnection with configuration: $configuration, $peerConnection');
       registerPeerConnectionListeners();
 
       localStream?.getTracks().forEach((MediaStreamTrack track) {
@@ -163,7 +173,7 @@ class Signaling with ChangeNotifier {
       });
 
       // Code for collecting ICE candidates below
-      CollectionReference<Map<String, dynamic>> calleeCandidatesCollection = roomRef.collection('calleeCandidates');
+      final CollectionReference<Map<String, dynamic>> calleeCandidatesCollection = roomRef.collection('calleeCandidates');
       peerConnection!.onIceCandidate = (RTCIceCandidate? candidate) {
         if (candidate == null) {
           print('onIceCandidate: complete!');
@@ -201,18 +211,18 @@ class Signaling with ChangeNotifier {
       // Finished creating SDP answer
 
       // Listening for remote ICE candidates below
-      roomRef.collection('callerCandidates').snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
-        print("## callerCandidates ##");
-        notifyListeners();
+      roomRef.collection('calleeCandidates').snapshots().listen((QuerySnapshot<Map<String, dynamic>> snapshot) {
         snapshot.docChanges.forEach((DocumentChange<Map<String, dynamic>> document) {
-          Map<String, dynamic> data = document.doc.data() as Map<String, dynamic>;
-          peerConnection!.addCandidate(
-            RTCIceCandidate(
-              data['candidate'],
-              data['sdpMid'],
-              data['sdpMLineIndex'],
-            ),
-          );
+          if (document.type == DocumentChangeType.added) {
+            Map<String, dynamic> data = document.doc.data() as Map<String, dynamic>;
+            peerConnection!.addCandidate(
+              RTCIceCandidate(
+                data['candidate'],
+                data['sdpMid'],
+                data['sdpMLineIndex'],
+              ),
+            );
+          }
         });
       });
     }
@@ -224,35 +234,73 @@ class Signaling with ChangeNotifier {
     RTCVideoRenderer localVideo,
     RTCVideoRenderer remoteVideo,
   ) async {
-    _locaRTCVideoRenderer = localVideo;
-    final MediaStream stream = await navigator.mediaDevices.getUserMedia(
-      <String, bool>{'video': false, 'audio': true},
-    );
-    localVideo.srcObject = stream;
-    localStream = stream;
-    remoteVideo.srcObject = await createLocalMediaStream('key');
-    remoteVideo.srcObject?.getVideoTracks().forEach((MediaStreamTrack element) {
-      element.enabled = false;
-    });
+    try {
+      _locaRTCVideoRenderer = localVideo;
+      final MediaStream stream = await navigator.mediaDevices.getUserMedia(<String, bool>{'video': false, 'audio': true});
+      localVideo.srcObject = stream;
+      localStream = stream;
+      remoteVideo.srcObject = await createLocalMediaStream('key');
+    } catch (e) {
+      print(e);
+    }
     notifyListeners();
   }
 
-  Future<void> hangUp(RTCVideoRenderer localVideo) async {
-    final List<MediaStreamTrack>? tracks = localVideo.srcObject?.getTracks();
-    tracks?.forEach((MediaStreamTrack track) {
-      track.stop();
+  void mute(bool mute) async {
+    _locaRTCVideoRenderer?.muted = !mute;
+    _muted = !mute;
+    notifyListeners();
+  }
+
+  void enableSpeaker(bool value) {
+    _speaker = !value;
+    _locaRTCVideoRenderer?.srcObject?.getAudioTracks().forEach((element) {
+      element.enableSpeakerphone(_speaker);
     });
+  }
 
-    if (remoteStream != null) {
-      remoteStream!.getTracks().forEach((MediaStreamTrack track) => track.stop());
+  Future<void> hangUp(RTCVideoRenderer? localVideo) async {
+    try {
+      if (localVideo != null) {
+        List<MediaStreamTrack> tracks = localVideo.srcObject!.getTracks();
+        tracks.forEach((track) {
+          track.stop();
+        });
+      }
+
+      if (remoteStream != null) {
+        remoteStream!.getTracks().forEach((track) => track.stop());
+      }
+      if (peerConnection != null) peerConnection!.close();
+      localStream!.dispose();
+      remoteStream?.dispose();
+    } catch (e) {
+      print("hangUp $e");
     }
-    if (peerConnection != null) peerConnection!.close();
+  }
 
-    if (roomId != null) {}
-    localVideo.srcObject?.dispose();
-    await peerConnection?.dispose();
-    await localStream?.dispose();
-    await remoteStream?.dispose();
+  Future<void> callEnd() async {
+    try {
+      await hangUp(_locaRTCVideoRenderer);
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      DocumentReference<Map<String, dynamic>> roomRef = db.collection('rooms').doc(roomId);
+      final List<dynamic> result = await Future.wait([
+        roomRef.collection('calleeCandidates').get(),
+        roomRef.collection('callerCandidates').get(),
+      ]);
+      final QuerySnapshot<Map<String, dynamic>> calleeCandidates = result.first;
+      final QuerySnapshot<Map<String, dynamic>> callerCandidates = result[1];
+      if (!isNullOrEmpty(deleteByRoomlId)) {
+        appWebSocket.leaveRoom(<String, dynamic>{"roomId": deleteByRoomlId});
+      }
+      calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) async => await document.reference.delete());
+      callerCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) async => await document.reference.delete());
+      await Future.wait([roomRef.delete(), _pref.setStringPreference(StorageKey.roomId, "")]);
+      callStatus = CallStatus.CallEnded;
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
   }
 
   void registerPeerConnectionListeners() {
@@ -267,7 +315,6 @@ class Signaling with ChangeNotifier {
         notifyListeners();
       } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateClosed || state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
         callStatus = CallStatus.CallEnded;
-        callEnd();
         notifyListeners();
       }
     };
@@ -277,10 +324,7 @@ class Signaling with ChangeNotifier {
     };
 
     peerConnection?.onIceGatheringState = (RTCIceGatheringState state) {
-      if (state == RTCIceGatheringState.RTCIceGatheringStateComplete) {
-        callStatus = CallStatus.CallStarted;
-        notifyListeners();
-      }
+      if (state == RTCIceGatheringState.RTCIceGatheringStateComplete) {}
       print('ICE connection state change: $state');
     };
 
@@ -288,57 +332,5 @@ class Signaling with ChangeNotifier {
       onAddRemoteStream?.call(stream);
       remoteStream = stream;
     };
-  }
-
-  void stop() {
-    try {
-      peerConnection?.onTrack = (RTCTrackEvent a) => {
-            a.streams.forEach((MediaStream element) {
-              element.getVideoTracks().forEach((MediaStreamTrack element) {
-                element.enabled = false;
-                element.stop();
-              });
-            }),
-            a.streams.forEach((MediaStream element) {
-              element.getAudioTracks().forEach((MediaStreamTrack element) {
-                element.enabled = false;
-                element.stop();
-              });
-            })
-          };
-    } catch (_) {
-      print(_);
-    }
-  }
-
-  void mute(bool mute) async {
-    _locaRTCVideoRenderer?.muted = !mute;
-    _muted = !mute;
-    notifyListeners();
-  }
-
-  Future<void> callEnd() async {
-    try {
-      final String? roomId = await _pref.getStringPreference(StorageKey.roomId);
-      FirebaseFirestore db = FirebaseFirestore.instance;
-      DocumentReference<Map<String, dynamic>> roomRef = db.collection('rooms').doc(roomId);
-      final List<dynamic> result = await Future.wait([roomRef.collection('calleeCandidates').get(), roomRef.collection('callerCandidates').get()]);
-      QuerySnapshot<Map<String, dynamic>> calleeCandidates = result.first;
-      QuerySnapshot<Map<String, dynamic>> callerCanidates = result[1];
-      if (isNullOrEmpty(roomId)) return;
-      appWebSocket.leaveRoom(<String, dynamic>{"roomId": roomId});
-
-      if (hostType == HostType.Callee) {
-        calleeCandidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
-      } else {
-        callerCanidates.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) => document.reference.delete());
-      }
-      await Future.wait([roomRef.delete(), hangUp(_locaRTCVideoRenderer!), _pref.setStringPreference(StorageKey.roomId, "")]);
-      stop();
-      callStatus = CallStatus.CallEnded;
-    } catch (e) {
-      print(e);
-    }
-    notifyListeners();
   }
 }
