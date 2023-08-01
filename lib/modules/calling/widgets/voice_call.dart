@@ -116,7 +116,9 @@ class _TimerConverterState extends State<TimerConverter> {
       String formattedSeconds = _formatTime(remainingSeconds);
 
       duration = '$formattedHours:$formattedMinutes:$formattedSeconds';
-      setState(() {});
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        if (mounted) setState(() {});
+      });
     });
   }
 

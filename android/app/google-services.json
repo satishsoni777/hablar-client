@@ -37,6 +37,13 @@
             {
               "client_id": "306652838723-fh8qpotcot1bb7tnfsf0nem74jgpfai8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "306652838723-h87m2m8uuvqb3ntg0h6htqq7bre26hoi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.karuna.ios"
+              }
             }
           ]
         }

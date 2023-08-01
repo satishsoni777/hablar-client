@@ -119,7 +119,7 @@ class Signaling with ChangeNotifier {
       print('Got updated room: ${snapshot}');
       if (snapshot != null) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        if (peerConnection?.getRemoteDescription() != null && data['answer'] != null) {
+        if (data != null && peerConnection?.getRemoteDescription() != null && data['answer'] != null) {
           RTCSessionDescription answer = RTCSessionDescription(
             data['answer']['sdp'],
             data['answer']['type'],

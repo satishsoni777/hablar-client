@@ -80,7 +80,7 @@ class SharedStorageImpl extends SharedStorage {
   Future<UserData> getUserData() async {
     try {
       final UserData localData = DI.inject<UserData>();
-      if (!localData.empty) return localData;
+      if (!localData.empty) return localData.instance!;
       final dynamic json = (await getObjectPreference(StorageKey.gmailUserDataKey));
       final UserData data = UserData.fromJson(json as Map<String, dynamic>);
       DI.inject<UserData>().setData(data);
