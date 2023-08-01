@@ -17,7 +17,6 @@ class _MyAppState extends State<MyApp> {
       title: 'RTC',
       theme: AppTheme.getTheme,
       navigatorKey: NavigationManager.instance.navigationKey,
-      // initialRoute: Routes.landingPage,
       home: Routes.getLandingPage(),
       onGenerateRoute: (RouteSettings s) => Routes.onGenerateRoute(s),
     );

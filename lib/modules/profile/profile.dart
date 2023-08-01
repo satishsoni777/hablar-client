@@ -78,7 +78,7 @@ class UserProfile extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _profileFace(gmailUserData?.photoURL ?? ''),
+                _profileFace(gmailUserData?.instance?.image ?? ''),
                 SizedBox(
                   width: 20.0,
                 ),
@@ -91,10 +91,10 @@ class UserProfile extends StatelessWidget {
                         height: 20.0,
                       ),
                       Text(
-                        gmailUserData?.displayName ?? "",
+                        gmailUserData?.instance?.displayName ?? "",
                         style: const TextStyle(fontSize: FontSize.title),
                       ),
-                      Text(gmailUserData?.emailId ?? ''),
+                      Text(gmailUserData?.instance?.emailId ?? ''),
                       Text(gmailUserData?.phoneNumber ?? ''),
                       FollowFollowers()
                     ],

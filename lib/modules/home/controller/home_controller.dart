@@ -9,7 +9,7 @@ class HomeController extends ChangeNotifier {
   final SharedStorage? sharedStorage;
   bool isOffline = false;
   int _level = 0;
-  String _genger = "";
+  String _genger = "a";
   String get gedner => _genger;
   int get selectedLevel => _level;
   Future<dynamic> toggleOffOn(bool offline) async {
@@ -17,7 +17,6 @@ class HomeController extends ChangeNotifier {
       AppLoader.showLoader();
       isOffline = offline;
       final dynamic res = await homeService?.toggleOnline(offline);
-      print(res);
       await sharedStorage?.setStringPreference(StorageKey.online, offline.toString());
       AppLoader.hideLoader();
       notifyListeners();

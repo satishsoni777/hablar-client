@@ -13,15 +13,15 @@ class AuthController extends ChangeNotifier {
     DI.inject<Authentication>().varifyOTP("");
   }
 
-  Future<void> gLogin() async {
+  Future<void> gLogin(BuildContext context) async {
     AppLoader.showLoader();
     try {
       final UserData? res = await _authentication.login();
+      AppLoader.hideLoader();
       if (res != null) NavigationManager.instance.pushReplacementNamed(Routes.home);
     } catch (_) {
       print(_);
     }
-    AppLoader.hideLoader();
   }
 
   Future<void> sendOtp(String n) async {

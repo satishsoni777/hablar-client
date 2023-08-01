@@ -19,10 +19,6 @@ final Map<String, dynamic> configuration = <String, dynamic>{
   'iceServers': <dynamic>[
     <String, dynamic>{
       'urls': <String>['stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302'],
-      "candidateNetworkPolicy": "all",
-      "iceCandidatePoolSize": 50,
-      "iceTransportPolicy": "all",
-      "bundlePolicy": "max-bundle",
     }
   ]
 };

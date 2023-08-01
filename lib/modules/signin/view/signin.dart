@@ -33,7 +33,7 @@ class Login extends StatelessWidget {
               SignInButton(
                 Buttons.GoogleDark,
                 onPressed: () async {
-                  _authController.gLogin();
+                  _authController.gLogin(context);
                 },
                 mini: false,
               ),

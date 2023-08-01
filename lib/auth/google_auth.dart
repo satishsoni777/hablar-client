@@ -21,9 +21,6 @@ class GoogleAuthService {
     // hold the instance of the authenticated user
     User? user; // flag to check whether we're signed in already
     await _googleSignIn.signOut();
-    try {
-      await _googleSignIn.disconnect();
-    } catch (_) {}
     bool isSignedIn = await _googleSignIn.isSignedIn();
     if (isSignedIn && _auth.currentUser != null) {
       // if so, return the current user

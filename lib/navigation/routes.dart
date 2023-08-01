@@ -14,24 +14,27 @@ import 'package:take_it_easy/utils/string_utils.dart';
 class Routes {
   Routes._();
   static const String root = '/';
-  static const String videoCall = '/video_call';
-  static const String voiceCall = '/voice_call';
-  static const String createStreamData = '/CreateStreamData';
-  static const String home = '/home';
-  static const String auth = '/login';
-  static const String landingPage = '/landing_page';
-  static const String dialer = '/dialer';
-  static const String staticPage = "/static_page";
-  static const String callHistory = "/call_history";
+  static const String videoCall = 'video_call';
+  static const String voiceCall = 'voice_call';
+  static const String createStreamData = 'CreateStreamData';
+  static const String home = 'home';
+  static const String auth = 'login';
+  static const String landingPage = 'landing_page';
+  static const String dialer = 'dialer';
+  static const String staticPage = "static_page";
+  static const String callHistory = "call_history";
 
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      case landingPage:
-        return MaterialPageRoute<dynamic>(
-            settings: routeSettings,
-            builder: (BuildContext c) {
-              return LandingPage();
-            });
+      // case root:
+      //   return MaterialPageRoute<dynamic>(
+      //       settings: routeSettings,
+      //       builder: (BuildContext c) {
+      //         return BlocProvider<LandingPageBloc>(
+      //           create: (BuildContext c) => LandingPageBloc(),
+      //           child: LandingPage(),
+      //         );
+      //       });
       case auth:
         return MaterialPageRoute<dynamic>(
             settings: routeSettings,
@@ -74,7 +77,7 @@ class Routes {
   }
 
   static Map<String, Widget Function(BuildContext context)> getRoutes() => {
-        Routes.auth: (BuildContext C) => Login(),
+        Routes.home: (BuildContext C) => HomePage(),
         Routes.landingPage: (BuildContext c) => BlocProvider<LandingPageBloc>(
               create: (BuildContext c) => LandingPageBloc(),
               child: LandingPage(),

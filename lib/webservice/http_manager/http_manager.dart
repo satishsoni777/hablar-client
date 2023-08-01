@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:take_it_easy/auth/google_auth.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/utils/flovor.dart';
 
 abstract class BaseHttp {}
@@ -47,6 +49,7 @@ mixin FlutterAuth {
   Future<bool> logout({LogOutType logOutType = LogOutType.GMAIL}) async {
     if (logOutType == LogOutType.GMAIL) {
       try {
+        DI.inject<UserData>().setData(null);
         final result = await GoogleAuthService().logout();
         return result;
       } catch (_) {}

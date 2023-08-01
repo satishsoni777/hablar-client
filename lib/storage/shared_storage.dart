@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
@@ -78,8 +79,11 @@ class SharedStorageImpl extends SharedStorage {
   @override
   Future<UserData> getUserData() async {
     try {
+      final UserData localData = DI.inject<UserData>();
+      if (!localData.empty) return localData;
       final dynamic json = (await getObjectPreference(StorageKey.gmailUserDataKey));
-      final UserData data = UserData.fromJson((json as Map<String, dynamic>));
+      final UserData data = UserData.fromJson(json as Map<String, dynamic>);
+      DI.inject<UserData>().setData(data);
       return data;
     } catch (_) {
       throw _;

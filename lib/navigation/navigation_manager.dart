@@ -8,14 +8,21 @@ class NavigationManager {
   GlobalKey<NavigatorState> get navigationKey => _navigationKey;
 
   Future<dynamic> navigateTo(String routeName, {dynamic arguments}) {
-    return _navigationKey.currentState!.pushNamed(routeName, arguments: arguments);
+    return Navigator.of(_navigationKey.currentContext!).pushNamed(routeName, arguments: arguments);
   }
 
   Future<void> pop([dynamic arguments]) async {
-    _navigationKey.currentState!.pop(arguments);
+    return Navigator.of(navigationKey.currentContext!).pop(arguments);
   }
 
-  Future<dynamic> pushReplacementNamed(String routeName, {dynamic arguments}) {
-    return _navigationKey.currentState!.pushReplacementNamed(routeName, arguments: arguments);
+  pushReplacementNamed(String routeName, {BuildContext? context, dynamic arguments}) {
+    if (context != null) {
+      Navigator.popAndPushNamed(context, routeName);
+    } else
+      try {
+        return Navigator.of(navigationKey.currentContext!).pushReplacementNamed(routeName, arguments: arguments);
+      } catch (e) {
+        print(e);
+      }
   }
 }
