@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>286393078002-k6mbsgjmfcnualgooiggbaaimq1975tt.apps.googleusercontent.com</string>
+	<string>306652838723-h87m2m8uuvqb3ntg0h6htqq7bre26hoi.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.286393078002-k6mbsgjmfcnualgooiggbaaimq1975tt</string>
+	<string>com.googleusercontent.apps.306652838723-h87m2m8uuvqb3ntg0h6htqq7bre26hoi</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>286393078002-ujkcl3t093k769608hpqqroi37heoamf.apps.googleusercontent.com</string>
+	<string>306652838723-88dbfl9bga54l7oi4crk1i2pa09ju328.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBmoGINTpozKeLRdGtutkodi55Bxv9VFlc</string>
+	<string>AIzaSyCeZgFFpb5L7KrPCNGwjCjm-dJymXgUOOY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>286393078002</string>
+	<string>306652838723</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.karuna.ios</string>
 	<key>PROJECT_ID</key>
-	<string>makeiteasy-fc51f</string>
+	<string>fitgrow-857ba</string>
 	<key>STORAGE_BUCKET</key>
-	<string>makeiteasy-fc51f.appspot.com</string>
+	<string>fitgrow-857ba.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:286393078002:ios:6b4f4e4716032150d1806b</string>
-	<key>DATABASE_URL</key>
-	<string>https://makeiteasy-fc51f-default-rtdb.firebaseio.com</string>
+	<string>1:306652838723:ios:b27dcd773d5b56e9548df6</string>
 </dict>
 </plist>

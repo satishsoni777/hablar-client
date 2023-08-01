@@ -51,14 +51,14 @@ class Routes {
               return Login();
             });
 
-      case staticPage:
-        return MaterialPageRoute<dynamic>(
-            settings: routeSettings,
-            builder: (BuildContext c) {
-              return StaticPage(
-                url: routeSettings.arguments.toString(),
-              );
-            });
+      // case staticPage:
+      //   return MaterialPageRoute<dynamic>(
+      //       settings: routeSettings,
+      //       builder: (BuildContext c) {
+      //         return StaticPage(
+      //           url: routeSettings.arguments.toString(),
+      //         );
+      //       });
 
       case callHistory:
         return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
