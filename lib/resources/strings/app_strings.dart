@@ -10,6 +10,7 @@ class Endpoints {
   static const String leaveRoom = 'signaling/leaveRoom';
   static const String joinRandomRoom = 'signaling/joinRandomRoom';
   static const String updateUserData = 'users/updateUserData';
+  static const String agoraToken = 'agora/rtc_token';
 }
 
 class AppStrings {

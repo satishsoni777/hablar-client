@@ -1,11 +1,15 @@
 // ignore_for_file: always_specify_types
 import 'package:flutter/material.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
-import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/calling/controller/calling_controller.dart';
-import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
+import 'package:take_it_easy/modules/calling/controller/signaling_controller.dart';
+import 'package:take_it_easy/modules/calling/widgets/agora/agora_call.dart';
+import 'package:take_it_easy/modules/calling/widgets/agora/end_call_dialog.dart';
+import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
+import 'package:take_it_easy/rtc/agora_rtc/agora_manager.dart';
+import 'package:take_it_easy/rtc/signaling.i.dart';
+import 'package:take_it_easy/rtc/webrtc/webrtc_signaling.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 import 'package:take_it_easy/modules/calling/widgets/voice_call.dart';
@@ -13,75 +17,55 @@ import 'package:take_it_easy/modules/calling/widgets/voice_call.dart';
 import 'widgets/video_call.dart';
 
 class Dialer extends StatefulWidget {
-  const Dialer({Key? key}) : super(key: key);
+  const Dialer({
+    Key? key,
+    required this.signaling,
+    required this.appWebSocket,
+  }) : super(key: key);
+  final SignalingI signaling;
+  final AppWebSocket appWebSocket;
   @override
   State<Dialer> createState() => _DialerState();
 }
 
 class _DialerState extends State<Dialer> {
-  late final Signaling signaling;
-  late final CallingController _callingController;
-  RTCVideoRenderer _localRenderer = RTCVideoRenderer();
-  RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
-  String? roomId;
+  late final SignalingController _callingController;
   TextEditingController textEditingController = TextEditingController(text: '');
-  final AppWebSocket appWebSocket = DI.inject<AppWebSocket>();
-  bool joinReqsent = false;
 
   @override
   void initState() {
-    signaling = Signaling();
-    _callingController = CallingController(signaling, appWebSocket);
-    appWebSocket.userLeft = (dynamic data) {
-      _callingController.callEnd(signaling);
-    };
+    _callingController = SignalingController(widget.signaling,
+        widget.appWebSocket, DI.inject<UserData>().userId ?? 0);
+    init();
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    init();
-    super.didChangeDependencies();
+  void init() {
+    _callingController.init();
+    _callingController.submitFeedback = (d) {};
   }
 
-  void init() async {
-    _localRenderer.initialize();
-    _remoteRenderer.initialize();
-    appWebSocket.onConnected = (dynamic a) async {
-      await signaling.openUserMedia(_localRenderer, _remoteRenderer);
-      _callingController.joinRandomCall(signaling);
-      joinReqsent = true;
-    };
-    if (appWebSocket.isConnected && !joinReqsent) {
-      await signaling.openUserMedia(_localRenderer, _remoteRenderer);
-      _callingController.joinRandomCall(signaling);
+  void _showDialog() async {
+    bool? result =
+        await NavigationManager.instance.launchDialog(widget: EndCallDialog());
+    if (result ?? false) {
+      _callingController.close();
     }
-    signaling.onAddRemoteStream = ((MediaStream stream) {
-      _remoteRenderer.srcObject = stream;
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
-    appWebSocket.leaveRoom(<String, dynamic>{"roomId": signaling.roomId});
+    // _callingController.close();
     super.dispose();
-  }
-
-  Future<bool> _handUp() async {
-    AppLoader.showLoader();
-    try {
-      await _callingController.callEnd(signaling);
-    } catch (_) {}
-    AppLoader.hideLoader();
-    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return Future.value(_handUp());
+        _showDialog();
+        // _callingController.close();
+        return Future.value(true);
       },
       child: Scaffold(
         appBar: AppBar(
@@ -90,17 +74,25 @@ class _DialerState extends State<Dialer> {
         ),
         body: MultiProvider(
             providers: [
-              ChangeNotifierProvider<Signaling>.value(value: signaling),
-              ChangeNotifierProvider<CallingController>.value(value: _callingController)
+              ChangeNotifierProvider<SignalingController>.value(
+                value: _callingController,
+              )
             ],
             builder: (BuildContext context, Widget? snapshot) {
-              return Consumer<Signaling>(builder: (BuildContext context, Signaling prodider, Widget? a) {
+              return Consumer<SignalingController>(builder:
+                  (BuildContext context, SignalingController prodider,
+                      Widget? a) {
+                if (prodider.signaling is AgoraManager) {
+                  return AgoraCall();
+                }
                 return Stack(
                   children: [
-                    if (prodider.callType == CallType.Video)
+                    if (prodider.signaling.callType == CallType.Video)
                       VideoCall(
-                        localRenderer: _localRenderer,
-                        remoteRenderer: _remoteRenderer,
+                        localRenderer: (prodider.signaling as WebrtcSignaling)
+                            .localRenderer,
+                        remoteRenderer: (prodider.signaling as WebrtcSignaling)
+                            .remoteRenderer,
                       ),
                     VoiceCall(),
                   ],

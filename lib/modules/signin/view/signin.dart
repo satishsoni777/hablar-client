@@ -21,14 +21,14 @@ class Login extends StatelessWidget {
               // Image.asset(ImageAsset.logo),
               MpbileOtpAith(),
               Spacing.sizeBoxHt100,
-              SignInButton(
-                Buttons.FacebookNew,
-                onPressed: () async {
-                  // Navigator.pushNamed(context, Routes.home);
-                  // await GoogleAuthService().handleSignIn();
-                },
-                mini: false,
-              ),
+              // SignInButton(
+              //   Buttons.FacebookNew,
+              //   onPressed: () async {
+              //     // Navigator.pushNamed(context, Routes.home);
+              //     // await GoogleAuthService().handleSignIn();
+              //   },
+              //   mini: false,
+              // ),
               Spacing.sizeBoxHt20,
               SignInButton(
                 Buttons.GoogleDark,

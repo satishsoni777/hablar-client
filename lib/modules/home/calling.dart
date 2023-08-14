@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:take_it_easy/components/app_button.dart';
 import 'package:take_it_easy/modules/home/controller/home_controller.dart';
 import 'package:take_it_easy/modules/home/widget/off_line_toggle.dart';
-import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/style/app_colors.dart';
 import 'package:take_it_easy/style/font.dart';
 import 'package:take_it_easy/style/spacing.dart';
@@ -16,43 +15,22 @@ class Calling extends StatefulWidget {
 }
 
 class _CallingState extends State<Calling> {
-  // AgoraVoiceManager agoraVoiceManager;
-
-  final TextEditingController _userName = new TextEditingController();
-
-  final TextEditingController _channelName = new TextEditingController();
-  int _radio = 0;
-
-  @override
-  initState() {
-    // agoraVoiceManager = AgoraVoiceManager();
-    // agoraVoiceManager.initPlatformState();
-    super.initState();
-  }
-
-  @override
-  dispose() {
-    // agoraVoiceManager?.dispose();
-    super.dispose();
-  }
-
-  void _callNow() async {
-    // await agoraVoiceManager.initPlatformState();
-  }
-
   Widget _button() {
-    return Center(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * .7,
-        child: AppButton(
-          onPressed: () {
-            Navigator.pushNamed(context, Routes.dialer, arguments: Provider.of<HomeController>(context, listen: false));
-          },
-          icon: Icon(Icons.call),
-          text: "Talk now",
+    return Consumer<HomeController>(
+        builder: (BuildContext context, HomeController homeController, Widget? c) {
+      return Center(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * .7,
+          child: AppButton(
+            onPressed: () {
+              homeController.onNavigationChange(context);
+            },
+            icon: Icon(Icons.call),
+            text: "Talk now",
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _level() {
@@ -60,13 +38,17 @@ class _CallingState extends State<Calling> {
       String text,
       int index,
     ) {
-      return Consumer<HomeController>(builder: (context, provider, a) {
+      return Consumer<HomeController>(
+          builder: (BuildContext context, HomeController provider, a) {
         return MaterialButton(
           onPressed: () {
             provider.selectLevel(index);
           },
-          color: provider.selectedLevel == index ? Colors.blue : Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          color: provider.selectedLevel == index
+              ? Colors.blue
+              : Colors.transparent,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Text(
             text,
             style: TextStyle(fontSize: 12),
@@ -99,7 +81,8 @@ class _CallingState extends State<Calling> {
 
   Widget _selectGender() {
     Widget _radioTextButton(String value, String text) {
-      return Consumer<HomeController>(builder: (BuildContext context, HomeController provider, Widget? a) {
+      return Consumer<HomeController>(
+          builder: (BuildContext context, HomeController provider, Widget? a) {
         return Row(
           children: <Widget>[
             Radio<String>(
@@ -152,7 +135,7 @@ class _CallingState extends State<Calling> {
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
-        actions: [OfflineToggle()],
+        actions: <Widget>[OfflineToggle()],
       ),
       body: Center(
         child: Padding(

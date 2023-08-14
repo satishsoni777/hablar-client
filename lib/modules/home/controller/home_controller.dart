@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/loader.dart';
 import 'package:take_it_easy/modules/home/service/home_service.dart';
+import 'package:take_it_easy/modules/home/widget/feedback_form.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
+import 'package:take_it_easy/navigation/routes.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 
 class HomeController extends ChangeNotifier {
@@ -17,7 +20,8 @@ class HomeController extends ChangeNotifier {
       AppLoader.showLoader();
       isOffline = offline;
       final dynamic res = await homeService?.toggleOnline(offline);
-      await sharedStorage?.setStringPreference(StorageKey.online, offline.toString());
+      await sharedStorage?.setStringPreference(
+          StorageKey.online, offline.toString());
       AppLoader.hideLoader();
       notifyListeners();
     } catch (_) {
@@ -33,5 +37,12 @@ class HomeController extends ChangeNotifier {
   void selectGender(String value) {
     this._genger = value;
     notifyListeners();
+  }
+
+  void onNavigationChange(BuildContext context) async {
+     final result= await Navigator.pushNamed(context, Routes.dialer);
+    // if (result ?? false) {
+      NavigationManager.instance.launchDialog(widget: FeedbackDialog());
+    // }
   }
 }

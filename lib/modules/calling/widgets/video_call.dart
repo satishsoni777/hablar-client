@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
-import 'package:take_it_easy/modules/calling/webrtc/signaling.dart';
+import 'package:take_it_easy/rtc/signaling.i.dart';
+import 'package:take_it_easy/rtc/webrtc/webrtc_signaling.dart';
 
 class VideoCall extends StatefulWidget {
   const VideoCall({super.key, required this.localRenderer, required this.remoteRenderer});
@@ -14,7 +15,7 @@ class VideoCall extends StatefulWidget {
 class _MyWidgetState extends State<VideoCall> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Consumer<Signaling>(builder: (BuildContext context, Signaling pr, a) {
+    return Consumer<WebrtcSignaling>(builder: (BuildContext context, WebrtcSignaling pr, a) {
       if (pr.callType != CallType.Video) return Container();
       return Stack(
         children: <Widget>[

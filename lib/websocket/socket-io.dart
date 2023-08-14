@@ -27,7 +27,8 @@ class SocketIO extends AppWebSocket {
         url + '?userId=$userId',
         IO.OptionBuilder()
             .setTransports(<String>['websocket'])
-            .setExtraHeaders(<String, dynamic>{"authorization": "Bearer $token"})
+            .setExtraHeaders(
+                <String, dynamic>{"authorization": "Bearer $token"})
             .setReconnectionAttempts(2000)
             .build(),
       );
@@ -62,11 +63,9 @@ class SocketIO extends AppWebSocket {
   }
 
   @override
-  Future<bool>? sendMessage(Map<String, dynamic> message, {String? meetingPayloadEnum}) {
+  Future<bool>? sendMessage(Map<String, dynamic> message,
+      {String? meetingPayloadEnum}) {
     switch (meetingPayloadEnum) {
-      case MeetingPayloadEnum.OFFER_SDP:
-        socket?.emit("message", message);
-        break;
       case MeetingPayloadEnum.JOIN_RANDOM_CALL:
         socket?.emit("message", message);
         break;
@@ -91,6 +90,7 @@ class SocketIO extends AppWebSocket {
   void _onMessage() {
     socket?.onPing((data) => null);
     socket?.onPong((data) => null);
+
     socket?.on(MeetingPayloadEnum.ANSWER_SDP, (data) {
       print("on ANSWER_SDP $data");
       answerSdp?.call(data);
@@ -107,26 +107,31 @@ class SocketIO extends AppWebSocket {
       print("on JOIED $data");
       join?.call(data);
     });
-    socket?.on(MeetingPayloadEnum.CREATE_ROOM, (data) {
+    socket?.on(MeetingPayloadEnum.ROOM_CREATED, (data) {
       print("MeetingPayloadEnum.CREATE_ROOM $data");
-      roomCreated?.call(data);
     });
     socket?.on(MeetingPayloadEnum.CALL_STARTED, (data) {
+      _pref.setStringPreference(StorageKey.roomId, data["roomId"]);
       print("MeetingPayloadEnum.CALL_STARTED $userId");
       callStarted?.call(data);
     });
+    
     socket?.on("message", (data) => onMessage?.call(data));
   }
 
   @override
-  Future<void> joinRandomCall() async {
+  Future<void> createRoom() async {
     if (isConnected) {
-      final Map<String, dynamic> msg = <String, dynamic>{"countryCode": "IN", "stateCode": "KR", "type": "join-random-call"};
+      final Map<String, dynamic> msg = <String, dynamic>{
+        "countryCode": "IN",
+        "stateCode": "KR",
+        "type": "join-random-call"
+      };
       socket?.emit("message", msg);
     } else {
       connect();
       onConnected = (_) {
-        joinRandomCall();
+        createRoom();
       };
     }
   }

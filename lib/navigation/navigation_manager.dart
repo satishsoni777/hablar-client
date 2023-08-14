@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class NavigationManager {
   NavigationManager._();
@@ -25,4 +25,19 @@ class NavigationManager {
         print(e);
       }
   }
+  
+   Future<dynamic> launchDialog({
+    required Widget widget,
+    bool barrierDismissible = true,
+    RouteSettings? routeSettings,
+  }) {
+    return showDialog(
+      context: _navigationKey.currentContext!,
+      barrierDismissible: barrierDismissible,
+      builder: (BuildContext context) => widget,
+      useSafeArea: false,
+      routeSettings: routeSettings,
+    );
+  }
+
 }

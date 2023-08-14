@@ -8,8 +8,12 @@ import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
 import 'package:take_it_easy/modules/landing_page/landing_page.dart';
 import 'package:take_it_easy/modules/static_page/static_page.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
+import 'package:take_it_easy/rtc/agora_rtc/agora_manager.dart';
+import 'package:take_it_easy/rtc/signaling.i.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
+import 'package:take_it_easy/websocket/websocket.i.dart';
 
 class Routes {
   Routes._();
@@ -72,7 +76,12 @@ class Routes {
           return Login();
         });
       case dialer:
-        return MaterialPageRoute<dynamic>(settings: routeSettings, builder: (BuildContext c) => Dialer());
+        return MaterialPageRoute<dynamic>(
+            settings: routeSettings,
+            builder: (BuildContext c) => Dialer(
+                  signaling: DI.inject<SignalingI>(),
+                  appWebSocket: DI.inject<AppWebSocket>(),
+                ));
     }
   }
 
