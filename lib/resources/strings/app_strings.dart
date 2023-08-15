@@ -11,6 +11,8 @@ class Endpoints {
   static const String joinRandomRoom = 'signaling/joinRandomRoom';
   static const String updateUserData = 'users/updateUserData';
   static const String agoraToken = 'agora/rtc_token';
+  static const String subFeedback = "feedback/sub-feedback";
+  static const String getFeedback = "feedback/feedback_list";
 }
 
 class AppStrings {

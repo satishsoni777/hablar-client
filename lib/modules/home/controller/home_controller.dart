@@ -40,9 +40,11 @@ class HomeController extends ChangeNotifier {
   }
 
   void onNavigationChange(BuildContext context) async {
-     final result= await Navigator.pushNamed(context, Routes.dialer);
-    // if (result ?? false) {
+    final result = await Navigator.pushNamed(context, Routes.dialer);
+    if (result != null && result == true) {
       NavigationManager.instance.launchDialog(widget: FeedbackDialog());
-    // }
+    }
   }
+
+  Future<void> submitFeedback() async {}
 }

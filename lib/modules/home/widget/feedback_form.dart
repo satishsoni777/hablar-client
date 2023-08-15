@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class FeedbackDialog extends StatefulWidget {
-  @override
-  _FeedbackDialogState createState() => _FeedbackDialogState();
-}
-
-class _FeedbackDialogState extends State<FeedbackDialog> {
+class FeedbackDialog extends StatelessWidget {
+  FeedbackDialog();
   double _rating = 3.0;
   TextEditingController _commentController = TextEditingController();
 
@@ -24,15 +20,11 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
             allowHalfRating: true,
             itemCount: 5,
             itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-            itemBuilder: (context, _) => Icon(
+            itemBuilder: (BuildContext context, _) => Icon(
               Icons.star,
               color: Colors.amber,
             ),
-            onRatingUpdate: (newRating) {
-              setState(() {
-                _rating = newRating;
-              });
-            },
+            onRatingUpdate: (double newRating) {},
           ),
           TextFormField(
             controller: _commentController,
@@ -50,10 +42,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
-            // TODO: Process the rating and comment
-            print('Rating: $_rating');
-            print('Comment: ${_commentController.text}');
+            Navigator.of(context).pop();
           },
           child: Text('Submit'),
         ),

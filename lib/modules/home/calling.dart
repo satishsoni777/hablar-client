@@ -135,7 +135,7 @@ class _CallingState extends State<Calling> {
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
-        actions: <Widget>[OfflineToggle()],
+        // actions: <Widget>[OfflineToggle()],
       ),
       body: Center(
         child: Padding(

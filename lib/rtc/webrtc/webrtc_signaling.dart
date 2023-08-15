@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
@@ -380,8 +379,7 @@ class WebrtcSignaling extends SignalingI with ChangeNotifier {
   }
 
   @override
-  Future<void> startCall(
-      {UserConnectionData? data, String? roomId, int? userId}) {
+  Future<void> startCall({String? roomId, int? userId}) {
     throw UnimplementedError();
   }
 

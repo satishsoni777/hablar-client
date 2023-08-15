@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:take_it_easy/config/agora_config.dart';
-import 'package:take_it_easy/modules/model/user_data.dart';
 import 'package:take_it_easy/resources/strings/app_strings.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
 import 'package:take_it_easy/webservice/http_manager/http_manager.dart';
@@ -16,7 +15,7 @@ class AgoraManager extends HttpManager implements SignalingI<dynamic> {
   Function(CallStatus callStatus, {Map<String, dynamic>? data})? _callStatus;
   @override
   Future<dynamic> startCall(
-      {UserConnectionData? data, String? roomId, int? userId}) async {
+      { String? roomId, int? userId}) async {
     try {
       ChannelMediaOptions options = const ChannelMediaOptions(
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
@@ -137,7 +136,7 @@ class AgoraManager extends HttpManager implements SignalingI<dynamic> {
   }
   
   @override
-  Future getCallDuration() {
+  Future<int> getCallDuration() {
     // TODO: implement getCallDuration
     throw UnimplementedError();
   }

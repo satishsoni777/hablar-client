@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:take_it_easy/modules/model/user_data.dart';
 
 abstract class SignalingI<T> {
-  Future<void> startCall({UserConnectionData? data, String? roomId, int? userId});
+  Future<void> startCall({ String? roomId, int? userId});
 
   Future<void> initialize();
 

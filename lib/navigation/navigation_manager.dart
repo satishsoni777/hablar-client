@@ -39,5 +39,6 @@ class NavigationManager {
       routeSettings: routeSettings,
     );
   }
+  Future<dynamic> showToast()async{}
 
 }

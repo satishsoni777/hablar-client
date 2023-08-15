@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/modules/call_history/call_history.dart';
+import 'package:take_it_easy/modules/feedbacks/controller/feedback_controller.dart';
+import 'package:take_it_easy/modules/feedbacks/conversational_feedbbacks.dart';
+import 'package:take_it_easy/modules/feedbacks/services/feedback_service.dart';
 import 'package:take_it_easy/modules/signin/view/signin.dart';
 import 'package:take_it_easy/modules/calling/dialer.dart';
 import 'package:take_it_easy/modules/home/home.dart';
 import 'package:take_it_easy/modules/landing_page/landing_bloc/landing_page_bloc.dart';
 import 'package:take_it_easy/modules/landing_page/landing_page.dart';
 import 'package:take_it_easy/modules/static_page/static_page.dart';
-import 'package:take_it_easy/navigation/navigation_manager.dart';
-import 'package:take_it_easy/rtc/agora_rtc/agora_manager.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
@@ -27,18 +29,10 @@ class Routes {
   static const String dialer = 'dialer';
   static const String staticPage = "static_page";
   static const String callHistory = "call_history";
+  static const String feedbackList = "feedback_list";
 
   static onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      // case root:
-      //   return MaterialPageRoute<dynamic>(
-      //       settings: routeSettings,
-      //       builder: (BuildContext c) {
-      //         return BlocProvider<LandingPageBloc>(
-      //           create: (BuildContext c) => LandingPageBloc(),
-      //           child: LandingPage(),
-      //         );
-      //       });
       case auth:
         return MaterialPageRoute<dynamic>(
             settings: routeSettings,
@@ -82,6 +76,14 @@ class Routes {
                   signaling: DI.inject<SignalingI>(),
                   appWebSocket: DI.inject<AppWebSocket>(),
                 ));
+      case feedbackList:
+        return MaterialPageRoute<dynamic>(builder: (BuildContext c) {
+          return ChangeNotifierProvider<FeedbackController>(
+              create: (c) => FeedbackController(FeedbackServiceImpl())..getFeedback(),
+              builder: (BuildContext context, snapshot) {
+                return ConversationalFeedback();
+              });
+        });
     }
   }
 

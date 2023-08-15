@@ -1,9 +1,7 @@
 import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/modules/signin/service/authentication.dart';
-import 'package:take_it_easy/modules/calling/service/calling_service.dart';
 import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
-import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/rtc/agora_rtc/agora_manager.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
@@ -20,7 +18,6 @@ class DI {
     _addDependency<LandingRepo>(LandingRepoImpl(), true);
     _addDependency<AppWebSocket>(SocketIO(), true);
     _addDependency<RtcUtil>(MicStreams(), true);
-    _addDependency<CallingApi>(CallingService(), true);
     _addDependency<Authentication>(AuthenticationImpl(), true);
     _addDependency<UserData>(UserData(), true);
     _addDependency<SignalingI>(AgoraManager(), true);
