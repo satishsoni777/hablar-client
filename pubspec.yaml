@@ -31,7 +31,6 @@ dependencies:
   flutter_sound: ^9.2.13
   agora_rtc_engine: ^6.2.2
   firebase_core: ^2.4.1
-  # flutter_webrtc_wrapper: 
   provider: ^6.0.5
   cloud_firestore: 
   flutter_rating_bar: ^4.0.1
