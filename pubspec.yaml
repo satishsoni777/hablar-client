@@ -24,29 +24,20 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_signin_button: ^2.0.0  
-  flutter_webrtc: ^0.9.34
-  mic_stream: ^0.6.2
+  # flutter_webrtc: ^0.9.34
   # flutter_background: ^1.0.0
-  # web_socket_channel: ^2.3.0
-  # loader_overlay: ^2.1.0
-  # webrtc_interface: 1.0.11
   # agora_rtc_engine: 
   permission_handler: ^10.2.0
   flutter_sound: ^9.2.13
-  # agora_rtm: 
   agora_rtc_engine: ^6.2.2
   firebase_core: ^2.4.1
   # flutter_webrtc_wrapper: 
   provider: ^6.0.5
   cloud_firestore: 
   flutter_rating_bar: ^4.0.1
-  # cloud_firestore_web: 
-  # sound_stream:
-  #     path: ../sound_stream
     
   firebase_auth: ^4.2.5
   google_sign_in: ^5.4.3
-  # sound_stream: ^0.3.0
   flutter_simple_dependency_injection: ^2.0.0
   shared_preferences: ^2.0.15
   dio: ^4.0.6

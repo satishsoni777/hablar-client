@@ -5,8 +5,6 @@ import 'package:take_it_easy/modules/landing_page/service/landing_repo.dart';
 import 'package:take_it_easy/rtc/agora_rtc/agora_manager.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
-import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
-import 'package:take_it_easy/utils/call_streaming/mic_stream.dart';
 import 'package:take_it_easy/websocket/socket-io.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
@@ -17,7 +15,6 @@ class DI {
     _addDependency<SharedStorage>(SharedStorageImpl(), true);
     _addDependency<LandingRepo>(LandingRepoImpl(), true);
     _addDependency<AppWebSocket>(SocketIO(), true);
-    _addDependency<RtcUtil>(MicStreams(), true);
     _addDependency<Authentication>(AuthenticationImpl(), true);
     _addDependency<UserData>(UserData(), true);
     _addDependency<SignalingI>(AgoraManager(), true);

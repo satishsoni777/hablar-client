@@ -85,18 +85,19 @@ class _DialerState extends State<Dialer> {
                 if (prodider.signaling is AgoraManager) {
                   return AgoraCall();
                 }
-                return Stack(
-                  children: [
-                    if (prodider.signaling.callType == CallType.Video)
-                      VideoCall(
-                        localRenderer: (prodider.signaling as WebrtcSignaling)
-                            .localRenderer,
-                        remoteRenderer: (prodider.signaling as WebrtcSignaling)
-                            .remoteRenderer,
-                      ),
-                    VoiceCall(),
-                  ],
-                );
+                else return Container();
+                // return Stack(
+                //   children: [
+                //     if (prodider.signaling.callType == CallType.Video)
+                //       VideoCall(
+                //         localRenderer: (prodider.signaling as WebrtcSignaling)
+                //             .localRenderer,
+                //         remoteRenderer: (prodider.signaling as WebrtcSignaling)
+                //             .remoteRenderer,
+                //       ),
+                //     VoiceCall(),
+                //   ],
+                // );
               });
             }),
       ),

@@ -8,11 +8,16 @@ class FeedbackController extends ChangeNotifier {
   FeedbackController(this.feedbackService);
   final FeedbackService feedbackService;
   List<ConversationalList> _feedbacks = <ConversationalList>[];
+  bool isEmpty = false;
 
   Future<void> getFeedback() async {
     try {
       final List<ConversationalList> res = await feedbackService.getFeedbacks();
-      if (!isNullOrEmptyList(res)) _feedbacks.addAll(res);
+      if (!isNullOrEmptyList(res))
+        _feedbacks.addAll(res);
+      else {
+        isEmpty = true;
+      }
     } catch (e) {
       NavigationManager.instance.showToast();
     }

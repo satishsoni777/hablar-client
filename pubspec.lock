@@ -113,14 +113,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  dart_webrtc:
-    dependency: transitive
-    description:
-      name: dart_webrtc
-      sha256: "8949301071ac7c3fb8f78ef7dffc48652db16f2ec63d84078b608f2ca27cca38"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.17"
   dio:
     dependency: "direct main"
     description:
@@ -280,14 +272,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_webrtc:
-    dependency: "direct main"
-    description:
-      name: flutter_webrtc
-      sha256: "4a3194900981ac7a2aa1e68a37903d8910cc3459c7a1ab68ad0407310cea1642"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.34"
   font_awesome_flutter:
     dependency: transitive
     description:
@@ -408,14 +392,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
-  mic_stream:
-    dependency: "direct main"
-    description:
-      name: mic_stream
-      sha256: "4efbf12461452ba7a576a16a7400d5ea77466df18ea806a3fbd79b32b44e21bf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.5"
   nested:
     dependency: transitive
     description:
@@ -544,14 +520,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
-  platform_detect:
-    dependency: transitive
-    description:
-      name: platform_detect
-      sha256: "14afcb6ffcd93745e39a288db53d1d6522ea25d71f7993c13a367a86c437b54d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.7"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -568,14 +536,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
-  pub_semver:
-    dependency: transitive
-    description:
-      name: pub_semver
-      sha256: "40d3ab1bbd474c4c2328c91e3a7df8c6dd629b79ece4c4bd04bee496a224fb0c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.4"
   quiver:
     dependency: transitive
     description:
@@ -773,14 +733,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  webrtc_interface:
-    dependency: transitive
-    description:
-      name: webrtc_interface
-      sha256: "0ac4693f921c81005edefd2f43b9fe84b0ed54481474fe1ee16b789b0c84a77c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.13"
   webview_flutter:
     dependency: "direct main"
     description:

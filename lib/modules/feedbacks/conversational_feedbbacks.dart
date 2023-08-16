@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:take_it_easy/modules/feedbacks/controller/feedback_controller.dart';
 import 'package:take_it_easy/modules/feedbacks/models/feedbback_item.dart';
+import 'package:take_it_easy/modules/feedbacks/widgets/read_report.dart';
+import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/utils/string_utils.dart';
 
 class ConversationalFeedback extends StatelessWidget {
@@ -18,6 +20,11 @@ class ConversationalFeedback extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
+          else if (controller.isEmpty) {
+            return Center(
+              child: Text("Not Data found"),
+            );
+          }
           return ListView.separated(
             separatorBuilder: (BuildContext context, a) {
               return Container(
@@ -25,9 +32,9 @@ class ConversationalFeedback extends StatelessWidget {
                 color: Colors.white10,
               );
             },
-            itemCount: 4,
+            itemCount: controller.feedbacks.length,
             itemBuilder: (BuildContext context, int index) {
-              final ConversationalList feedback = controller.feedbacks[0];
+              final ConversationalList feedback = controller.feedbacks[index];
               return FeedbackTile(feedback: feedback);
             },
           );
@@ -44,7 +51,15 @@ class FeedbackTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: !isNullOrEmpty(feedback.name) ? () {} : null,
+      onTap: !isNullOrEmpty(feedback.name)
+          ? () {
+              NavigationManager.instance.launchDialog(
+                widget: ReadReport(
+                  text: feedback.comment!,
+                ),
+              );
+            }
+          : null,
       leading: isNullOrEmpty(feedback.image)
           ? CircleAvatar()
           : CircleAvatar(
