@@ -9,12 +9,7 @@ import 'package:take_it_easy/modules/signin/model/gmail_user_data.dart';
 import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/rtc/agora_rtc/agora_manager.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
-import 'package:take_it_easy/rtc/webrtc/webrtc_signaling.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
-
-import 'package:take_it_easy/modules/calling/widgets/voice_call.dart';
-
-import 'widgets/video_call.dart';
 
 class Dialer extends StatefulWidget {
   const Dialer({
@@ -35,7 +30,7 @@ class _DialerState extends State<Dialer> {
   @override
   void initState() {
     _callingController = SignalingController(widget.signaling,
-        widget.appWebSocket, DI.inject<UserData>().userId ?? 0);
+        widget.appWebSocket, DI.inject<UserData>().instance?.userId ?? 0);
     init();
     super.initState();
   }

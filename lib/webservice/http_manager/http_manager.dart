@@ -29,7 +29,6 @@ abstract class HttpManager extends BaseHttp with FlutterAuth {
 
   Future<void> _setHeaders({String? baseUrl}) async {
     final String? token = await DI.inject<SharedStorage>().getToken();
-    assert(token != null, "Token shouldn not be null");
     http.options
       ..baseUrl = baseUrl ?? (Flavor.internal().baseUrl)
       ..headers = {"Content-Type": "application/json", "Authorization": "Bearer $token"};

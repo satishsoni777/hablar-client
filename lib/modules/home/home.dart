@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:take_it_easy/di/di_initializer.dart';
-import 'package:take_it_easy/enums/socket-io-events.dart';
 import 'package:take_it_easy/modules/home/controller/home_controller.dart';
 import 'package:take_it_easy/modules/home/calling.dart';
 import 'package:take_it_easy/modules/home/service/home_service.dart';
 import 'package:take_it_easy/modules/profile/profile.dart';
+import 'package:take_it_easy/modules/videos/videos.dart';
 import 'package:take_it_easy/storage/shared_storage.dart';
 import 'package:take_it_easy/utils/call_streaming/rtc_util.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
@@ -46,6 +46,8 @@ class _HomePageState extends State<HomePage> {
         return Calling();
       case HomeTabs.Profile:
         return UserProfile();
+        case HomeTabs.Videos:
+        return Videos();
     }
   }
 
@@ -60,7 +62,8 @@ class _HomePageState extends State<HomePage> {
           },
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Call'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Videos')
           ],
         ),
         body: MultiProvider(
@@ -71,4 +74,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-enum HomeTabs { Call, Profile }
+enum HomeTabs { Call, Profile , Videos, }

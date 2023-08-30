@@ -14,8 +14,7 @@ class AgoraManager extends HttpManager implements SignalingI<dynamic> {
   RtcEngine? _engine;
   Function(CallStatus callStatus, {Map<String, dynamic>? data})? _callStatus;
   @override
-  Future<dynamic> startCall(
-      { String? roomId, int? userId}) async {
+  Future<dynamic> startCall({String? roomId, int? userId}) async {
     try {
       ChannelMediaOptions options = const ChannelMediaOptions(
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
@@ -95,6 +94,7 @@ class AgoraManager extends HttpManager implements SignalingI<dynamic> {
           ?.setChannelProfile(ChannelProfileType.channelProfileCommunication);
       await _engine?.enableVideo();
       await _engine?.enableAudio();
+      // await _engine?.enableAudioVolumeIndication();
       await _engine?.enableWebSdkInteroperability(true);
       _callStatus?.call(CallStatus.Start);
     } catch (e) {
@@ -134,7 +134,7 @@ class AgoraManager extends HttpManager implements SignalingI<dynamic> {
   Future<void> speaker(bool value) async {
     await _engine?.setEnableSpeakerphone(value);
   }
-  
+
   @override
   Future<int> getCallDuration() {
     // TODO: implement getCallDuration

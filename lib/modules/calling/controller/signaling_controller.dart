@@ -1,15 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:take_it_easy/components/loader.dart';
-import 'package:take_it_easy/di/di_initializer.dart';
 import 'package:take_it_easy/navigation/navigation_manager.dart';
 import 'package:take_it_easy/rtc/signaling.i.dart';
-import 'package:take_it_easy/storage/shared_storage.dart';
-import 'package:take_it_easy/utils/string_utils.dart';
 import 'package:take_it_easy/websocket/websocket.i.dart';
 
 class SignalingController extends ChangeNotifier {
-  SignalingController(this._signaling, this._appWebSocket, this.userId);
+  SignalingController(this._signaling, this._appWebSocket, this._userId);
 
   final SignalingI<dynamic> _signaling;
   final AppWebSocket _appWebSocket;
@@ -17,18 +14,11 @@ class SignalingController extends ChangeNotifier {
   CallStatus? _callStatus = CallStatus.None;
   String? _roomId;
   bool _mute = false, _speaker = false;
-  int userId;
+  int _userId;
   int? _duration = 0;
   Function(dynamic)? submitFeedback;
 
   void createRoomId() async {
-    final String roomId = await DI
-            .inject<SharedStorage>()
-            .getStringPreference(StorageKey.roomId) ??
-        '';
-    if (isNullOrEmpty(roomId)) {
-      // _appWebSocket.leaveRoom(<String, dynamic>{"roomId": roomId});
-    }
     _appWebSocket.createRoom();
   }
 
@@ -40,9 +30,7 @@ class SignalingController extends ChangeNotifier {
     };
     _appWebSocket.callStarted = (dynamic data) {
       if (_callStatus != CallStatus.CallStarted) {
-        signaling.startCall(
-          roomId: data["roomId"],
-        );
+        signaling.startCall(roomId: data["roomId"], userId: _userId);
         notifyListeners();
       }
     };
@@ -81,7 +69,9 @@ class SignalingController extends ChangeNotifier {
     await _signaling.initialize();
   }
 
-  Future<void> callEnd() async {}
+  Future<void> callEnd() async {
+    // close();
+  }
 
   void close() async {
     AppLoader.showLoader();
@@ -89,7 +79,7 @@ class SignalingController extends ChangeNotifier {
     _appWebSocket.leaveRoom(<String, dynamic>{"roomId": _roomId});
     await Future<void>.delayed(const Duration(seconds: 1));
     AppLoader.hideLoader();
-    NavigationManager.instance.pop(true);
+    NavigationManager.instance.pop(false);
   }
 
   void mute(bool value) {
