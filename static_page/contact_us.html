@@ -16,7 +16,8 @@
         }
 
         .contact-form {
-            width: 400px;
+            width: 100%;
+            max-width: 400px; /* Limit the width for larger screens */
             padding: 20px;
             padding-right: 40px;
             background-color: #f2f2f2;
@@ -58,14 +59,17 @@
             background-color: #45a049;
         }
 
-        .success-message {
-            color: green;
+        .success-message,
+        .error-message {
             margin-top: 10px;
         }
 
-        .error-message {
-            color: red;
-            margin-top: 10px;
+        @media only screen and (max-width: 600px) {
+            /* Adjust layout for smaller screens */
+            .contact-form {
+                padding: 10px;
+                padding-right: 20px;
+            }
         }
     </style>
 </head>
